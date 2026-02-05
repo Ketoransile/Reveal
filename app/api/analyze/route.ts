@@ -16,6 +16,48 @@ export async function POST(request: Request) {
             return NextResponse.json({ error: 'Both URLs are required' }, { status: 400 });
         }
 
+        // Validate URLs and fetch content immediately
+        // This ensures we don't start a job or deduct credits for invalid URLs
+        let yourContent = '';
+        let competitorContent = '';
+
+        try {
+            const userAgent = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36';
+
+            console.log('[API] Validating URLs...');
+
+            const [yourRes, competitorRes] = await Promise.allSettled([
+                fetch(yourUrl, { headers: { 'User-Agent': userAgent } }),
+                fetch(competitorUrl, { headers: { 'User-Agent': userAgent } })
+            ]);
+
+            // Check Your URL
+            if (yourRes.status === 'rejected') {
+                throw new Error(`Invalid URL or website does not exist: ${yourUrl}`);
+            }
+            if (!yourRes.value.ok) {
+                throw new Error(`Could not access your website (Status ${yourRes.value.status}): ${yourUrl}`);
+            }
+
+            // Check Competitor URL
+            if (competitorRes.status === 'rejected') {
+                throw new Error(`Invalid URL or website does not exist: ${competitorUrl}`);
+            }
+            if (!competitorRes.value.ok) {
+                throw new Error(`Could not access competitor website (Status ${competitorRes.value.status}): ${competitorUrl}`);
+            }
+
+            // Get text content
+            yourContent = await yourRes.value.text();
+            competitorContent = await competitorRes.value.text();
+
+        } catch (error) {
+            console.error('[API] URL validation failed:', error);
+            return NextResponse.json({
+                error: error instanceof Error ? error.message : 'Invalid URL provided'
+            }, { status: 400 });
+        }
+
         // Get authenticated user
         const supabase = await createClient();
         const { data: { user }, error: authError } = await supabase.auth.getUser();
@@ -78,7 +120,7 @@ export async function POST(request: Request) {
 
         // Run analysis synchronously to ensure it completes
         try {
-            await performComparisonAnalysis(analysis.id, yourUrl, competitorUrl);
+            await performComparisonAnalysis(analysis.id, yourUrl, competitorUrl, yourContent, competitorContent);
         } catch (err) {
             console.error('[API] Analysis execution error:', err);
             // We continue to return success if analysis record was created, 
@@ -101,45 +143,19 @@ export async function POST(request: Request) {
     }
 }
 
-async function performComparisonAnalysis(analysisId: string, yourUrl: string, competitorUrl: string) {
+async function performComparisonAnalysis(
+    analysisId: string,
+    yourUrl: string,
+    competitorUrl: string,
+    yourContent: string,
+    competitorContent: string
+) {
     console.log('[ANALYSIS] Starting background comparison analysis for:', analysisId);
-    console.log('[ANALYSIS] Your website:', yourUrl);
-    console.log('[ANALYSIS] Competitor website:', competitorUrl);
+    console.log('[ANALYSIS] Content lengths - Yours:', yourContent.length, 'Competitor:', competitorContent.length);
 
     const supabase = await createClient();
 
     try {
-        // Step 1: Fetch both websites
-        console.log('[ANALYSIS] Fetching your website content from:', yourUrl);
-        let yourContent = '';
-        try {
-            const response = await fetch(yourUrl, {
-                headers: {
-                    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
-                }
-            });
-            yourContent = await response.text();
-            console.log('[ANALYSIS] Fetched your website:', yourContent.length, 'characters');
-        } catch (fetchError) {
-            console.error('[ANALYSIS] Failed to fetch your website:', fetchError);
-            yourContent = `Unable to fetch website content. URL: ${yourUrl}`;
-        }
-
-        console.log('[ANALYSIS] Fetching competitor website content from:', competitorUrl);
-        let competitorContent = '';
-        try {
-            const response = await fetch(competitorUrl, {
-                headers: {
-                    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
-                }
-            });
-            competitorContent = await response.text();
-            console.log('[ANALYSIS] Fetched competitor website:', competitorContent.length, 'characters');
-        } catch (fetchError) {
-            console.error('[ANALYSIS] Failed to fetch competitor website:', fetchError);
-            competitorContent = `Unable to fetch website content. URL: ${competitorUrl}`;
-        }
-
         // Step 2: Analyze with GitHub Models / Azure Inference
         console.log('[ANALYSIS] Sending to GitHub Models for comparison analysis');
 
