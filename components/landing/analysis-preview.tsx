@@ -32,7 +32,7 @@ export const AnalysisPreview = () => {
     };
 
     return (
-        <div className="relative w-full h-full rounded-3xl bg-slate-950/80 backdrop-blur-md overflow-hidden border border-white/10 shadow-2xl flex items-center justify-center p-8 md:p-12 perspective-1000">
+        <div className="relative w-full h-full rounded-3xl bg-slate-950/80 backdrop-blur-md overflow-hidden border border-white/10 shadow-2xl flex flex-col md:block items-center justify-center p-4 md:p-12 perspective-1000">
 
             {/* Ambient Base Glow */}
             <div className="absolute inset-0 bg-gradient-to-br from-indigo-500/5 via-transparent to-emerald-500/5" />
@@ -41,13 +41,13 @@ export const AnalysisPreview = () => {
             <motion.div
                 animate={{ top: ["0%", "100%", "0%"] }}
                 transition={{ duration: 8, repeat: Infinity, ease: "linear" }}
-                className="absolute left-0 right-0 h-1 bg-emerald-500/50 shadow-[0_0_50px_rgba(16,185,129,0.5)] z-20"
+                className="absolute left-0 right-0 h-1 bg-emerald-500/50 shadow-[0_0_50px_rgba(16,185,129,0.5)] z-20 pointer-events-none"
             >
                 <div className="absolute inset-0 bg-gradient-to-r from-transparent via-emerald-400 to-transparent blur-sm" />
             </motion.div>
 
             {/* Central Target: The Competitor Website Wireframe */}
-            <div className="relative w-full max-w-lg aspect-[3/4] md:aspect-[4/3] bg-slate-900 rounded-xl border border-slate-800 shadow-2xl overflow-hidden flex flex-col z-10">
+            <div className="relative w-full max-w-lg aspect-[3/4] md:aspect-[4/3] bg-slate-900 rounded-xl border border-slate-800 shadow-2xl overflow-hidden flex flex-col z-10 md:mx-auto">
                 {/* Fake Browser Header */}
                 <div className="h-8 bg-slate-800 border-b border-slate-700 flex items-center px-4 gap-2">
                     <div className="w-3 h-3 rounded-full bg-red-500/50" />
@@ -115,95 +115,140 @@ export const AnalysisPreview = () => {
                 </div>
             </div>
 
-            {/* Floating Insight Cards (Connecting to nodes via absolute positioning visual hack) */}
-
-            {/* Card 1: Traffic Source (Top Right) */}
-            <motion.div
-                custom={1}
-                variants={revealVariants}
-                initial="hidden"
-                whileInView="visible"
-                viewport={{ once: true }}
-                className="absolute top-[20%] right-[10%] md:right-[15%] z-30"
-            >
-                <div className="glass-card-strong p-4 rounded-xl border border-blue-500/30 flex items-center gap-3 shadow-[0_0_30px_rgba(59,130,246,0.2)]">
+            {/* Mobile Insight Cards (Stacked) */}
+            <div className="md:hidden w-full mt-6 space-y-3 z-30">
+                <div className="glass-card-strong p-3 rounded-xl border border-blue-500/30 flex items-center gap-3 shadow-[0_0_30px_rgba(59,130,246,0.1)] bg-slate-900/60 backdrop-blur-sm">
                     <div className="p-2 bg-blue-500/20 rounded-lg">
-                        <BarChart3 className="w-5 h-5 text-blue-400" />
+                        <BarChart3 className="w-4 h-4 text-blue-400" />
                     </div>
                     <div>
-                        <div className="text-xs text-slate-400 font-medium uppercase tracking-wider">Traffic Secret</div>
+                        <div className="text-[10px] text-slate-400 font-medium uppercase tracking-wider">Traffic Secret</div>
                         <div className="text-sm font-bold text-white">Top Source: LinkedIn Ads</div>
                     </div>
-                    {/* Connecting Line (Visual) */}
-                    <div className="absolute top-1/2 -left-8 w-8 h-px bg-gradient-to-l from-blue-500/50 to-transparent hidden md:block" />
                 </div>
-            </motion.div>
 
-            {/* Card 2: Tech Stack (Middle Right) */}
-            <motion.div
-                custom={2}
-                variants={revealVariants}
-                initial="hidden"
-                whileInView="visible"
-                viewport={{ once: true }}
-                className="absolute top-[45%] right-[5%] md:right-[8%] z-30"
-            >
-                <div className="glass-card-strong p-4 rounded-xl border border-purple-500/30 flex items-center gap-3 shadow-[0_0_30px_rgba(168,85,247,0.2)]">
+                <div className="glass-card-strong p-3 rounded-xl border border-purple-500/30 flex items-center gap-3 shadow-[0_0_30px_rgba(168,85,247,0.1)] bg-slate-900/60 backdrop-blur-sm">
                     <div className="p-2 bg-purple-500/20 rounded-lg">
-                        <Code className="w-5 h-5 text-purple-400" />
+                        <Code className="w-4 h-4 text-purple-400" />
                     </div>
                     <div>
-                        <div className="text-xs text-slate-400 font-medium uppercase tracking-wider">Tech Detected</div>
+                        <div className="text-[10px] text-slate-400 font-medium uppercase tracking-wider">Tech Detected</div>
                         <div className="text-sm font-bold text-white">Next.js + Segment</div>
                     </div>
-                    <div className="absolute top-1/2 -left-12 w-12 h-px bg-gradient-to-l from-purple-500/50 to-transparent hidden md:block" />
                 </div>
-            </motion.div>
 
-            {/* Card 3: SEO Gap (Bottom Left) */}
-            <motion.div
-                custom={3}
-                variants={leftRevealVariants}
-                initial="hidden"
-                whileInView="visible"
-                viewport={{ once: true }}
-                className="absolute bottom-[25%] left-[5%] md:left-[10%] z-30"
-            >
-                <div className="glass-card-strong p-4 rounded-xl border border-emerald-500/30 flex items-center gap-3 shadow-[0_0_30px_rgba(16,185,129,0.2)]">
+                <div className="glass-card-strong p-3 rounded-xl border border-emerald-500/30 flex items-center gap-3 shadow-[0_0_30px_rgba(16,185,129,0.1)] bg-slate-900/60 backdrop-blur-sm">
                     <div className="p-2 bg-emerald-500/20 rounded-lg">
-                        <Search className="w-5 h-5 text-emerald-400" />
+                        <Search className="w-4 h-4 text-emerald-400" />
                     </div>
                     <div>
-                        <div className="text-xs text-slate-400 font-medium uppercase tracking-wider">SEO Opportunity</div>
+                        <div className="text-[10px] text-slate-400 font-medium uppercase tracking-wider">SEO Opportunity</div>
                         <div className="text-sm font-bold text-white">Missed Keyword: "AI CRM"</div>
                     </div>
-                    <div className="absolute top-1/2 -right-8 w-8 h-px bg-gradient-to-r from-emerald-500/50 to-transparent hidden md:block" />
                 </div>
-            </motion.div>
 
-            {/* Card 4: UX (Top Left) */}
-            <motion.div
-                custom={1.5}
-                variants={leftRevealVariants}
-                initial="hidden"
-                whileInView="visible"
-                viewport={{ once: true }}
-                className="absolute top-[30%] left-[8%] md:left-[12%] z-30"
-            >
-                <div className="glass-card-strong p-4 rounded-xl border border-amber-500/30 flex items-center gap-3 shadow-[0_0_30px_rgba(245,158,11,0.2)]">
+                <div className="glass-card-strong p-3 rounded-xl border border-amber-500/30 flex items-center gap-3 shadow-[0_0_30px_rgba(245,158,11,0.1)] bg-slate-900/60 backdrop-blur-sm">
                     <div className="p-2 bg-amber-500/20 rounded-lg">
-                        <Layout className="w-5 h-5 text-amber-400" />
+                        <Layout className="w-4 h-4 text-amber-400" />
                     </div>
                     <div>
-                        <div className="text-xs text-slate-400 font-medium uppercase tracking-wider">UX Friction</div>
+                        <div className="text-[10px] text-slate-400 font-medium uppercase tracking-wider">UX Friction</div>
                         <div className="text-sm font-bold text-white">Low Contrast CTA</div>
                     </div>
-                    <div className="absolute top-1/2 -right-12 w-12 h-px bg-gradient-to-r from-amber-500/50 to-transparent hidden md:block" />
                 </div>
-            </motion.div>
+            </div>
+
+
+            {/* Floating Insight Cards (Connecting to nodes via absolute positioning visual hack) - DESKTOP ONLY */}
+            <div className="hidden md:block">
+                {/* Card 1: Traffic Source (Top Right) */}
+                <motion.div
+                    custom={1}
+                    variants={revealVariants}
+                    initial="hidden"
+                    whileInView="visible"
+                    viewport={{ once: true }}
+                    className="absolute top-[20%] right-[10%] md:right-[15%] z-30"
+                >
+                    <div className="glass-card-strong p-4 rounded-xl border border-blue-500/30 flex items-center gap-3 shadow-[0_0_30px_rgba(59,130,246,0.2)]">
+                        <div className="p-2 bg-blue-500/20 rounded-lg">
+                            <BarChart3 className="w-5 h-5 text-blue-400" />
+                        </div>
+                        <div>
+                            <div className="text-xs text-slate-400 font-medium uppercase tracking-wider">Traffic Secret</div>
+                            <div className="text-sm font-bold text-white">Top Source: LinkedIn Ads</div>
+                        </div>
+                        {/* Connecting Line (Visual) */}
+                        <div className="absolute top-1/2 -left-8 w-8 h-px bg-gradient-to-l from-blue-500/50 to-transparent hidden md:block" />
+                    </div>
+                </motion.div>
+
+                {/* Card 2: Tech Stack (Middle Right) */}
+                <motion.div
+                    custom={2}
+                    variants={revealVariants}
+                    initial="hidden"
+                    whileInView="visible"
+                    viewport={{ once: true }}
+                    className="absolute top-[45%] right-[5%] md:right-[8%] z-30"
+                >
+                    <div className="glass-card-strong p-4 rounded-xl border border-purple-500/30 flex items-center gap-3 shadow-[0_0_30px_rgba(168,85,247,0.2)]">
+                        <div className="p-2 bg-purple-500/20 rounded-lg">
+                            <Code className="w-5 h-5 text-purple-400" />
+                        </div>
+                        <div>
+                            <div className="text-xs text-slate-400 font-medium uppercase tracking-wider">Tech Detected</div>
+                            <div className="text-sm font-bold text-white">Next.js + Segment</div>
+                        </div>
+                        <div className="absolute top-1/2 -left-12 w-12 h-px bg-gradient-to-l from-purple-500/50 to-transparent hidden md:block" />
+                    </div>
+                </motion.div>
+
+                {/* Card 3: SEO Gap (Bottom Left) */}
+                <motion.div
+                    custom={3}
+                    variants={leftRevealVariants}
+                    initial="hidden"
+                    whileInView="visible"
+                    viewport={{ once: true }}
+                    className="absolute bottom-[25%] left-[5%] md:left-[10%] z-30"
+                >
+                    <div className="glass-card-strong p-4 rounded-xl border border-emerald-500/30 flex items-center gap-3 shadow-[0_0_30px_rgba(16,185,129,0.2)]">
+                        <div className="p-2 bg-emerald-500/20 rounded-lg">
+                            <Search className="w-5 h-5 text-emerald-400" />
+                        </div>
+                        <div>
+                            <div className="text-xs text-slate-400 font-medium uppercase tracking-wider">SEO Opportunity</div>
+                            <div className="text-sm font-bold text-white">Missed Keyword: "AI CRM"</div>
+                        </div>
+                        <div className="absolute top-1/2 -right-8 w-8 h-px bg-gradient-to-r from-emerald-500/50 to-transparent hidden md:block" />
+                    </div>
+                </motion.div>
+
+                {/* Card 4: UX (Top Left) */}
+                <motion.div
+                    custom={1.5}
+                    variants={leftRevealVariants}
+                    initial="hidden"
+                    whileInView="visible"
+                    viewport={{ once: true }}
+                    className="absolute top-[30%] left-[8%] md:left-[12%] z-30"
+                >
+                    <div className="glass-card-strong p-4 rounded-xl border border-amber-500/30 flex items-center gap-3 shadow-[0_0_30px_rgba(245,158,11,0.2)]">
+                        <div className="p-2 bg-amber-500/20 rounded-lg">
+                            <Layout className="w-5 h-5 text-amber-400" />
+                        </div>
+                        <div>
+                            <div className="text-xs text-slate-400 font-medium uppercase tracking-wider">UX Friction</div>
+                            <div className="text-sm font-bold text-white">Low Contrast CTA</div>
+                        </div>
+                        <div className="absolute top-1/2 -right-12 w-12 h-px bg-gradient-to-r from-amber-500/50 to-transparent hidden md:block" />
+                    </div>
+                </motion.div>
+            </div>
 
             {/* Central Analysis HUD */}
-            <div className="absolute bottom-6 left-0 right-0 flex justify-center z-40">
+            <div className="absolute bottom-6 left-0 right-0 flex justify-center z-40 hidden md:flex">
                 <motion.div
                     initial={{ y: 50, opacity: 0 }}
                     whileInView={{ y: 0, opacity: 1 }}
@@ -222,6 +267,20 @@ export const AnalysisPreview = () => {
                         <span className="text-emerald-400 font-black text-lg">Found 12 Weaknesses</span>
                     </div>
                 </motion.div>
+            </div>
+            {/* Mobile HUD (Simplified) */}
+            <div className="mt-6 w-full flex justify-center z-40 md:hidden">
+                <div
+                    className="flex items-center gap-3 px-4 py-2 rounded-full bg-slate-900/90 border border-emerald-500/50 shadow-[0_0_20px_rgba(16,185,129,0.2)] backdrop-blur-xl"
+                >
+                    <div className="flex items-center gap-2 border-r border-white/10 pr-3">
+                        <div className="w-2 h-2 bg-red-500 rounded-full animate-pulse" />
+                        <span className="text-[10px] font-bold text-white uppercase tracking-wider">Live</span>
+                    </div>
+                    <div>
+                        <span className="text-emerald-400 font-bold text-sm">12 Weaknesses Found</span>
+                    </div>
+                </div>
             </div>
 
         </div>

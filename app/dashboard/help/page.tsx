@@ -50,7 +50,7 @@ export default function HelpPage() {
                         <p className="text-sm text-muted-foreground mb-4">
                             Send us an email and we'll get back to you within 24 hours.
                         </p>
-                        <a href="mailto:support@rivallens.com" className="text-sm font-medium text-purple-600 hover:underline">Contact Us &rarr;</a>
+                        <a href="mailto:support@reveal.com" className="text-sm font-medium text-purple-600 hover:underline">Contact Us &rarr;</a>
                     </CardContent>
                 </Card>
             </div>

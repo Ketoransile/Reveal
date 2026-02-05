@@ -18,7 +18,7 @@ export const Footer = () => {
                                 <span className="text-black font-black text-xl">R</span>
                             </div>
                             <span className="text-2xl font-bold tracking-tight text-white">
-                                Rival<span className="text-emerald-400">Lens</span>
+                                Reveal
                             </span>
                         </Link>
                         <p className="text-slate-400 text-sm leading-relaxed max-w-xs">
@@ -101,11 +101,11 @@ export const Footer = () => {
 
                 <div className="pt-8 border-t border-white/5 flex flex-col md:flex-row items-center justify-between gap-4">
                     <p className="text-slate-500 text-sm">
-                        &copy; 2026 RivalLens Inc. All rights reserved.
+                        &copy; 2026 Reveal Inc. All rights reserved.
                     </p>
                     <div className="flex items-center gap-2 text-sm text-slate-500">
                         <Mail className="w-4 h-4" />
-                        <span>support@rivallens.com</span>
+                        <span>support@reveal.com</span>
                     </div>
                 </div>
             </div>

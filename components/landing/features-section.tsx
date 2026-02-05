@@ -90,8 +90,8 @@ export const FeaturesSection = () => {
                 </div>
 
                 {/* Coming Soon Feature - Full Width Highlight */}
-                <div className="mt-16 max-w-7xl mx-auto px-4">
-                    <div className="relative group p-8 md:p-10 rounded-3xl bg-gradient-to-br from-slate-900/60 via-blue-900/20 to-purple-900/20 border-2 border-blue-500/30 hover:border-blue-400/50 transition-all duration-500 hover:shadow-[0_0_50px_rgba(59,130,246,0.3)] overflow-hidden">
+                <div className="mt-16 max-w-7xl mx-auto px-2 md:px-4">
+                    <div className="relative group p-5 md:p-10 rounded-3xl bg-gradient-to-br from-slate-900/60 via-blue-900/20 to-purple-900/20 border-2 border-blue-500/30 hover:border-blue-400/50 transition-all duration-500 hover:shadow-[0_0_50px_rgba(59,130,246,0.3)] overflow-hidden">
                         {/* Animated Background Gradient */}
                         <div className="absolute inset-0 bg-gradient-to-r from-blue-500/5 via-purple-500/5 to-pink-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
 

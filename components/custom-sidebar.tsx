@@ -56,9 +56,10 @@ const NAV_SECONDARY = [
 interface SidebarProps extends React.HTMLAttributes<HTMLDivElement> {
     collapsed?: boolean
     setCollapsed?: (collapsed: boolean) => void
+    onClose?: () => void
 }
 
-export function CustomSidebar({ className, collapsed = false, setCollapsed }: SidebarProps) {
+export function CustomSidebar({ className, collapsed = false, setCollapsed, onClose }: SidebarProps) {
     const pathname = usePathname()
     const router = useRouter()
     const [mounted, setMounted] = React.useState(false)
@@ -100,6 +101,7 @@ export function CustomSidebar({ className, collapsed = false, setCollapsed }: Si
     const NavItem = ({ item, isActive }: { item: any, isActive: boolean }) => (
         <Link
             href={item.url || '#'}
+            onClick={() => onClose?.()}
             className={cn("flex items-center", collapsed ? "justify-center" : "w-full")}
         >
             <Tooltip delayDuration={0}>
@@ -128,16 +130,16 @@ export function CustomSidebar({ className, collapsed = false, setCollapsed }: Si
     const SidebarContentInner = () => (
         <div className="flex flex-col h-full bg-background/80 backdrop-blur-xl border-r border-border/40 p-3 pt-4 transition-all duration-300">
             {/* Header */}
-            <Link href="/" className={cn("h-12 flex items-center mb-6 transition-all cursor-pointer hover:opacity-80", collapsed ? "justify-center px-0" : "gap-3 px-2")}>
+            <Link href="/" onClick={() => onClose?.()} className={cn("h-12 flex items-center mb-6 transition-all cursor-pointer hover:opacity-80", collapsed ? "justify-center px-0" : "gap-3 px-2")}>
                 <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-primary text-primary-foreground font-bold shrink-0">
                     <Box className="size-4" />
                 </div>
-                {!collapsed && <span className="text-lg font-bold tracking-tight whitespace-nowrap overflow-hidden">RivalLens</span>}
+                {!collapsed && <span className="text-lg font-bold tracking-tight whitespace-nowrap overflow-hidden">Reveal</span>}
             </Link>
 
             {/* New Analysis Button - Prominent */}
             <div className={cn("mb-6 transition-all", collapsed ? "px-0 flex justify-center" : "px-2")}>
-                <Link href="/dashboard/analysis" className={cn("flex items-center", collapsed ? "justify-center" : "w-full")}>
+                <Link href="/dashboard/analysis" onClick={() => onClose?.()} className={cn("flex items-center", collapsed ? "justify-center" : "w-full")}>
                     <Tooltip delayDuration={0}>
                         <TooltipTrigger asChild>
                             <Button
@@ -211,16 +213,16 @@ export function CustomSidebar({ className, collapsed = false, setCollapsed }: Si
                             </div>
                         </Button>
                     </DropdownMenuTrigger>
-                    <DropdownMenuContent className="w-56 mb-2" align={collapsed ? "center" : "start"} side="right">
+                    <DropdownMenuContent className="w-56 mb-2" align={collapsed ? "center" : "start"} side={typeof window !== 'undefined' && window.innerWidth < 768 ? "bottom" : "right"}>
                         <DropdownMenuLabel>My Account</DropdownMenuLabel>
                         <DropdownMenuSeparator />
-                        <DropdownMenuItem asChild className="cursor-pointer">
+                        <DropdownMenuItem asChild className="cursor-pointer" onClick={() => onClose?.()}>
                             <Link href="/dashboard/settings?tab=billing">
                                 <Box className="mr-2 h-4 w-4" />
                                 <span>Billing</span>
                             </Link>
                         </DropdownMenuItem>
-                        <DropdownMenuItem asChild className="cursor-pointer">
+                        <DropdownMenuItem asChild className="cursor-pointer" onClick={() => onClose?.()}>
                             <Link href="/dashboard/settings">
                                 <Settings className="mr-2 h-4 w-4" />
                                 <span>Settings</span>
@@ -293,8 +295,11 @@ export function MobileSidebar({ open, onOpenChange }: MobileSidebarProps) {
     return (
         <Sheet open={open} onOpenChange={onOpenChange}>
             <SheetContent side="left" className="p-0 w-72 bg-transparent border-r-0">
-                <div className="h-full bg-background border-r">
-                    <CustomSidebar className="!block !fixed !inset-0 !w-full !relative" />
+                <div className="h-full bg-background border-r border-border/20">
+                    <CustomSidebar
+                        className="!block !fixed !inset-0 !w-full !relative"
+                        onClose={() => onOpenChange(false)}
+                    />
                 </div>
             </SheetContent>
         </Sheet>

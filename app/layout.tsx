@@ -5,6 +5,7 @@ import "./globals.css";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { ThemeProvider } from "@/components/theme-provider";
 import { SmoothScrolling } from "@/components/smooth-scrolling";
+import { ScrollbarTheme } from "@/components/scrollbar-theme";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -18,15 +19,15 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: {
-    default: "RivalLens | AI-Powered Competitor Analysis",
-    template: "%s | RivalLens"
+    default: "Reveal | AI-Powered Competitor Analysis",
+    template: "%s | Reveal"
   },
-  description: "Decode your competitor's strategy, tech stack, and traffic sources in 30 seconds. The ultimate intelligence tool for growth hackers.",
+  description: "Reveal your competitor's strategy, tech stack, and traffic sources in 30 seconds. The ultimate intelligence tool for growth hackers.",
   openGraph: {
-    title: "RivalLens | AI-Powered Competitor Analysis",
-    description: "Decode your competitor's strategy in 30 seconds.",
-    url: "https://rivallens.com",
-    siteName: "RivalLens",
+    title: "Reveal | AI-Powered Competitor Analysis",
+    description: "Reveal your competitor's strategy in 30 seconds.",
+    url: "https://revealai.com",
+    siteName: "Reveal",
     locale: "en_US",
     type: "website",
   },
@@ -42,7 +43,7 @@ export const metadata: Metadata = {
     },
   },
   twitter: {
-    title: "RivalLens",
+    title: "Reveal",
     card: "summary_large_image",
   },
 };
@@ -57,6 +58,7 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} font-sans antialiased min-h-full`}
       >
+        <ScrollbarTheme />
         <ThemeProvider
           attribute="class"
           defaultTheme="light"

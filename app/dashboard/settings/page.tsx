@@ -18,7 +18,6 @@ function SettingsContent() {
     const [mounted, setMounted] = useState(false);
     const searchParams = useSearchParams();
     const router = useRouter();
-    const supabase = createClient();
 
     const [activeTab, setActiveTab] = useState("account");
     const [loading, setLoading] = useState(false);
@@ -115,6 +114,7 @@ function SettingsContent() {
         setSaveSuccess(false);
 
         try {
+            const supabase = createClient();
             const { data: { user: currentUser }, error: userError } = await supabase.auth.getUser();
 
             if (userError || !currentUser) throw new Error(userError?.message || 'User not found');

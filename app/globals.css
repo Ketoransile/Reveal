@@ -161,6 +161,13 @@
   }
 }
 
+/* Prevent Horizontal Scrolling */
+html,
+body {
+  overflow-x: hidden;
+  max-width: 100vw;
+}
+
 /* Global Body Styles */
 body {
   @apply bg-background text-foreground antialiased;
@@ -209,28 +216,60 @@ body {
   mask-image: radial-gradient(circle at center, black 0%, transparent 100%);
 }
 
-/* Reset scrollbar to system default */
-* {
-  scrollbar-width: auto;
-  scrollbar-color: auto;
-}
+/* --- Dynamic Scrollbar (Blends with Page Background) --- */
 
+/* Base scrollbar dimensions */
 ::-webkit-scrollbar {
-  width: auto;
-  height: auto;
+  width: 12px;
+  height: 12px;
 }
 
-::-webkit-scrollbar-track {
-  background: transparent;
+/* DARK THEME - Landing & Pricing Pages */
+/* Track blends with dark blue-black background */
+html[data-scroll-theme="dark"] ::-webkit-scrollbar-track {
+  background: hsl(222.2, 47.4%, 11.2%);
+  /* Matches your dark theme background */
 }
 
-::-webkit-scrollbar-thumb {
-  background: auto;
-  border-radius: 0;
+/* Thumb: neutral gray that's visible on dark background */
+html[data-scroll-theme="dark"] ::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.25);
+  border-radius: 10px;
+  border: 2px solid hsl(222.2, 47.4%, 11.2%);
 }
 
-::-webkit-scrollbar-thumb:hover {
-  background: auto;
+html[data-scroll-theme="dark"] ::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.4);
+}
+
+/* Firefox support for dark theme */
+html[data-scroll-theme="dark"] {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.25) hsl(222.2, 47.4%, 11.2%);
+}
+
+/* LIGHT THEME - Dashboard & Other Pages */
+/* Track is white/light background */
+html[data-scroll-theme="light"] ::-webkit-scrollbar-track {
+  background: hsl(0, 0%, 100%);
+  /* Pure white to match dashboard */
+}
+
+/* Thumb: neutral gray that's visible on light background */
+html[data-scroll-theme="light"] ::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.25);
+  border-radius: 10px;
+  border: 2px solid hsl(0, 0%, 100%);
+}
+
+html[data-scroll-theme="light"] ::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 0, 0, 0.4);
+}
+
+/* Firefox support for light theme */
+html[data-scroll-theme="light"] {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(0, 0, 0, 0.25) hsl(0, 0%, 100%);
 }
 
 /* Hide scrollbar utility classes */
@@ -243,4 +282,15 @@ body {
 .scrollbar-none {
   -ms-overflow-style: none;
   scrollbar-width: none;
+}
+
+/* Override Browser Autofill Background */
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active {
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: #ffffff;
+  transition: background-color 5000s ease-in-out 0s;
+  box-shadow: inset 0 0 20px 20px #232a3b00;
 }

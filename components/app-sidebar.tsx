@@ -102,7 +102,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                                 <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-slate-900 text-white font-bold">
                                     <Box className="size-4" />
                                 </div>
-                                <span className="text-lg font-bold text-slate-900 tracking-tight">RivalLens</span>
+                                <span className="text-lg font-bold text-slate-900 tracking-tight">Reveal</span>
                             </a>
                         </SidebarMenuButton>
                     </SidebarMenuItem>
