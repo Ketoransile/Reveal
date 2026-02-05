@@ -68,7 +68,7 @@ export const AnalysisPreview = () => {
                     <div className="h-32 w-full bg-gradient-to-br from-slate-800 to-slate-800/50 rounded-xl border border-slate-700/50 flex items-center justify-center relative overflow-hidden group">
                         <Globe className="text-slate-700 w-12 h-12 opacity-20" />
 
-                        {/* Insight Node: Tech Stack */}
+                        {/* Insight Node: Strategy */}
                         <motion.div
                             custom={2}
                             variants={revealVariants}
@@ -78,8 +78,8 @@ export const AnalysisPreview = () => {
                             className="absolute top-4 right-4"
                         >
                             <div className="relative">
-                                <div className="w-3 h-3 bg-blue-500 rounded-full animate-ping absolute inset-0" />
-                                <div className="w-3 h-3 bg-blue-500 rounded-full relative z-10 cursor-pointer hover:scale-125 transition-transform" />
+                                <div className="w-3 h-3 bg-purple-500 rounded-full animate-ping absolute inset-0" />
+                                <div className="w-3 h-3 bg-purple-500 rounded-full relative z-10 cursor-pointer hover:scale-125 transition-transform" />
                             </div>
                         </motion.div>
                     </div>
@@ -129,11 +129,11 @@ export const AnalysisPreview = () => {
 
                 <div className="glass-card-strong p-3 rounded-xl border border-purple-500/30 flex items-center gap-3 shadow-[0_0_30px_rgba(168,85,247,0.1)] bg-slate-900/60 backdrop-blur-sm">
                     <div className="p-2 bg-purple-500/20 rounded-lg">
-                        <Code className="w-4 h-4 text-purple-400" />
+                        <ShieldCheck className="w-4 h-4 text-purple-400" />
                     </div>
                     <div>
-                        <div className="text-[10px] text-slate-400 font-medium uppercase tracking-wider">Tech Detected</div>
-                        <div className="text-sm font-bold text-white">Next.js + Segment</div>
+                        <div className="text-[10px] text-slate-400 font-medium uppercase tracking-wider">Strategic Angle</div>
+                        <div className="text-sm font-bold text-white">Value Prop: Speed</div>
                     </div>
                 </div>
 
@@ -183,7 +183,7 @@ export const AnalysisPreview = () => {
                     </div>
                 </motion.div>
 
-                {/* Card 2: Tech Stack (Middle Right) */}
+                {/* Card 2: Strategic Angle (Middle Right) */}
                 <motion.div
                     custom={2}
                     variants={revealVariants}
@@ -194,11 +194,11 @@ export const AnalysisPreview = () => {
                 >
                     <div className="glass-card-strong p-4 rounded-xl border border-purple-500/30 flex items-center gap-3 shadow-[0_0_30px_rgba(168,85,247,0.2)]">
                         <div className="p-2 bg-purple-500/20 rounded-lg">
-                            <Code className="w-5 h-5 text-purple-400" />
+                            <ShieldCheck className="w-5 h-5 text-purple-400" />
                         </div>
                         <div>
-                            <div className="text-xs text-slate-400 font-medium uppercase tracking-wider">Tech Detected</div>
-                            <div className="text-sm font-bold text-white">Next.js + Segment</div>
+                            <div className="text-xs text-slate-400 font-medium uppercase tracking-wider">Strategic Angle</div>
+                            <div className="text-sm font-bold text-white">Value Prop: Speed</div>
                         </div>
                         <div className="absolute top-1/2 -left-12 w-12 h-px bg-gradient-to-l from-purple-500/50 to-transparent hidden md:block" />
                     </div>

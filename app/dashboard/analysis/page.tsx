@@ -166,7 +166,7 @@ export default function AnalysisPage() {
                 {[
                     { label: "Deep Traffic Scan" },
                     { label: "UX/UI Teardown" },
-                    { label: "Tech Stack Reveal" },
+                    { label: "Conversion Tactics" },
                     { label: "Keywords Gap" },
                 ].map((item, i) => (
                     <div key={i} className="flex items-center justify-center p-3 rounded-lg bg-white border border-slate-200 text-xs font-medium text-slate-700 shadow-sm hover:shadow-md transition-shadow">

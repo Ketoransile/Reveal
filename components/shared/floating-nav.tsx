@@ -73,7 +73,7 @@ export const FloatingNav = ({ user }: { user: any }) => {
                     {/* Logo */}
                     <Link href="/" className="flex items-center gap-3 group relative z-10" onClick={() => setMobileMenuOpen(false)}>
                         <div className="w-10 h-10 bg-gradient-to-br from-emerald-500 to-teal-500 rounded-xl flex items-center justify-center shadow-[0_0_20px_rgba(16,185,129,0.4)] group-hover:shadow-[0_0_30px_rgba(16,185,129,0.6)] transition-all ring-2 ring-emerald-400/20 group-hover:ring-emerald-400/40 group-hover:scale-105">
-                            <span className="text-black font-black text-xl">R</span>
+                            <span className="text-white font-bold text-xl">R</span>
                         </div>
                         <span className="text-xl font-bold tracking-tight text-white group-hover:text-emerald-100 transition-colors">
                             Reveal
@@ -109,9 +109,9 @@ export const FloatingNav = ({ user }: { user: any }) => {
                             </Link>
                         ) : (
                             <>
-                                <Link href="/login" className="text-sm font-medium text-slate-300 hover:text-white transition-colors hidden sm:block px-4 py-2">
+                                {/* <Link href="/login" className="text-sm font-medium text-slate-300 hover:text-white transition-colors hidden sm:block px-4 py-2">
                                     Login
-                                </Link>
+                                </Link> */}
                                 <Link href="/signup" className="hidden md:block">
                                     <Button
                                         size="sm"

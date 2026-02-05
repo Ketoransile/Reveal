@@ -101,7 +101,7 @@ export function LandingPageContent() {
                             variants={fadeInUp}
                             className="block bg-clip-text text-transparent bg-gradient-to-b from-white via-slate-100 to-slate-200 drop-shadow-[0_0_30px_rgba(255,255,255,0.15)]"
                         >
-                            Are you ready to turn your
+                            Find the revenue leak
                         </motion.span>
                         <motion.span
                             custom={2}
@@ -110,7 +110,7 @@ export function LandingPageContent() {
                             variants={fadeInUp}
                             className="block text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 via-teal-400 to-emerald-500 mt-2"
                         >
-                            traffic into revenue?
+                            in your landing page.
                         </motion.span>
                     </h1>
 
@@ -122,7 +122,7 @@ export function LandingPageContent() {
                         variants={fadeInUp}
                         className="text-base lg:text-xl text-slate-400 mb-10 max-w-3xl mx-auto leading-relaxed"
                     >
-                        Your product is ready to scale. Now let's fix the only thing holding it back: <span className="text-blue-400 font-semibold">your landing page</span>. Our AI reveals the exact changes needed to unlock your <span className="text-slate-200 font-semibold">next stage of growth</span>.
+                        Your product is ready to scale, but your competitors are stealing your customers. Our AI analyzes their winning strategies to give you a step-by-step roadmap to <span className="text-emerald-400 font-semibold">outsell them</span>.
                     </motion.p>
 
                     {/* CTA Buttons - Enhanced */}
@@ -141,7 +141,7 @@ export function LandingPageContent() {
                             className="h-14 px-8 text-base w-full sm:w-auto rounded-xl font-bold tracking-tight shadow-[0_0_50px_rgba(16,185,129,0.4)] hover:shadow-[0_0_70px_rgba(16,185,129,0.6)] transition-all duration-500 relative overflow-hidden bg-gradient-to-r from-emerald-600 via-teal-500 to-emerald-600 hover:from-emerald-500 hover:via-teal-400 hover:to-emerald-500 text-white border-0 group"
                         >
                             <span className="relative flex items-center gap-2">
-                                Analyze My Competitor
+                                Reveal Why They Win
                                 <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                             </span>
                         </Button>

@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
 import ModelClient, { isUnexpected } from "@azure-rest/ai-inference";
 import { AzureKeyCredential } from "@azure/core-auth";
+import { SupabaseClient } from '@supabase/supabase-js';
 
 export async function POST(request: Request) {
     console.log('[API] /api/analyze - Starting comparison analysis request');
@@ -120,13 +121,13 @@ export async function POST(request: Request) {
 
         // Run analysis synchronously to ensure it completes
         try {
-            await performComparisonAnalysis(analysis.id, yourUrl, competitorUrl, yourContent, competitorContent);
+            await performComparisonAnalysis(supabase, analysis.id, yourUrl, competitorUrl, yourContent, competitorContent);
         } catch (err) {
-            console.error('[API] Analysis execution error:', err);
-            // We continue to return success if analysis record was created, 
-            // the analysis status will be 'failed' in DB which UI can handle.
-            // Or we could return 500 here. 
-            // Better to let UI see 'failed' state if it happened inside.
+            console.error('[API] Analysis execution error (bubbled):', err);
+            // If it bubbles up here, it means the internal catch failed or we re-threw.
+            // We should try to set it to failed one last time if possible, 
+            // but we might not want to rely on the passed client if it was the issue.
+            // For now, allow the 200 OK so the UI doesn't crash, but the status might be stuck if not careful.
         }
 
         return NextResponse.json({
@@ -144,6 +145,7 @@ export async function POST(request: Request) {
 }
 
 async function performComparisonAnalysis(
+    supabase: SupabaseClient,
     analysisId: string,
     yourUrl: string,
     competitorUrl: string,
@@ -153,7 +155,7 @@ async function performComparisonAnalysis(
     console.log('[ANALYSIS] Starting background comparison analysis for:', analysisId);
     console.log('[ANALYSIS] Content lengths - Yours:', yourContent.length, 'Competitor:', competitorContent.length);
 
-    const supabase = await createClient();
+    // No need to create new client, usage passed client which is already authenticated
 
     try {
         // Step 2: Analyze with GitHub Models / Azure Inference
@@ -208,8 +210,19 @@ Explain clearly why one site is performing better than the other.`;
             }
 
             console.log('[ANALYSIS] GitHub Models response received');
-            const content = response.body.choices[0].message.content;
-            analysisResult = JSON.parse(content || '{}');
+            let content = response.body.choices[0].message.content || '{}';
+
+            // Clean markdown code blocks if present
+            content = content.replace(/```json\n?|```/g, '').trim();
+
+            try {
+                analysisResult = JSON.parse(content);
+            } catch (jsonError) {
+                console.error('[ANALYSIS] JSON Parse Error:', jsonError);
+                console.error('[ANALYSIS] Raw content:', content);
+                throw new Error('Failed to parse AI response');
+            }
+
         } else {
             // FALLBACK TO OPENAI COMPLETION IF GITHUB TOKEN IS NOT PRESENT.
             console.log('[ANALYSIS] GITHUB_TOKEN not found, falling back to basic result structure.');
@@ -267,23 +280,31 @@ Explain clearly why one site is performing better than the other.`;
         }
 
         // Update analysis status
-        await supabase
+        const { error: updateError } = await supabase
             .from('analyses')
             .update({ status: 'completed' })
             .eq('id', analysisId);
 
-        console.log('[ANALYSIS] Comparison analysis completed successfully:', analysisId);
+        if (updateError) {
+            console.error('[ANALYSIS] Error updating analysis status to completed:', updateError);
+        } else {
+            console.log('[ANALYSIS] Comparison analysis completed successfully:', analysisId);
+        }
 
     } catch (error) {
         console.error('[ANALYSIS] Analysis failed:', error);
 
         // Update analysis with error
-        await supabase
+        const { error: updateError } = await supabase
             .from('analyses')
             .update({
                 status: 'failed',
                 error_message: error instanceof Error ? error.message : 'Unknown error'
             })
             .eq('id', analysisId);
+
+        if (updateError) {
+            console.error('[ANALYSIS] Critical: Failed to update analysis status to failed:', updateError);
+        }
     }
 }
