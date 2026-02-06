@@ -2,10 +2,10 @@ import { Webhooks } from "@polar-sh/nextjs";
 import { createClient } from "@supabase/supabase-js";
 
 // Initialize Supabase Admin Client
-// note: requires SUPABASE_SERVICE_ROLE_KEY in env for admin access
+// note: requires SUPABASE_SECRET_KEY (service role) in env for admin access
 const supabaseAdmin = createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_SECRET_KEY || ''
+    process.env.SUPABASE_SECRET_KEY || process.env.SUPABASE_SERVICE_ROLE_KEY || ''
 );
 
 export const POST = Webhooks({

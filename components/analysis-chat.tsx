@@ -2,6 +2,7 @@
 
 import { useState, useRef, useEffect } from "react"
 import { Send, User, Bot, Sparkles, MessageSquare, X, RefreshCw, Eraser } from "lucide-react"
+import ReactMarkdown from 'react-markdown'
 import { Button } from "@/components/ui/button"
 import { Textarea } from "@/components/ui/textarea"
 import {
@@ -112,7 +113,20 @@ const ChatContent = ({ messages, loading, input, setInput, handleSend, handleCle
                                         : 'bg-white border border-slate-200 text-slate-800 rounded-2xl rounded-tl-sm shadow-sm'
                                         }`}
                                 >
-                                    <div className="whitespace-pre-wrap break-words">{m.content}</div>
+                                    <div className="prose prose-sm max-w-none dark:prose-invert prose-p:leading-relaxed prose-pre:p-0 prose-pre:bg-transparent">
+                                        <ReactMarkdown
+                                            components={{
+                                                p: ({ node, ...props }: any) => <p className="mb-2 last:mb-0" {...props} />,
+                                                ul: ({ node, ...props }: any) => <ul className="list-disc pl-4 mb-2 space-y-1" {...props} />,
+                                                ol: ({ node, ...props }: any) => <ol className="list-decimal pl-4 mb-2 space-y-1" {...props} />,
+                                                li: ({ node, ...props }: any) => <li className="pl-1" {...props} />,
+                                                strong: ({ node, ...props }: any) => <strong className="font-bold text-inherit" {...props} />,
+                                                h3: ({ node, ...props }: any) => <h3 className="font-bold text-lg mt-4 mb-2" {...props} />,
+                                            }}
+                                        >
+                                            {m.content}
+                                        </ReactMarkdown>
+                                    </div>
                                 </div>
                             </div>
                         </div>

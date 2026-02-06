@@ -21,12 +21,8 @@ export function PricingModal({ open, onOpenChange }: PricingModalProps) {
 
     const handleUpgrade = () => {
         setLoading(true);
-        // Mock Stripe Checkout
-        setTimeout(() => {
-            setLoading(false);
-            onOpenChange(false);
-            window.alert("In a real app, this would redirect to Stripe Checkout.");
-        }, 1000);
+        // Redirect to Polar generic checkout
+        window.location.href = `/api/checkout?products=${process.env.NEXT_PUBLIC_POLAR_PRICE_ID_PRO}`;
     };
 
     return (

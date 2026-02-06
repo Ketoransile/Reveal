@@ -9,7 +9,7 @@ import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 
 import { PricingModal } from "@/components/pricing-modal";
-import { useToast } from "@/hooks/use-toast";
+import { toast } from "sonner";
 
 export default function AnalysisPage() {
     const [yourWebsite, setYourWebsite] = useState("");
@@ -17,7 +17,7 @@ export default function AnalysisPage() {
     const [loading, setLoading] = useState(false);
     const [showPricing, setShowPricing] = useState(false);
     const router = useRouter();
-    const { toast } = useToast();
+
 
     const handleAnalysis = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -42,9 +42,7 @@ export default function AnalysisPage() {
             }
 
             if (!response.ok) {
-                toast({
-                    variant: "destructive",
-                    title: "Unable to start analysis",
+                toast.error("Unable to start analysis", {
                     description: data.error || 'Failed to create analysis',
                 });
                 setLoading(false);
@@ -56,9 +54,7 @@ export default function AnalysisPage() {
 
         } catch (err) {
             console.error('[ANALYSIS PAGE] Error:', err);
-            toast({
-                variant: "destructive",
-                title: "Connection Error",
+            toast.error("Connection Error", {
                 description: "Unable to connect to the server. Please try again.",
             });
             setLoading(false);

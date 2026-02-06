@@ -8,6 +8,7 @@ import { Switch } from "@/components/ui/switch";
 import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { User, CreditCard, Bell, Shield, Palette, Loader2, CheckCircle2, Zap, AlertCircle } from "lucide-react";
+import { toast } from "sonner";
 import { useTheme } from "next-themes";
 import { useEffect, useState, Suspense } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
@@ -51,6 +52,19 @@ function SettingsContent() {
         const tab = searchParams.get('tab');
         if (tab) {
             setActiveTab(tab);
+        }
+
+        // Handle payment success
+        const paymentStatus = searchParams.get('payment');
+        if (paymentStatus === 'success') {
+            toast.success("Payment Successful!", {
+                description: "Your account has been upgraded to Pro. Welcome aboard!",
+                duration: 5000,
+            });
+            // Switch to billing tab
+            setActiveTab('billing');
+            // Refresh user data (might need a slight delay for webhook to process)
+            setTimeout(fetchUserData, 2000);
         }
     }, [searchParams]);
 

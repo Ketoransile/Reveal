@@ -8,173 +8,177 @@ import puppeteer from 'puppeteer';
 export async function POST(request: Request) {
     console.log('[API] /api/analyze - Starting comparison analysis request');
 
+    // 1. Authenticate User (Security First)
+    const supabase = await createClient();
+    const { data: { user }, error: authError } = await supabase.auth.getUser();
+
+    if (authError || !user) {
+        console.error('[API] Authentication error:', authError);
+        return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
+    console.log('[API] Authenticated user:', user.id);
+
+    // 2. Check Credits
+    const { data: userData, error: userError } = await supabase
+        .from('users')
+        .select('credits')
+        .eq('id', user.id)
+        .single();
+
+    if (userError || !userData) {
+        console.error('[API] Error fetching user data:', userError);
+        return NextResponse.json({ error: 'Failed to fetch user data' }, { status: 500 });
+    }
+
+    if (userData.credits < 1) {
+        console.log('[API] Insufficient credits for user:', user.id);
+        return NextResponse.json({ error: 'Insufficient credits' }, { status: 402 });
+    }
+
+    console.log('[API] User has', userData.credits, 'credits');
+
+    // 3. Parse Request
+    let body;
     try {
-        const { yourUrl, competitorUrl } = await request.json();
-        console.log('[API] Your URL:', yourUrl);
-        console.log('[API] Competitor URL:', competitorUrl);
+        body = await request.json();
+    } catch (error) {
+        return NextResponse.json({ error: 'Invalid JSON body' }, { status: 400 });
+    }
 
-        if (!yourUrl || !competitorUrl) {
-            console.error('[API] Missing URLs in request');
-            return NextResponse.json({ error: 'Both URLs are required' }, { status: 400 });
-        }
+    const { yourUrl, competitorUrl } = body;
+    console.log('[API] Your URL:', yourUrl);
+    console.log('[API] Competitor URL:', competitorUrl);
 
-        // Validate URLs and fetch content using Puppeteer (handles SPAs)
-        let yourContent = '';
-        let competitorContent = '';
+    if (!yourUrl || !competitorUrl) {
+        console.error('[API] Missing URLs in request');
+        return NextResponse.json({ error: 'Both URLs are required' }, { status: 400 });
+    }
 
-        try {
-            console.log('[API] Launching Puppeteer...');
-            const browser = await puppeteer.launch({
+    // 4. Scrape Content
+    let yourContent = '';
+    let competitorContent = '';
+    let browser: any = null;
+
+    try {
+        console.log('[API] Launching Puppeteer...');
+
+        // Conditional launch for Vercel (Production) vs Local
+        if (process.env.NODE_ENV === 'production' || process.env.VERCEL) {
+            const chromium = require('@sparticuz/chromium');
+            const puppeteerCore = require('puppeteer-core');
+
+            // Dynamic import to avoid bundling issues
+            browser = await puppeteerCore.launch({
+                args: chromium.args,
+                defaultViewport: chromium.defaultViewport,
+                executablePath: await chromium.executablePath(),
+                headless: chromium.headless,
+            });
+        } else {
+            // Local development
+            browser = await puppeteer.launch({
                 headless: true,
                 args: ['--no-sandbox', '--disable-setuid-sandbox']
             });
+        }
+
+        const scrapePage = async (url: string, label: string) => {
+            console.log(`[API] Scraping ${label}: ${url}`);
+            const page = await browser.newPage();
+            await page.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36');
 
             try {
-                const scrapePage = async (url: string, label: string) => {
-                    console.log(`[API] Scraping ${label}: ${url}`);
-                    const page = await browser.newPage();
-                    await page.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36');
-
-                    try {
-                        const response = await page.goto(url, { waitUntil: 'networkidle2', timeout: 30000 });
-                        if (!response || !response.ok()) {
-                            throw new Error(`Failed to load page (Status: ${response?.status()})`);
-                        }
-
-                        // Extract text content (innerText is cleaner for AI than raw HTML with scripts)
-                        const content = await page.evaluate(() => document.body.innerText);
-                        // Also get the title for context
-                        const title = await page.title();
-
-                        return `Title: ${title}\n\n${content}`;
-                    } finally {
-                        await page.close();
+                try {
+                    // First try with domcontentloaded
+                    const response = await page.goto(url, { waitUntil: 'domcontentloaded', timeout: 60000 });
+                    if (!response || !response.ok()) {
+                        throw new Error(`Failed to load page (Status: ${response?.status()})`);
                     }
-                };
+                } catch (navError) {
+                    console.log(`[API] Initial navigation failed for ${url}, retrying with 'load' event...`);
+                    const response = await page.goto(url, { waitUntil: 'load', timeout: 60000 });
+                    if (!response || !response.ok()) {
+                        throw new Error(`Failed to load page on retry (Status: ${response?.status()})`);
+                    }
+                }
 
-                const [yourText, competitorText] = await Promise.all([
-                    scrapePage(yourUrl, 'Your Site'),
-                    scrapePage(competitorUrl, 'Competitor Site')
-                ]);
-
-                yourContent = yourText;
-                competitorContent = competitorText;
-
+                // Extract text content
+                const content = await page.evaluate(() => document.body.innerText);
+                const title = await page.title();
+                return `Title: ${title}\n\n${content}`;
             } finally {
-                await browser.close();
+                await page.close();
             }
+        };
 
-            if (!yourContent || yourContent.length < 50) {
-                // Fallback warning or error if content is suspicious
-                console.warn('[API] Warning: Extracted content is very short.');
-            }
+        const [yourText, competitorText] = await Promise.all([
+            scrapePage(yourUrl, 'Your Site'),
+            scrapePage(competitorUrl, 'Competitor Site')
+        ]);
 
-        } catch (error: any) {
-            console.error('[API] Scraping failed:', error);
+        yourContent = yourText;
+        competitorContent = competitorText;
 
-            let errorMessage = 'Failed to analyze websites. Please ensure URLs are publicly accessible.';
-            const errString = error?.message || error?.toString() || '';
+    } catch (error: any) {
+        console.error('[API] Scraping failed:', error);
+        let errorMessage = 'Failed to analyze websites. Please ensure URLs are publicly accessible.';
+        const errString = error?.message || error?.toString() || '';
 
-            if (errString.includes('ERR_NAME_NOT_RESOLVED')) {
-                errorMessage = 'Could not find this website. Please check the URL and try again.';
-            } else if (errString.includes('ERR_CONNECTION_REFUSED')) {
-                errorMessage = 'Connection was refused. The site may be down or blocking automated access.';
-            } else if (errString.includes('ERR_TIMED_OUT') || errString.includes('TimeoutError')) {
-                errorMessage = 'The analysis timed out. The website is loading too slowly.';
-            } else if (errString.includes('ERR_CERT_')) {
-                errorMessage = 'SSL/Certificate error. The website security is invalid.';
-            } else if (errString.includes('403') || errString.includes('401')) {
-                errorMessage = 'Access denied (403/401). This site blocks analysis bots.';
-            }
+        if (errString.includes('ERR_NAME_NOT_RESOLVED')) errorMessage = 'Could not find this website.';
+        else if (errString.includes('ERR_CONNECTION_REFUSED')) errorMessage = 'Connection refused. Site may be blocking bots.';
+        else if (errString.includes('ERR_TIMED_OUT')) errorMessage = 'Analysis timed out. Website is too slow.';
+        else if (errString.includes('403') || errString.includes('401')) errorMessage = 'Access denied. Site blocks bots.';
 
-            return NextResponse.json({
-                error: errorMessage
-            }, { status: 400 });
-        }
-
-        // Get authenticated user
-        const supabase = await createClient();
-        const { data: { user }, error: authError } = await supabase.auth.getUser();
-
-        if (authError || !user) {
-            console.error('[API] Authentication error:', authError);
-            return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-        }
-
-        console.log('[API] Authenticated user:', user.id);
-
-        // Check user credits
-        const { data: userData, error: userError } = await supabase
-            .from('users')
-            .select('credits')
-            .eq('id', user.id)
-            .single();
-
-        if (userError) {
-            console.error('[API] Error fetching user data:', userError);
-            return NextResponse.json({ error: 'Failed to fetch user data' }, { status: 500 });
-        }
-
-        if (!userData || userData.credits < 1) {
-            console.log('[API] Insufficient credits for user:', user.id);
-            return NextResponse.json({ error: 'Insufficient credits' }, { status: 402 });
-        }
-
-        console.log('[API] User has', userData.credits, 'credits');
-
-        // Create analysis record
-        const { data: analysis, error: analysisError } = await supabase
-            .from('analyses')
-            .insert({
-                user_id: user.id,
-                target_url: yourUrl,
-                your_url: yourUrl,
-                competitor_url: competitorUrl,
-                status: 'processing'
-            })
-            .select()
-            .single();
-
-        if (analysisError || !analysis) {
-            console.error('[API] Error creating analysis:', analysisError);
-            return NextResponse.json({ error: 'Failed to create analysis' }, { status: 500 });
-        }
-
-        console.log('[API] Created analysis with ID:', analysis.id);
-
-        // Deduct credit
-        const { error: creditError } = await supabase
-            .from('users')
-            .update({ credits: userData.credits - 1 })
-            .eq('id', user.id);
-
-        if (creditError) {
-            console.error('[API] Error deducting credit:', creditError);
-        }
-
-        // Run analysis synchronously to ensure it completes
-        try {
-            await performComparisonAnalysis(supabase, analysis.id, yourUrl, competitorUrl, yourContent, competitorContent);
-        } catch (err) {
-            console.error('[API] Analysis execution error (bubbled):', err);
-            // If it bubbles up here, it means the internal catch failed or we re-threw.
-            // We should try to set it to failed one last time if possible, 
-            // but we might not want to rely on the passed client if it was the issue.
-            // For now, allow the 200 OK so the UI doesn't crash, but the status might be stuck if not careful.
-        }
-
-        return NextResponse.json({
-            analysisId: analysis.id,
-            message: 'Comparison analysis completed successfully'
-        }, { status: 200 });
-
-    } catch (error) {
-        console.error('[API] Unexpected error:', error);
-        return NextResponse.json({
-            error: 'Internal server error',
-            details: error instanceof Error ? error.message : 'Unknown error'
-        }, { status: 500 });
+        return NextResponse.json({ error: errorMessage }, { status: 400 });
+    } finally {
+        if (browser) await browser.close();
     }
+
+    if (!yourContent || yourContent.length < 50) {
+        console.warn('[API] Warning: Extracted content is very short.');
+    }
+
+    // 5. Create Analysis Record
+    const { data: analysis, error: analysisError } = await supabase
+        .from('analyses')
+        .insert({
+            user_id: user.id,
+            target_url: yourUrl,
+            your_url: yourUrl,
+            competitor_url: competitorUrl,
+            status: 'processing'
+        })
+        .select()
+        .single();
+
+    if (analysisError || !analysis) {
+        console.error('[API] Error creating analysis:', analysisError);
+        return NextResponse.json({ error: 'Failed to create analysis' }, { status: 500 });
+    }
+
+    console.log('[API] Created analysis with ID:', analysis.id);
+
+    // 6. Deduct Credit
+    const { error: creditError } = await supabase
+        .from('users')
+        .update({ credits: userData.credits - 1 })
+        .eq('id', user.id);
+
+    if (creditError) console.error('[API] Error deducting credit:', creditError);
+
+    // 7. Perform Analysis (Sync for now)
+    try {
+        await performComparisonAnalysis(supabase, analysis.id, yourUrl, competitorUrl, yourContent, competitorContent);
+    } catch (err) {
+        console.error('[API] Analysis execution error:', err);
+        // Allow response to return success as analysis record exists
+    }
+
+    return NextResponse.json({
+        analysisId: analysis.id,
+        message: 'Comparison analysis completed successfully'
+    }, { status: 200 });
 }
 
 async function performComparisonAnalysis(
