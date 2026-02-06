@@ -70,7 +70,7 @@ export default function PricingPage() {
                                     <span className="text-sm font-medium">Standard Support</span>
                                 </li>
                             </ul>
-                            <Link href="/login" className="w-full mt-auto">
+                            <Link href="/signup" className="w-full mt-auto">
                                 <button className="w-full py-4 rounded-xl bg-slate-800/80 text-white font-semibold hover:bg-slate-700 transition-all border border-white/5 hover:border-white/10 shadow-lg">
                                     Get Started Free
                                 </button>
@@ -125,7 +125,7 @@ export default function PricingPage() {
                                     </li>
                                 </ul>
 
-                                <Link href="/login" className="w-full mt-auto relative z-10">
+                                <Link href="/api/checkout" className="w-full mt-auto relative z-10">
                                     <button className="w-full py-4 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-500 text-white font-bold text-lg shadow-[0_4px_20px_rgba(16,185,129,0.25)] hover:shadow-[0_4px_30px_rgba(16,185,129,0.4)] transition-all transform hover:scale-[1.02]">
                                         Unlock Everything
                                     </button>

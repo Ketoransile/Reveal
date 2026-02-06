@@ -3,14 +3,92 @@
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
-import { ArrowLeft, AlertTriangle, AlertCircle, ArrowRight, CheckCircle2, Target, MessageSquare, X } from "lucide-react";
+import {
+    ArrowLeft,
+    TrendingUp,
+    TrendingDown,
+    AlertTriangle,
+    CheckCircle2,
+    Target,
+    Lightbulb,
+    BarChart3,
+    FileText,
+    Award,
+    Zap,
+    ArrowRight,
+    Trophy,
+    LayoutDashboard,
+    Globe,
+    ChevronDown,
+    Sparkles
+} from "lucide-react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { AnalysisChat } from "@/components/analysis-chat";
 import { motion } from "framer-motion";
+import {
+    Accordion,
+    AccordionContent,
+    AccordionItem,
+    AccordionTrigger,
+} from "@/components/ui/accordion";
+import { Separator } from "@/components/ui/separator";
+
+// Custom Circular Progress Component - Refined
+const CircularScore = ({ score, label, color, delay = 0 }: { score: number, label: string, color: string, delay?: number }) => {
+    const circumference = 2 * Math.PI * 46; // radius slightly larger
+    const strokeDashoffset = circumference - (score / 100) * circumference;
+
+    return (
+        <div className="flex flex-col items-center justify-center space-y-3 group cursor-default">
+            <div className="relative w-40 h-40 flex items-center justify-center">
+                {/* Glow Effect */}
+                <div className={`absolute inset-0 rounded-full blur-2xl opacity-20 group-hover:opacity-30 transition-opacity duration-500 ${color.replace('text-', 'bg-')}`}></div>
+
+                {/* Background Circle */}
+                <svg className="w-full h-full transform -rotate-90 drop-shadow-sm">
+                    <circle
+                        cx="80"
+                        cy="80"
+                        r="46"
+                        stroke="currentColor"
+                        strokeWidth="8"
+                        fill="transparent"
+                        className="text-slate-100"
+                    />
+                    {/* Progress Circle */}
+                    <motion.circle
+                        initial={{ strokeDashoffset: circumference }}
+                        animate={{ strokeDashoffset }}
+                        transition={{ duration: 1.5, ease: "easeOut", delay }}
+                        cx="80"
+                        cy="80"
+                        r="46"
+                        stroke="currentColor"
+                        strokeWidth="8"
+                        fill="transparent"
+                        strokeDasharray={circumference}
+                        strokeLinecap="round"
+                        className={`${color}`}
+                    />
+                </svg>
+                <div className="absolute inset-0 flex flex-col items-center justify-center">
+                    <motion.span
+                        initial={{ opacity: 0, scale: 0.5 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        transition={{ delay: delay + 0.5 }}
+                        className={`text-4xl font-black tracking-tight ${color.replace('text-', 'text-')}`}
+                    >
+                        {score}
+                    </motion.span>
+                </div>
+            </div>
+            <span className="text-sm font-semibold tracking-wide text-slate-500 uppercase">{label}</span>
+        </div>
+    );
+};
 
 export default function ReportPage() {
     const params = useParams();
@@ -56,25 +134,23 @@ export default function ReportPage() {
     if (loading) {
         return (
             <div className="flex flex-col items-center justify-center min-h-[60vh] space-y-6">
-                <div className="relative w-20 h-20">
-                    <div className="absolute inset-0 rounded-full border-4 border-slate-200 opacity-20"></div>
+                <div className="relative w-16 h-16">
+                    <div className="absolute inset-0 rounded-full border-4 border-slate-100"></div>
                     <div className="absolute inset-0 rounded-full border-4 border-emerald-500 border-t-transparent animate-spin"></div>
                 </div>
-                <p className="text-lg font-medium text-slate-600 animate-pulse">Analyzing comparison...</p>
+                <p className="text-lg font-medium text-slate-500 animate-pulse tracking-wide">Analysing Strategies...</p>
             </div>
         );
     }
 
     if (error || !data || !data.reports?.[0]) return (
-        <div className="flex flex-col items-center justify-center min-h-[60vh] text-center space-y-6 animate-in fade-in duration-500">
-            <div className="p-6 bg-red-50 rounded-full">
-                <AlertCircle className="w-12 h-12 text-red-500" />
+        <div className="flex flex-col items-center justify-center min-h-[60vh] text-center space-y-6">
+            <div className="p-8 bg-slate-50 rounded-3xl shadow-sm">
+                <AlertTriangle className="w-12 h-12 text-slate-400 mx-auto" />
+                <h2 className="text-xl font-bold text-slate-900 mt-4">Report Not Found</h2>
+                <p className="text-slate-500 mt-2 max-w-xs mx-auto">We couldn't retrieve this analysis report details.</p>
             </div>
-            <div>
-                <h2 className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-slate-900 to-slate-700">Report Not Found</h2>
-                <p className="text-muted-foreground mt-2 max-w-md">We couldn't retrieve this analysis.</p>
-            </div>
-            <Link href="/dashboard"><Button size="lg" className="rounded-full px-8">Return Home</Button></Link>
+            <Link href="/dashboard"><Button variant="outline" className="rounded-full px-6">Return to Dashboard</Button></Link>
         </div>
     );
 
@@ -83,271 +159,267 @@ export default function ReportPage() {
     const yourScore = report.conversion_score || 0;
     const scores = deepAnalysis.scores || { yours: yourScore, competitor: 0 };
     const competitorScore = scores.competitor || (report.winner === 'competitor' ? yourScore + 10 : yourScore - 10);
-
-    // Determine winner logic
     const isWinner = report.winner === 'yours';
-    const verdict = deepAnalysis.verdict || "No clear verdict provided.";
-
-    // Fixes & Gaps
+    const verdict = deepAnalysis.verdict || "Analysis complete.";
     const rewrites = report.actionable_fixes || [];
     const gapAnalysis = deepAnalysis.gap_analysis || [];
 
-    // URLs
-    const yourHost = new URL(data.your_url).hostname;
-    const compHost = new URL(data.competitor_url).hostname;
+    const yourHost = new URL(data.your_url).hostname.replace('www.', '');
+    const compHost = new URL(data.competitor_url).hostname.replace('www.', '');
 
-    // Animation Variants
-    const container = {
-        hidden: { opacity: 0 },
-        show: {
-            opacity: 1,
-            transition: {
-                staggerChildren: 0.1
-            }
-        }
-    };
-
-    const item = {
-        hidden: { opacity: 0, y: 20 },
-        show: { opacity: 1, y: 0, transition: { type: "spring" as const, stiffness: 50 } }
-    };
+    const scoreDifference = Math.abs(yourScore - competitorScore);
 
     return (
-        <motion.div
-            initial="hidden"
-            animate="show"
-            variants={container}
-            className="w-full max-w-7xl mx-auto space-y-8 pb-32"
-        >
+        <div className="w-full max-w-[1400px] mx-auto space-y-8 pb-32 px-4 sm:px-6">
             {/* Minimal Header */}
-            <motion.div variants={item} className="flex flex-col md:flex-row md:items-center justify-between gap-4 py-2">
-                <Link href="/dashboard" className="inline-block group">
-                    <div className="flex items-center gap-2 text-slate-500 group-hover:text-slate-900 transition-colors">
-                        <div className="p-1.5 rounded-full bg-slate-100 group-hover:bg-slate-200 transition-colors">
+            <div className="flex items-center justify-between py-4">
+                <Link href="/dashboard" className="group">
+                    <div className="flex items-center gap-2 text-slate-500 hover:text-slate-900 transition-colors">
+                        <div className="p-2 rounded-full bg-white shadow-sm ring-1 ring-slate-100 group-hover:ring-slate-300 transition-all">
                             <ArrowLeft className="w-4 h-4" />
                         </div>
-                        <span className="font-medium text-sm">Dashboard</span>
+                        <span className="text-sm font-medium">Dashboard</span>
                     </div>
                 </Link>
                 <div className="flex items-center gap-2">
-                    <Badge variant="outline" className="text-xs font-mono text-slate-400 bg-slate-50 border-slate-200">
-                        ID: {Array.isArray(params.id) ? params.id[0].slice(0, 8) : params?.id?.slice(0, 8)}
-                    </Badge>
-                </div>
-            </motion.div>
-
-            {/* Comparison Result Card */}
-            <motion.div variants={item} className="relative overflow-hidden rounded-3xl bg-slate-900 text-white shadow-2xl ring-1 ring-white/10">
-                <div className="absolute top-0 right-0 p-32 bg-emerald-500/20 blur-[100px] rounded-full pointer-events-none" />
-                <div className="absolute bottom-0 left-0 p-32 bg-blue-600/20 blur-[100px] rounded-full pointer-events-none" />
-
-                <div className="relative z-10 p-8 md:p-12">
-                    <div className="flex flex-col lg:flex-row gap-12 items-start lg:items-center justify-between">
-
-                        {/* Verdict Text */}
-                        <div className="space-y-6 max-w-2xl">
-                            <div className="flex items-center gap-3">
-                                <span className={`px-4 py-1.5 rounded-full text-xs font-bold tracking-wider uppercase bg-white/10 border border-white/20 backdrop-blur-md ${isWinner ? 'text-emerald-400' : 'text-red-400'}`}>
-                                    {isWinner ? "Stronger" : "Needs Improvement"}
-                                </span>
-                                <span className="flex items-center gap-2 text-xs font-medium text-slate-400">
-                                    Analysis Result
-                                </span>
-                            </div>
-
-                            <h1 className="text-3xl md:text-4xl font-bold leading-tight bg-clip-text text-transparent bg-gradient-to-r from-white to-slate-400">
-                                {isWinner ? "Your Website is Performing Better." : "Competitor's Website is Stronger."}
-                            </h1>
-
-                            <p className="text-lg text-slate-300 leading-relaxed font-light border-l-2 border-slate-700 pl-6 italic">
-                                "{verdict}"
-                            </p>
-                        </div>
-
-                        {/* Visual Scoreboard */}
-                        <div className="w-full lg:w-96 bg-white/5 backdrop-blur-xl rounded-2xl p-6 border border-white/10 space-y-6">
-                            <div className="flex items-center justify-between pb-4 border-b border-white/10">
-                                <span className="text-sm font-semibold text-slate-400 uppercase tracking-widest">Performance Score</span>
-                            </div>
-
-                            <div className="space-y-5">
-                                {/* Your Score */}
-                                <div className="space-y-2">
-                                    <div className="flex justify-between items-end">
-                                        <div className="flex items-center gap-2">
-                                            <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-                                            <span className="text-sm font-medium text-white">{yourHost}</span>
-                                        </div>
-                                        <span className="text-2xl font-bold text-white">{yourScore}</span>
-                                    </div>
-                                    <div className="h-2 w-full bg-slate-700/50 rounded-full overflow-hidden">
-                                        <motion.div
-                                            initial={{ width: 0 }}
-                                            animate={{ width: `${yourScore}%` }}
-                                            className="h-full bg-emerald-500 rounded-full shadow-[0_0_15px_rgba(16,185,129,0.5)]"
-                                            transition={{ duration: 1.5, delay: 0.5 }}
-                                        />
-                                    </div>
-                                </div>
-
-                                {/* Comp Score */}
-                                <div className="space-y-2 relative opacity-80">
-                                    <div className="flex justify-between items-end">
-                                        <div className="flex items-center gap-2">
-                                            <div className="w-2 h-2 rounded-full bg-slate-500" />
-                                            <span className="text-sm font-medium text-slate-400">{compHost}</span>
-                                        </div>
-                                        <span className="text-2xl font-bold text-slate-400">{competitorScore}</span>
-                                    </div>
-                                    <div className="h-2 w-full bg-slate-700/50 rounded-full overflow-hidden">
-                                        <motion.div
-                                            initial={{ width: 0 }}
-                                            animate={{ width: `${competitorScore}%` }}
-                                            className="h-full bg-slate-400 rounded-full"
-                                            transition={{ duration: 1.5, delay: 0.7 }}
-                                        />
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </motion.div>
-
-            {/* Main Content Grid */}
-            <div className="grid lg:grid-cols-3 gap-8">
-
-                {/* Left Column: Improvements (2/3 width) */}
-                <div className="lg:col-span-2 space-y-8">
-
-                    {/* Proposed Improvements */}
-                    <motion.div variants={item}>
-                        <div className="flex items-center justify-between mb-6">
-                            <h2 className="text-2xl font-bold text-slate-900 flex items-center gap-3">
-                                <div className="p-2 bg-blue-50 rounded-lg text-blue-600">
-                                    <MessageSquare className="w-5 h-5" />
-                                </div>
-                                Proposed Improvements
-                            </h2>
-                            <span className="px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-xs font-bold uppercase tracking-wider">
-                                {rewrites.length} Recommendations
-                            </span>
-                        </div>
-
-                        <div className="space-y-6">
-                            {rewrites.map((fix: any, index: number) => (
-                                <Card key={index} className="overflow-hidden border-0 shadow-lg shadow-slate-200/50 ring-1 ring-slate-100 rounded-2xl group transition-all hover:shadow-xl hover:ring-slate-200">
-                                    <div className="bg-gradient-to-r from-slate-50 to-white border-b p-4 flex items-center justify-between">
-                                        <div className="font-semibold text-slate-800 flex items-center gap-2">
-                                            <span className="w-6 h-6 rounded-full bg-slate-200 flex items-center justify-center text-xs text-slate-600 font-bold">{index + 1}</span>
-                                            {fix.element || fix.title || "Subject"}
-                                        </div>
-                                        {fix.reason && <span className="text-xs text-slate-500 hidden sm:block italic max-w-xs text-right truncate">{fix.reason}</span>}
-                                    </div>
-
-                                    <div className="grid md:grid-cols-2 divide-y md:divide-y-0 md:divide-x divide-slate-100 dark:divide-slate-800">
-                                        {/* Current / Weak */}
-                                        <div className="p-5 bg-red-50/30 group-hover:bg-red-50/50 transition-colors">
-                                            <div className="flex items-center gap-2 text-xs font-bold text-red-500 uppercase tracking-wider mb-3">
-                                                <X className="w-3 h-3" /> Current Text
-                                            </div>
-                                            <p className="text-sm text-slate-600 leading-relaxed font-serif italic max-h-40 overflow-y-auto">
-                                                "{fix.current || "No current text found"}"
-                                            </p>
-                                        </div>
-
-                                        {/* Suggested / Strong */}
-                                        <div className="p-5 bg-emerald-50/30 group-hover:bg-emerald-50/50 transition-colors">
-                                            <div className="flex items-center gap-2 text-xs font-bold text-emerald-600 uppercase tracking-wider mb-3">
-                                                <CheckCircle2 className="w-3 h-3" /> Suggested Improvement
-                                            </div>
-                                            <p className="text-green-900 font-medium text-sm leading-relaxed relative max-h-40 overflow-y-auto">
-                                                <span className="absolute -left-3 top-0 bottom-0 w-0.5 bg-emerald-400 rounded-full" />
-                                                "{fix.suggested || fix.description}"
-                                            </p>
-                                        </div>
-                                    </div>
-                                </Card>
-                            ))}
-                        </div>
-                    </motion.div>
-
-                </div>
-
-                {/* Right Column: Stats & Gaps (1/3 width) */}
-                <div className="space-y-8">
-
-                    {/* Missing Features */}
-                    <motion.div variants={item}>
-                        <Card className="overflow-hidden border-0 shadow-xl shadow-slate-200/50 ring-1 ring-slate-100 rounded-3xl bg-white/80 backdrop-blur-sm">
-                            <CardHeader className="pb-4">
-                                <CardTitle className="text-lg flex items-center gap-2">
-                                    <Target className="w-5 h-5 text-red-500" />
-                                    Missing Features
-                                </CardTitle>
-                                <CardDescription>Things they have that you don't</CardDescription>
-                            </CardHeader>
-                            <CardContent className="space-y-3">
-                                {gapAnalysis.length > 0 ? gapAnalysis.map((gap: string, i: number) => (
-                                    <div key={i} className="flex items-start gap-3 p-3 rounded-xl bg-slate-50 border border-slate-100 transition-all hover:bg-white hover:shadow-md hover:scale-[1.02]">
-                                        <div className="p-1.5 bg-red-100 rounded-md text-red-600 mt-0.5 shrink-0">
-                                            <AlertTriangle className="w-3.5 h-3.5" />
-                                        </div>
-                                        <span className="text-sm text-slate-700 font-medium leading-snug">{gap}</span>
-                                    </div>
-                                )) : (
-                                    <div className="text-center p-6 text-slate-500 text-sm bg-slate-50 rounded-xl border border-dashed border-slate-200">
-                                        No major gaps detected. Good job!
-                                    </div>
-                                )}
-                            </CardContent>
-                        </Card>
-                    </motion.div>
-
-                    {/* Detailed Analysis Accordion */}
-                    <motion.div variants={item}>
-                        <h3 className="text-sm font-bold text-slate-400 uppercase tracking-widest mb-4">Detailed Analysis</h3>
-                        <div className="space-y-3">
-                            {[
-                                {
-                                    title: "Headline Analysis",
-                                    icon: Target,
-                                    color: "text-purple-500 bg-purple-50",
-                                    content: deepAnalysis.hook_critique,
-                                    id: "hook"
-                                },
-                                {
-                                    title: "Trust Factors",
-                                    icon: CheckCircle2,
-                                    color: "text-blue-500 bg-blue-50",
-                                    content: deepAnalysis.trust_analysis,
-                                    id: "trust"
-                                },
-                            ].map((topic, i) => topic.content && (
-                                <Accordion key={i} type="single" collapsible className="w-full">
-                                    <AccordionItem value={topic.id} className="border-0 bg-white rounded-2xl shadow-sm ring-1 ring-slate-100 overflow-hidden">
-                                        <AccordionTrigger className="px-4 py-3 hover:bg-slate-50 transition-colors">
-                                            <div className="flex items-center gap-3">
-                                                <div className={`p-1.5 rounded-md ${topic.color}`}>
-                                                    <topic.icon className="w-4 h-4" />
-                                                </div>
-                                                <span className="font-semibold text-sm text-slate-700">{topic.title}</span>
-                                            </div>
-                                        </AccordionTrigger>
-                                        <AccordionContent className="px-4 pb-4 pt-1 text-sm text-slate-600 leading-relaxed bg-slate-50/50">
-                                            {topic.content}
-                                        </AccordionContent>
-                                    </AccordionItem>
-                                </Accordion>
-                            ))}
-                        </div>
-                    </motion.div>
-
+                    <span className="text-xs font-medium text-slate-400 bg-slate-50 px-3 py-1 rounded-full border border-slate-100">
+                        Analyzed {new Date().toLocaleDateString()}
+                    </span>
                 </div>
             </div>
 
-            {/* Floating Chat Button Only */}
+            {/* Hero Battle Arena - Modern & Borderless */}
+            <div className="grid lg:grid-cols-5 gap-6">
+                <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="lg:col-span-3 relative overflow-hidden bg-white rounded-[2rem] shadow-[0_8px_30px_rgb(0,0,0,0.04)] p-8 sm:p-12 hover:shadow-[0_8px_30px_rgb(0,0,0,0.08)] transition-shadow duration-500"
+                >
+                    {/* Background Gradients */}
+                    <div className="absolute top-0 right-0 w-64 h-64 bg-emerald-50 rounded-full blur-3xl opacity-50 -translate-y-1/2 translate-x-1/3"></div>
+                    <div className="absolute bottom-0 left-0 w-64 h-64 bg-slate-50 rounded-full blur-3xl opacity-50 translate-y-1/2 -translate-x-1/3"></div>
+
+                    <div className="relative z-10 flex flex-col h-full justify-between">
+                        <div className="flex items-center justify-between mb-8">
+                            <div>
+                                <h1 className="text-3xl sm:text-4xl font-black text-slate-900 tracking-tight mb-2">
+                                    {isWinner ? "You're Leading!" : "Opportunity Ahead"}
+                                </h1>
+                                <p className="text-slate-500 font-medium text-lg">
+                                    {isWinner ? "Your strategy is effectively outperforming the competition." : "Your competitor has a slight edge in conversion alignment."}
+                                </p>
+                            </div>
+                            <div className={`hidden sm:flex px-4 py-2 rounded-full text-sm font-bold tracking-wide shadow-sm items-center gap-2 ${isWinner ? 'bg-emerald-100 text-emerald-800' : 'bg-amber-100 text-amber-800'}`}>
+                                {isWinner ? <CheckCircle2 className="w-4 h-4" /> : <TrendingUp className="w-4 h-4" />}
+                                {isWinner ? 'MARKET LEADER' : 'GROWTH MODE'}
+                            </div>
+                        </div>
+
+                        <div className="flex flex-col sm:flex-row items-center justify-center gap-8 sm:gap-16 py-8">
+                            <CircularScore score={yourScore} label="Your Score" color="text-emerald-500" delay={0.2} />
+
+                            <div className="flex flex-col items-center">
+                                <div className="text-4xl font-black text-slate-200 select-none">VS</div>
+                                {scoreDifference > 0 && (
+                                    <Badge variant="secondary" className="mt-2 bg-slate-100 text-slate-600 border-none font-bold px-3">
+                                        +{scoreDifference} pts
+                                    </Badge>
+                                )}
+                            </div>
+
+                            <CircularScore score={competitorScore} label="Competitor" color="text-slate-400" delay={0.4} />
+                        </div>
+
+                        <div className="mt-auto bg-slate-50/80 backdrop-blur-sm rounded-2xl p-5 border border-slate-100/50">
+                            <div className="flex items-start gap-4">
+                                <Sparkles className="w-5 h-5 text-indigo-500 mt-1 shrink-0" />
+                                <p className="text-slate-700 leading-relaxed font-medium">
+                                    "{verdict}"
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </motion.div>
+
+                {/* Right: Key Stats - Bento Grid Style */}
+                <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.1 }}
+                    className="lg:col-span-2 space-y-6"
+                >
+                    {/* Modern Stat Cards */}
+                    <div className="grid grid-cols-1 gap-4 h-full">
+                        <div className="bg-white rounded-3xl p-6 shadow-[0_4px_20px_rgb(0,0,0,0.03)] border-none flex flex-col justify-center">
+                            <div className="flex items-center gap-4">
+                                <div className="h-12 w-12 rounded-2xl bg-blue-50 flex items-center justify-center text-blue-600">
+                                    <BarChart3 className="w-6 h-6" />
+                                </div>
+                                <div>
+                                    <p className="text-slate-500 text-sm font-semibold uppercase tracking-wider">Potential Gain</p>
+                                    <p className="text-2xl font-bold text-slate-900">+15% Conversion</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className="bg-white rounded-3xl p-6 shadow-[0_4px_20px_rgb(0,0,0,0.03)] border-none flex flex-col justify-center">
+                            <div className="flex items-center gap-4">
+                                <div className="h-12 w-12 rounded-2xl bg-amber-50 flex items-center justify-center text-amber-600">
+                                    <Target className="w-6 h-6" />
+                                </div>
+                                <div>
+                                    <p className="text-slate-500 text-sm font-semibold uppercase tracking-wider">Missing Features</p>
+                                    <p className="text-2xl font-bold text-slate-900">{gapAnalysis.length} Key Gaps</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Collapsible Deep Dive Analysis - Floating Card */}
+                        <div className="bg-white rounded-3xl p-0 shadow-[0_4px_20px_rgb(0,0,0,0.03)] border-none overflow-hidden">
+                            <Accordion type="single" collapsible className="w-full">
+                                {/* Trust Factors - First for variety */}
+                                <AccordionItem value="trust-analysis" className="border-b border-slate-50 px-6">
+                                    <AccordionTrigger className="hover:no-underline py-5 group">
+                                        <div className="flex items-center gap-3 w-full">
+                                            <div className="p-2 rounded-xl bg-purple-50 text-purple-600 group-hover:scale-110 transition-transform">
+                                                <CheckCircle2 className="w-4 h-4" />
+                                            </div>
+                                            <span className="font-semibold text-slate-900">Trust Factors</span>
+                                        </div>
+                                    </AccordionTrigger>
+                                    <AccordionContent className="pb-6 px-1">
+                                        <div className="p-4 bg-purple-50/50 rounded-2xl">
+                                            <p className="text-slate-700 leading-relaxed font-medium">
+                                                {deepAnalysis.trust_analysis || "No trust analysis available."}
+                                            </p>
+                                        </div>
+                                    </AccordionContent>
+                                </AccordionItem>
+
+                                {/* Headline Analysis */}
+                                <AccordionItem value="headline-analysis" className="border-b border-slate-50 px-6">
+                                    <AccordionTrigger className="hover:no-underline py-5 group">
+                                        <div className="flex items-center gap-3 w-full">
+                                            <div className="p-2 rounded-xl bg-blue-50 text-blue-600 group-hover:scale-110 transition-transform">
+                                                <FileText className="w-4 h-4" />
+                                            </div>
+                                            <span className="font-semibold text-slate-900">Headline Check</span>
+                                        </div>
+                                    </AccordionTrigger>
+                                    <AccordionContent className="pb-6 px-1">
+                                        <div className="p-4 bg-blue-50/50 rounded-2xl">
+                                            <p className="text-slate-700 leading-relaxed font-medium">
+                                                {deepAnalysis.hook_critique || "No headline analysis available."}
+                                            </p>
+                                        </div>
+                                    </AccordionContent>
+                                </AccordionItem>
+
+                                {/* Missing Features */}
+                                <AccordionItem value="missing-features" className="border-none px-6">
+                                    <AccordionTrigger className="hover:no-underline py-5 group">
+                                        <div className="flex items-center gap-3 w-full">
+                                            <div className="p-2 rounded-xl bg-red-50 text-red-600 group-hover:scale-110 transition-transform">
+                                                <AlertTriangle className="w-4 h-4" />
+                                            </div>
+                                            <span className="font-semibold text-slate-900">Feature Gaps</span>
+                                            <span className="ml-auto bg-slate-100 text-slate-600 text-xs font-bold px-2 py-1 rounded-lg">
+                                                {gapAnalysis.length}
+                                            </span>
+                                        </div>
+                                    </AccordionTrigger>
+                                    <AccordionContent className="pb-6 px-1">
+                                        <div className="space-y-2">
+                                            {gapAnalysis.map((gap: string, i: number) => (
+                                                <div key={i} className="flex items-start gap-3 p-3 bg-red-50/30 rounded-xl">
+                                                    <div className="w-1.5 h-1.5 rounded-full bg-red-400 mt-2 shrink-0"></div>
+                                                    <span className="text-slate-700 font-medium text-sm">{gap}</span>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    </AccordionContent>
+                                </AccordionItem>
+                            </Accordion>
+                        </div>
+                    </div>
+                </motion.div>
+            </div>
+
+            {/* Action Plan Section - Clean & Floating */}
+            <div className="space-y-6">
+                <div className="flex items-center justify-between px-2">
+                    <h2 className="text-2xl font-bold text-slate-900 flex items-center gap-3">
+                        <div className="p-2 bg-indigo-50 rounded-xl text-indigo-600">
+                            <Lightbulb className="w-6 h-6" />
+                        </div>
+                        Action Plan
+                    </h2>
+                    <span className="text-slate-500 font-medium">{rewrites.length} opportunities found</span>
+                </div>
+
+                <div className="grid md:grid-cols-2 gap-6">
+                    {rewrites.length > 0 ? rewrites.map((fix: any, index: number) => (
+                        <motion.div
+                            key={index}
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ delay: 0.2 + (index * 0.1) }}
+                            className="bg-white rounded-3xl p-6 sm:p-8 shadow-[0_4px_20px_rgb(0,0,0,0.03)] hover:shadow-[0_12px_30px_rgb(0,0,0,0.06)] hover:-translate-y-1 transition-all duration-300 border border-slate-50 flex flex-col h-full"
+                        >
+                            <div className="flex items-start justify-between mb-6">
+                                <div className="space-y-1">
+                                    <h3 className="font-bold text-lg text-slate-900 leading-tight">
+                                        {fix.element || fix.title || "Optimization Update"}
+                                    </h3>
+                                    {fix.reason && (
+                                        <p className="text-sm text-slate-500">{fix.reason}</p>
+                                    )}
+                                </div>
+                                <div className="h-10 w-10 shrink-0 flex items-center justify-center rounded-2xl bg-slate-50 text-slate-900 font-black text-lg border border-slate-100">
+                                    {index + 1}
+                                </div>
+                            </div>
+
+                            <div className="space-y-4 flex-1">
+                                {/* Before */}
+                                <div className="group relative">
+                                    <div className="absolute left-0 top-3 bottom-3 w-1 bg-red-200 rounded-full group-hover:bg-red-400 transition-colors"></div>
+                                    <div className="pl-4">
+                                        <p className="text-xs font-bold text-red-500 uppercase tracking-wider mb-1">Current</p>
+                                        <p className="text-slate-600 text-sm leading-relaxed opacity-80 decoration-slate-300">
+                                            {fix.current}
+                                        </p>
+                                    </div>
+                                </div>
+
+                                {/* After */}
+                                <div className="group relative">
+                                    <div className="absolute left-0 top-3 bottom-0 w-1 bg-emerald-400 rounded-full shadow-[0_0_10px_rgba(52,211,153,0.5)]"></div>
+                                    <div className="pl-4 py-2 bg-emerald-50/30 rounded-r-xl">
+                                        <p className="text-xs font-bold text-emerald-600 uppercase tracking-wider mb-1 flex items-center gap-2">
+                                            Suggested <Sparkles className="w-3 h-3" />
+                                        </p>
+                                        <p className="text-slate-900 font-medium text-base leading-relaxed">
+                                            {fix.suggested || fix.description}
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </motion.div>
+                    )) : (
+                        <div className="col-span-full py-12 text-center bg-white rounded-[2rem] shadow-sm border border-slate-100">
+                            <div className="w-20 h-20 bg-emerald-50 rounded-full flex items-center justify-center mx-auto mb-4">
+                                <Award className="w-10 h-10 text-emerald-500" />
+                            </div>
+                            <h3 className="text-xl font-bold text-slate-900">Perfection Achieved!</h3>
+                            <p className="text-slate-500 mt-2">No major issues found. You are crushing it.</p>
+                        </div>
+                    )}
+                </div>
+            </div>
+
+            {/* AI Chat */}
             <AnalysisChat analysisId={params.id as string} />
-        </motion.div>
+        </div>
     );
 }

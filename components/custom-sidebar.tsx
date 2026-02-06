@@ -239,20 +239,6 @@ export function CustomSidebar({ className, collapsed = false, setCollapsed, onCl
                     </DropdownMenuContent>
                 </DropdownMenu>
             </div>
-
-            {/* Toggle Button */}
-            {setCollapsed && (
-                <div className="absolute -right-3 top-12 z-40 hidden md:flex">
-                    <Button
-                        variant="ghost"
-                        size="icon"
-                        className="h-6 w-6 rounded-full bg-background border border-border shadow-sm hover:bg-accent text-muted-foreground hover:text-foreground"
-                        onClick={toggleCollapse}
-                    >
-                        {collapsed ? <ChevronRight className="h-3 w-3" /> : <ChevronLeft className="h-3 w-3" />}
-                    </Button>
-                </div>
-            )}
         </div>
     )
 

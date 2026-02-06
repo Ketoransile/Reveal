@@ -2,7 +2,7 @@
 
 import { Separator } from '@/components/ui/separator'
 import { Button } from '@/components/ui/button'
-import { Menu } from "lucide-react"
+import { Menu, ChevronLeft, ChevronRight } from "lucide-react"
 import {
     Breadcrumb,
     BreadcrumbItem,
@@ -17,9 +17,11 @@ import React from 'react'
 
 interface SiteHeaderProps {
     onMenuClick?: () => void
+    collapsed?: boolean
+    onToggleCollapse?: () => void
 }
 
-export function SiteHeaderCustom({ onMenuClick }: SiteHeaderProps) {
+export function SiteHeaderCustom({ onMenuClick, collapsed = false, onToggleCollapse }: SiteHeaderProps) {
     const pathname = usePathname()
     const segments = pathname.split('/').filter(Boolean)
 
@@ -31,12 +33,26 @@ export function SiteHeaderCustom({ onMenuClick }: SiteHeaderProps) {
     }
 
     return (
-        <header className="flex h-16 shrink-0 items-center justify-between gap-2 border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 sticky top-0 z-20 px-4 md:px-6">
+        <header className={`flex h-16 shrink-0 items-center justify-between gap-2 border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 fixed top-0 right-0 z-50 px-4 md:px-6 transition-all duration-300 ${collapsed ? 'md:left-20' : 'md:left-64'} left-0`}>
             <div className="flex items-center gap-2">
                 <Button variant="ghost" size="icon" className="md:hidden -ml-2" onClick={onMenuClick}>
                     <Menu className="h-5 w-5" />
                     <span className="sr-only">Toggle menu</span>
                 </Button>
+
+                {/* Collapse Button - Desktop Only */}
+                {onToggleCollapse && (
+                    <Button
+                        variant="ghost"
+                        size="icon"
+                        className="hidden md:flex h-8 w-8 -ml-2"
+                        onClick={onToggleCollapse}
+                    >
+                        {collapsed ? <ChevronRight className="h-4 w-4" /> : <ChevronLeft className="h-4 w-4" />}
+                        <span className="sr-only">Toggle sidebar</span>
+                    </Button>
+                )}
+
                 <Separator orientation="vertical" className="mr-2 h-4 bg-border hidden md:block" />
                 <Breadcrumb className="hidden sm:block">
                     <BreadcrumbList>

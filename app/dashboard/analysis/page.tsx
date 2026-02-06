@@ -4,24 +4,24 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { ArrowRight, Loader2, Info, Zap, Globe, Search } from "lucide-react";
+import { ArrowRight, Loader2, Zap, Globe, Search } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 
 import { PricingModal } from "@/components/pricing-modal";
+import { useToast } from "@/hooks/use-toast";
 
 export default function AnalysisPage() {
     const [yourWebsite, setYourWebsite] = useState("");
     const [competitorWebsite, setCompetitorWebsite] = useState("");
     const [loading, setLoading] = useState(false);
-    const [error, setError] = useState<string | null>(null);
     const [showPricing, setShowPricing] = useState(false);
     const router = useRouter();
+    const { toast } = useToast();
 
     const handleAnalysis = async (e: React.FormEvent) => {
         e.preventDefault();
         setLoading(true);
-        setError(null);
 
         try {
             const response = await fetch('/api/analyze', {
@@ -42,7 +42,13 @@ export default function AnalysisPage() {
             }
 
             if (!response.ok) {
-                throw new Error(data.error || 'Failed to create analysis');
+                toast({
+                    variant: "destructive",
+                    title: "Unable to start analysis",
+                    description: data.error || 'Failed to create analysis',
+                });
+                setLoading(false);
+                return;
             }
 
             router.push('/dashboard');
@@ -50,7 +56,11 @@ export default function AnalysisPage() {
 
         } catch (err) {
             console.error('[ANALYSIS PAGE] Error:', err);
-            setError(err instanceof Error ? err.message : 'An error occurred');
+            toast({
+                variant: "destructive",
+                title: "Connection Error",
+                description: "Unable to connect to the server. Please try again.",
+            });
             setLoading(false);
         }
     };
@@ -81,20 +91,6 @@ export default function AnalysisPage() {
                     </CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-6">
-                    {error && (
-                        <motion.div
-                            initial={{ opacity: 0, y: -10 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            className="p-4 rounded-lg bg-red-50 border border-red-200 text-red-700 text-sm"
-                        >
-                            <p className="font-semibold mb-1 flex items-center gap-2">
-                                <Info className="w-4 h-4" />
-                                Unable to start analysis
-                            </p>
-                            <p className="text-red-600">{error}</p>
-                        </motion.div>
-                    )}
-
                     <form onSubmit={handleAnalysis} className="space-y-6">
                         <div className="grid md:grid-cols-2 gap-6">
                             {/* Your Website */}

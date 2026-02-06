@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
 import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { User, CreditCard, Bell, Shield, Palette, Loader2, CheckCircle2 } from "lucide-react";
+import { User, CreditCard, Bell, Shield, Palette, Loader2, CheckCircle2, Zap, AlertCircle } from "lucide-react";
 import { useTheme } from "next-themes";
 import { useEffect, useState, Suspense } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
@@ -339,68 +339,83 @@ function SettingsContent() {
                     </Card>
                 </TabsContent>
 
-                <TabsContent value="billing" className="space-y-4">
-                    <Card className="border-border bg-card">
+                <TabsContent value="billing" className="space-y-6">
+                    <Card className="overflow-hidden border-slate-200 shadow-sm bg-white">
+                        <div className={`h-2 w-full ${user.subscription_plan === 'free' ? 'bg-slate-200' : 'bg-gradient-to-r from-emerald-500 to-emerald-400'}`} />
                         <CardHeader>
-                            <CardTitle>Plan & Usage</CardTitle>
-                            <CardDescription>
-                                {user.subscription_plan === 'free' && 'You are currently on the Free Plan.'}
-                                {user.subscription_plan === 'pro' && 'You are currently on the Pro Plan.'}
-                                {user.subscription_plan === 'agency' && 'You are currently on the Agency Plan.'}
-                            </CardDescription>
-                        </CardHeader>
-                        <CardContent className="space-y-4">
-                            <div className="p-4 bg-muted/50 rounded-lg flex items-center justify-between">
+                            <div className="flex items-center justify-between">
                                 <div>
-                                    <div className="font-semibold">
-                                        {user.subscription_plan === 'free' && 'Starter (Free)'}
-                                        {user.subscription_plan === 'pro' && 'Pro Plan'}
-                                        {user.subscription_plan === 'agency' && 'Agency Plan'}
+                                    <div className="flex items-center gap-3 mb-1">
+                                        <CardTitle>Current Plan</CardTitle>
+                                        <span className={`px-2.5 py-0.5 rounded-full text-xs font-bold tracking-wide uppercase ${user.subscription_plan === 'free'
+                                            ? 'bg-slate-100 text-slate-600'
+                                            : 'bg-emerald-100 text-emerald-700 ring-1 ring-emerald-200'
+                                            }`}>
+                                            {user.subscription_plan === 'free' ? 'Starter' : user.subscription_plan === 'agency' ? 'Agency' : 'Pro'}
+                                        </span>
                                     </div>
-                                    <div className="text-sm text-muted-foreground">
-                                        {user.subscription_plan === 'free' && '3 analyses per month'}
-                                        {user.subscription_plan === 'pro' && 'Unlimited analyses - $29/month'}
-                                        {user.subscription_plan === 'agency' && 'Unlimited analyses + White-label - $99/month'}
-                                    </div>
+                                    <CardDescription>
+                                        Manage your subscription and billing details.
+                                    </CardDescription>
                                 </div>
-                                {user.subscription_plan === 'free' && (
-                                    <Button
-                                        variant="default"
-                                        className="bg-emerald-600 hover:bg-emerald-700"
-                                        onClick={() => router.push('/pricing')}
-                                    >
-                                        Upgrade to Pro
-                                    </Button>
-                                )}
-                                {(user.subscription_plan === 'pro' || user.subscription_plan === 'agency') && (
-                                    <Button
-                                        variant="outline"
-                                        disabled
-                                    >
-                                        Manage Billing
-                                    </Button>
+                                {user.subscription_plan !== 'free' && (
+                                    <div className="hidden sm:block">
+                                        <Shield className="w-8 h-8 text-emerald-500 opacity-20" />
+                                    </div>
                                 )}
                             </div>
+                        </CardHeader>
+                        <CardContent className="space-y-6">
+                            <div className={`p-5 rounded-2xl border ${user.subscription_plan === 'free'
+                                ? 'bg-slate-50 border-slate-100'
+                                : 'bg-emerald-50/50 border-emerald-100'
+                                }`}>
+                                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                                    <div className="space-y-1">
+                                        <div className="font-bold text-lg text-slate-900 flex items-center gap-2">
+                                            {user.subscription_plan === 'free' ? 'Starter Plan' : user.subscription_plan === 'agency' ? 'Agency Plan' : 'Pro Plan'}
+                                            {user.subscription_plan !== 'free' && <CheckCircle2 className="w-4 h-4 text-emerald-600" />}
+                                        </div>
+                                        <div className="text-sm text-muted-foreground">
+                                            {user.subscription_plan === 'free' && 'Includes 3 comprehensive analyses per month.'}
+                                            {user.subscription_plan === 'pro' && 'Unlimited analyses, priority processing, and deep insights.'}
+                                            {user.subscription_plan === 'agency' && 'Whitelabel reports, API access, and team seats.'}
+                                        </div>
+                                    </div>
+
+                                    {user.subscription_plan === 'free' ? (
+                                        <Button
+                                            className="bg-slate-900 text-white hover:bg-slate-800 shadow-lg shadow-slate-900/10 rounded-full px-6 transition-all hover:scale-105 active:scale-95 whitespace-nowrap"
+                                            onClick={() => router.push('/pricing')}
+                                        >
+                                            Upgrade Plan
+                                        </Button>
+                                    ) : (
+                                        <Button variant="outline" className="rounded-full border-emerald-200 text-emerald-700 hover:bg-emerald-50 hover:text-emerald-800">
+                                            Manage Subscription
+                                        </Button>
+                                    )}
+                                </div>
+                            </div>
+
                             <Separator />
 
-                            {/* Usage Statistics for Free Plan */}
-                            {user.subscription_plan === 'free' && (
-                                <>
+                            {/* Usage Statistics Section */}
+                            <div className="space-y-4">
+                                <h3 className="text-sm font-semibold text-slate-900 flex items-center gap-2">
+                                    <Zap className="w-4 h-4 text-slate-400" /> Usage & Limits
+                                </h3>
+
+                                {user.subscription_plan === 'free' ? (
                                     <div className="space-y-3">
-                                        <div className="flex justify-between items-center">
-                                            <div>
-                                                <div className="text-sm font-medium text-slate-900">Monthly Credits</div>
-                                                <div className="text-xs text-muted-foreground">Resets at the start of each month</div>
-                                            </div>
-                                            <div className="text-right">
-                                                <div className="text-2xl font-bold text-slate-900">{user.credits}</div>
-                                                <div className="text-xs text-muted-foreground">of 3 remaining</div>
-                                            </div>
+                                        <div className="flex justify-between items-center text-sm">
+                                            <span className="text-slate-600">Monthly Analyses Credits</span>
+                                            <span className="font-bold text-slate-900">{user.credits} / 3</span>
                                         </div>
 
-                                        <div className="w-full h-3 bg-slate-100 rounded-full overflow-hidden">
+                                        <div className="relative w-full h-3 bg-slate-100 rounded-full overflow-hidden">
                                             <div
-                                                className={`h-full transition-all ${user.credits === 0 ? 'bg-red-500' :
+                                                className={`absolute left-0 top-0 bottom-0 transition-all duration-500 ease-out rounded-full ${user.credits === 0 ? 'bg-red-500' :
                                                     user.credits === 1 ? 'bg-amber-500' :
                                                         'bg-emerald-500'
                                                     }`}
@@ -408,73 +423,63 @@ function SettingsContent() {
                                             />
                                         </div>
 
-                                        {user.credits === 0 && (
-                                            <div className="p-3 bg-red-50 border border-red-200 rounded-lg">
-                                                <p className="text-sm text-red-800 font-medium">
-                                                    ⚠️ No credits remaining
-                                                </p>
-                                                <p className="text-xs text-red-600 mt-1">
-                                                    Upgrade to Pro for unlimited analyses or wait for your monthly reset.
-                                                </p>
+                                        {user.credits === 0 ? (
+                                            <div className="rounded-lg bg-red-50 p-3 text-xs text-red-700 border border-red-100 flex items-start gap-2">
+                                                <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" />
+                                                <p>You have used all your credits. Upgrade to Pro for unlimited access.</p>
                                             </div>
-                                        )}
-
-                                        {user.credits === 1 && (
-                                            <p className="text-xs text-amber-700 bg-amber-50 p-2 rounded">
-                                                💡 Only 1 credit remaining. Consider upgrading for unlimited access.
-                                            </p>
-                                        )}
-
-                                        {user.credits > 1 && (
-                                            <p className="text-xs text-muted-foreground">
-                                                You have {user.credits} analyses remaining this month.
+                                        ) : (
+                                            <p className="text-xs text-slate-500">
+                                                Credits reset on the 1st of every month.
                                             </p>
                                         )}
                                     </div>
-                                    <Separator />
-                                </>
-                            )}
-
-                            {/* Monthly Usage Stats */}
-                            <div className="space-y-2">
-                                <div className="flex justify-between text-sm">
-                                    <span className="text-muted-foreground">Analyses this month</span>
-                                    <span className="font-medium">
-                                        {usageStats.monthlyAnalyses}
-                                        {user.subscription_plan === 'free' ? ' created' : ' (unlimited)'}
-                                    </span>
-                                </div>
-                            </div>
-
-                            {/* All-time Stats */}
-                            <Separator />
-                            <div className="grid grid-cols-2 gap-4">
-                                <div className="p-3 bg-slate-50 rounded-lg">
-                                    <div className="text-2xl font-bold text-slate-900">{usageStats.totalAnalyses}</div>
-                                    <div className="text-xs text-muted-foreground">Total analyses</div>
-                                </div>
-                                <div className="p-3 bg-emerald-50 rounded-lg">
-                                    <div className="text-2xl font-bold text-emerald-700">{usageStats.completedAnalyses}</div>
-                                    <div className="text-xs text-muted-foreground">Completed</div>
-                                </div>
+                                ) : (
+                                    <div className="grid sm:grid-cols-3 gap-4">
+                                        <div className="p-4 bg-emerald-50/50 rounded-xl border border-emerald-100/50">
+                                            <p className="text-xs text-emerald-600 uppercase font-bold tracking-wider mb-1">Analyses</p>
+                                            <p className="text-xl font-black text-slate-900 flex items-center gap-1">
+                                                Unlimited <span className="text-lg">∞</span>
+                                            </p>
+                                        </div>
+                                        <div className="p-4 bg-slate-50 rounded-xl border border-slate-100">
+                                            <p className="text-xs text-slate-500 uppercase font-bold tracking-wider mb-1">Total</p>
+                                            <p className="text-xl font-black text-slate-900">{usageStats.totalAnalyses}</p>
+                                        </div>
+                                        <div className="p-4 bg-slate-50 rounded-xl border border-slate-100">
+                                            <p className="text-xs text-slate-500 uppercase font-bold tracking-wider mb-1">This Month</p>
+                                            <p className="text-xl font-black text-slate-900">{usageStats.monthlyAnalyses}</p>
+                                        </div>
+                                    </div>
+                                )}
                             </div>
                         </CardContent>
                     </Card>
 
-                    <Card className="border-border bg-card">
+                    <Card className="border-slate-200 shadow-sm bg-white">
                         <CardHeader>
-                            <CardTitle>Payment Method</CardTitle>
+                            <CardTitle className="text-base">Payment Method</CardTitle>
                             <CardDescription>
-                                {user.subscription_plan === 'free'
-                                    ? 'Add a payment method to upgrade your plan.'
-                                    : 'Manage your payment method and billing information.'}
+                                Securely managed via Stripe.
                             </CardDescription>
                         </CardHeader>
                         <CardContent>
-                            <Button variant="outline" disabled>
-                                <CreditCard className="mr-2 h-4 w-4" />
-                                {user.subscription_plan === 'free' ? 'Add Payment Method' : 'Manage Payment Method'}
-                            </Button>
+                            <div className="flex items-center gap-4">
+                                <div className="h-10 w-16 bg-slate-100 rounded border border-slate-200 flex items-center justify-center text-slate-400">
+                                    <CreditCard className="w-5 h-5" />
+                                </div>
+                                <div className="flex-1">
+                                    <p className="text-sm font-medium text-slate-900">
+                                        {user.subscription_plan === 'free' ? 'No payment method' : '•••• •••• •••• 4242'}
+                                    </p>
+                                    <p className="text-xs text-slate-500">
+                                        {user.subscription_plan === 'free' ? 'Add a card to upgrade.' : 'Expires 12/28'}
+                                    </p>
+                                </div>
+                                <Button variant="outline" size="sm" disabled={user.subscription_plan === 'free'}>
+                                    Update
+                                </Button>
+                            </div>
                         </CardContent>
                     </Card>
                 </TabsContent>

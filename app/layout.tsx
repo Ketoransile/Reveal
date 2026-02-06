@@ -7,6 +7,7 @@ import { ThemeProvider } from "@/components/theme-provider";
 import { SmoothScrolling } from "@/components/smooth-scrolling";
 import { ScrollbarTheme } from "@/components/scrollbar-theme";
 import { Analytics } from "@vercel/analytics/next"
+import { Toaster } from "@/components/ui/toaster";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -71,6 +72,7 @@ export default function RootLayout({
           <TooltipProvider delayDuration={0}>
             {children}
           </TooltipProvider>
+          <Toaster />
         </ThemeProvider>
       </body>
     </html>

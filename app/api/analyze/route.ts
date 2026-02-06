@@ -3,6 +3,7 @@ import { createClient } from '@/lib/supabase/server';
 import ModelClient, { isUnexpected } from "@azure-rest/ai-inference";
 import { AzureKeyCredential } from "@azure/core-auth";
 import { SupabaseClient } from '@supabase/supabase-js';
+import puppeteer from 'puppeteer';
 
 export async function POST(request: Request) {
     console.log('[API] /api/analyze - Starting comparison analysis request');
@@ -17,45 +18,77 @@ export async function POST(request: Request) {
             return NextResponse.json({ error: 'Both URLs are required' }, { status: 400 });
         }
 
-        // Validate URLs and fetch content immediately
-        // This ensures we don't start a job or deduct credits for invalid URLs
+        // Validate URLs and fetch content using Puppeteer (handles SPAs)
         let yourContent = '';
         let competitorContent = '';
 
         try {
-            const userAgent = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36';
+            console.log('[API] Launching Puppeteer...');
+            const browser = await puppeteer.launch({
+                headless: true,
+                args: ['--no-sandbox', '--disable-setuid-sandbox']
+            });
 
-            console.log('[API] Validating URLs...');
+            try {
+                const scrapePage = async (url: string, label: string) => {
+                    console.log(`[API] Scraping ${label}: ${url}`);
+                    const page = await browser.newPage();
+                    await page.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36');
 
-            const [yourRes, competitorRes] = await Promise.allSettled([
-                fetch(yourUrl, { headers: { 'User-Agent': userAgent } }),
-                fetch(competitorUrl, { headers: { 'User-Agent': userAgent } })
-            ]);
+                    try {
+                        const response = await page.goto(url, { waitUntil: 'networkidle2', timeout: 30000 });
+                        if (!response || !response.ok()) {
+                            throw new Error(`Failed to load page (Status: ${response?.status()})`);
+                        }
 
-            // Check Your URL
-            if (yourRes.status === 'rejected') {
-                throw new Error(`Invalid URL or website does not exist: ${yourUrl}`);
+                        // Extract text content (innerText is cleaner for AI than raw HTML with scripts)
+                        const content = await page.evaluate(() => document.body.innerText);
+                        // Also get the title for context
+                        const title = await page.title();
+
+                        return `Title: ${title}\n\n${content}`;
+                    } finally {
+                        await page.close();
+                    }
+                };
+
+                const [yourText, competitorText] = await Promise.all([
+                    scrapePage(yourUrl, 'Your Site'),
+                    scrapePage(competitorUrl, 'Competitor Site')
+                ]);
+
+                yourContent = yourText;
+                competitorContent = competitorText;
+
+            } finally {
+                await browser.close();
             }
-            if (!yourRes.value.ok) {
-                throw new Error(`Could not access your website (Status ${yourRes.value.status}): ${yourUrl}`);
+
+            if (!yourContent || yourContent.length < 50) {
+                // Fallback warning or error if content is suspicious
+                console.warn('[API] Warning: Extracted content is very short.');
             }
 
-            // Check Competitor URL
-            if (competitorRes.status === 'rejected') {
-                throw new Error(`Invalid URL or website does not exist: ${competitorUrl}`);
-            }
-            if (!competitorRes.value.ok) {
-                throw new Error(`Could not access competitor website (Status ${competitorRes.value.status}): ${competitorUrl}`);
+        } catch (error: any) {
+            console.error('[API] Scraping failed:', error);
+
+            let errorMessage = 'Failed to analyze websites. Please ensure URLs are publicly accessible.';
+            const errString = error?.message || error?.toString() || '';
+
+            if (errString.includes('ERR_NAME_NOT_RESOLVED')) {
+                errorMessage = 'Could not find this website. Please check the URL and try again.';
+            } else if (errString.includes('ERR_CONNECTION_REFUSED')) {
+                errorMessage = 'Connection was refused. The site may be down or blocking automated access.';
+            } else if (errString.includes('ERR_TIMED_OUT') || errString.includes('TimeoutError')) {
+                errorMessage = 'The analysis timed out. The website is loading too slowly.';
+            } else if (errString.includes('ERR_CERT_')) {
+                errorMessage = 'SSL/Certificate error. The website security is invalid.';
+            } else if (errString.includes('403') || errString.includes('401')) {
+                errorMessage = 'Access denied (403/401). This site blocks analysis bots.';
             }
 
-            // Get text content
-            yourContent = await yourRes.value.text();
-            competitorContent = await competitorRes.value.text();
-
-        } catch (error) {
-            console.error('[API] URL validation failed:', error);
             return NextResponse.json({
-                error: error instanceof Error ? error.message : 'Invalid URL provided'
+                error: errorMessage
             }, { status: 400 });
         }
 
@@ -154,6 +187,14 @@ async function performComparisonAnalysis(
 ) {
     console.log('[ANALYSIS] Starting background comparison analysis for:', analysisId);
     console.log('[ANALYSIS] Content lengths - Yours:', yourContent.length, 'Competitor:', competitorContent.length);
+
+    console.log('--- [ANALYSIS] START OF YOUR CONTENT ---');
+    console.log(yourContent.substring(0, 3000));
+    console.log('--- [ANALYSIS] END OF YOUR CONTENT ---');
+
+    console.log('--- [ANALYSIS] START OF COMPETITOR CONTENT ---');
+    console.log(competitorContent.substring(0, 3000));
+    console.log('--- [ANALYSIS] END OF COMPETITOR CONTENT ---');
 
     // No need to create new client, usage passed client which is already authenticated
 

@@ -5,12 +5,33 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { motion, useScroll, useMotionValueEvent, AnimatePresence } from "framer-motion";
 import { Menu, X } from "lucide-react";
+import { createClient } from "@/lib/supabase/client";
 
-export const FloatingNav = ({ user }: { user: any }) => {
+export const FloatingNav = ({ user: initialUser }: { user: any }) => {
     const { scrollY } = useScroll();
     const [hidden, setHidden] = useState(false);
     const [scrolled, setScrolled] = useState(false);
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+    const [user, setUser] = useState(initialUser);
+
+    // Check for user session on mount and when auth state changes
+    useEffect(() => {
+        const supabase = createClient();
+
+        // Get current user session
+        supabase.auth.getUser().then(({ data: { user } }) => {
+            setUser(user);
+        });
+
+        // Listen for auth state changes
+        const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+            setUser(session?.user ?? null);
+        });
+
+        return () => {
+            subscription.unsubscribe();
+        };
+    }, []);
 
     useMotionValueEvent(scrollY, "change", (latest) => {
         const previous = scrollY.getPrevious() ?? 0;
@@ -112,7 +133,7 @@ export const FloatingNav = ({ user }: { user: any }) => {
                                 {/* <Link href="/login" className="text-sm font-medium text-slate-300 hover:text-white transition-colors hidden sm:block px-4 py-2">
                                     Login
                                 </Link> */}
-                                <Link href="/signup" className="hidden md:block">
+                                <Link href="/signup" className="hidden md:block ">
                                     <Button
                                         size="sm"
                                         className="rounded-xl h-10 px-5 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-semibold shadow-[0_0_20px_rgba(16,185,129,0.3)] hover:shadow-[0_0_30px_rgba(16,185,129,0.5)] transition-all duration-300 border border-emerald-400/30 hover:scale-105"

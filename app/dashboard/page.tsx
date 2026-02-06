@@ -89,10 +89,7 @@ export default function DashboardPage() {
                     </p>
                 </div>
                 <Link href="/dashboard/analysis">
-                    <Button
-                        size="lg"
-                        className="w-full md:w-auto h-10 px-5 rounded-lg bg-emerald-600 text-white hover:bg-emerald-700 shadow-sm font-semibold"
-                    >
+                    <Button className="bg-slate-900 text-white hover:bg-slate-800 shadow-lg shadow-slate-900/10 rounded-full px-6 h-11 transition-all hover:scale-105 active:scale-95">
                         <Plus className="w-4 h-4 mr-2" />
                         New Analysis
                     </Button>
