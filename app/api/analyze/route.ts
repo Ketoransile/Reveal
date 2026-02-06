@@ -129,6 +129,7 @@ export async function POST(request: Request) {
         else if (errString.includes('ERR_CONNECTION_REFUSED')) errorMessage = 'Connection refused. Site may be blocking bots.';
         else if (errString.includes('ERR_TIMED_OUT')) errorMessage = 'Analysis timed out. Website is too slow.';
         else if (errString.includes('403') || errString.includes('401')) errorMessage = 'Access denied. Site blocks bots.';
+        else if (errString.includes('MODULE_NOT_FOUND')) errorMessage = 'Server Configuration Error: Missing scraping modules.';
 
         return NextResponse.json({ error: errorMessage }, { status: 400 });
     } finally {
