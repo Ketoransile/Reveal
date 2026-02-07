@@ -26,11 +26,31 @@ export default function DashboardPage() {
         async function fetchData() {
             try {
                 const response = await fetch('/api/user');
-                const data = await response.json();
+
+                // Handle authentication errors
+                if (response.status === 401 || response.status === 403) {
+                    window.location.href = '/login';
+                    return;
+                }
 
                 if (!response.ok) {
-                    throw new Error(data.error || 'Failed to fetch data');
+                    if (response.status === 401 || response.status === 403) {
+                        // Already handling redirect
+                        return;
+                    }
+
+                    // Check if response is JSON before parsing
+                    const contentType = response.headers.get("content-type");
+                    if (contentType && contentType.indexOf("application/json") !== -1) {
+                        const errorData = await response.json();
+                        throw new Error(errorData.error || 'Failed to fetch data');
+                    } else {
+                        // If not JSON (e.g. 404 HTML), throw generic error
+                        throw new Error(`Server returned ${response.status} ${response.statusText}`);
+                    }
                 }
+
+                const data = await response.json();
 
                 setUserData(data.user);
                 setAnalyses(data.analyses || []);
