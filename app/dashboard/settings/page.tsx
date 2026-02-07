@@ -161,6 +161,9 @@ function SettingsContent() {
             // Refresh user data to show the update immediately
             await fetchUserData();
 
+            // Notify other components (like Sidebar) about the profile update
+            window.dispatchEvent(new Event('user-profile-updated'));
+
             // Hide success message after 3 seconds
             setTimeout(() => setSaveSuccess(false), 3000);
         } catch (err) {
@@ -278,9 +281,10 @@ function SettingsContent() {
                             </CardDescription>
                         </CardHeader>
                         <CardContent className="space-y-4">
-                            <div className="grid grid-cols-2 gap-4 max-w-md opacity-75">
+                            <div className="grid grid-cols-2 gap-4 max-w-md">
                                 <div
-                                    className="cursor-not-allowed rounded-xl border-2 p-1 border-primary"
+                                    className={`cursor-pointer rounded-xl border-2 p-1 transition-all ${theme === 'light' ? 'border-primary' : 'border-transparent hover:bg-muted/50'}`}
+                                    onClick={() => setTheme('light')}
                                 >
                                     <div className="space-y-2 rounded-lg bg-[#ecedef] p-2">
                                         <div className="space-y-2 rounded-md bg-white p-2 shadow-sm">
@@ -296,10 +300,11 @@ function SettingsContent() {
                                             <div className="h-2 w-[100px] rounded-lg bg-[#ecedef]" />
                                         </div>
                                     </div>
-                                    <div className="block w-full p-2 text-center font-medium">Light (Active)</div>
+                                    <div className="block w-full p-2 text-center font-medium">Light</div>
                                 </div>
                                 <div
-                                    className="cursor-not-allowed rounded-xl border-2 p-1 border-transparent opacity-50"
+                                    className={`cursor-pointer rounded-xl border-2 p-1 transition-all ${theme === 'dark' ? 'border-primary' : 'border-transparent hover:bg-muted/50'}`}
+                                    onClick={() => setTheme('dark')}
                                 >
                                     <div className="space-y-2 rounded-lg bg-slate-950 p-2">
                                         <div className="space-y-2 rounded-md bg-slate-800 p-2 shadow-sm">
@@ -315,11 +320,11 @@ function SettingsContent() {
                                             <div className="h-2 w-[100px] rounded-lg bg-slate-400" />
                                         </div>
                                     </div>
-                                    <div className="block w-full p-2 text-center font-normal text-slate-500">Dark (Unavailable)</div>
+                                    <div className="block w-full p-2 text-center font-medium">Dark</div>
                                 </div>
                             </div>
                             <p className="text-sm text-muted-foreground">
-                                Dark mode is currently disabled. The application is optimized for light mode.
+                                Select your preferred theme for the dashboard.
                             </p>
                         </CardContent>
                     </Card>
@@ -362,16 +367,16 @@ function SettingsContent() {
                 </TabsContent>
 
                 <TabsContent value="billing" className="space-y-6">
-                    <div className="grid md:grid-cols-2 gap-6">
-                        <Card className="overflow-hidden border-slate-200 shadow-sm bg-white h-full flex flex-col">
-                            <div className={`h-2 w-full ${user.subscription_plan === 'free' ? 'bg-slate-200' : 'bg-gradient-to-r from-emerald-500 to-emerald-400'}`} />
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <Card className="overflow-hidden border-border shadow-sm bg-card h-full flex flex-col">
+                            <div className={`h-2 w-full ${user.subscription_plan === 'free' ? 'bg-muted' : 'bg-gradient-to-r from-emerald-500 to-emerald-400'}`} />
                             <CardHeader>
                                 <div className="flex items-center justify-between">
                                     <div className="flex items-center gap-3 mb-1">
-                                        <CardTitle className="text-base">Current Plan</CardTitle>
+                                        <CardTitle className="text-base text-foreground">Current Plan</CardTitle>
                                         <span className={`px-2.5 py-0.5 rounded-full text-xs font-bold tracking-wide uppercase ${user.subscription_plan === 'free'
-                                            ? 'bg-slate-100 text-slate-600'
-                                            : 'bg-emerald-100 text-emerald-700 ring-1 ring-emerald-200'
+                                            ? 'bg-muted text-muted-foreground'
+                                            : 'bg-emerald-100 dark:bg-emerald-900/40 text-emerald-700 dark:text-emerald-400 ring-1 ring-emerald-200 dark:ring-emerald-900'
                                             }`}>
                                             {user.subscription_plan === 'free' ? 'Starter' : user.subscription_plan === 'agency' ? 'Agency' : 'Pro'}
                                         </span>
@@ -382,13 +387,13 @@ function SettingsContent() {
                                         </div>
                                     )}
                                 </div>
-                                <CardDescription>
+                                <CardDescription className="text-muted-foreground">
                                     Your subscription status.
                                 </CardDescription>
                             </CardHeader>
                             <CardContent className="space-y-4 flex-1">
                                 <div>
-                                    <div className="font-bold text-2xl text-slate-900 flex items-center gap-2">
+                                    <div className="font-bold text-2xl text-foreground flex items-center gap-2">
                                         {user.subscription_plan === 'free' ? 'Starter Plan' : user.subscription_plan === 'agency' ? 'Agency Plan' : 'Pro Plan'}
                                         {user.subscription_plan !== 'free' && <CheckCircle2 className="w-5 h-5 text-emerald-600" />}
                                     </div>
@@ -402,74 +407,74 @@ function SettingsContent() {
                             <CardFooter className="pt-0">
                                 {user.subscription_plan === 'free' ? (
                                     <Button
-                                        className="w-full bg-slate-900 text-white hover:bg-slate-800 shadow-lg shadow-slate-900/10 rounded-full transition-all"
+                                        className="w-full bg-primary text-primary-foreground hover:bg-primary/90 shadow-lg shadow-primary/10 rounded-full transition-all"
                                         onClick={() => router.push('/pricing')}
                                     >
                                         Upgrade Plan
                                     </Button>
                                 ) : (
-                                    <Button variant="outline" disabled className="w-full rounded-full border-emerald-200 text-emerald-700 opacity-50 cursor-not-allowed">
+                                    <Button variant="outline" disabled className="w-full rounded-full border-emerald-200 dark:border-emerald-800 text-emerald-700 dark:text-emerald-400 opacity-50 cursor-not-allowed mb-2 md:mb-0">
                                         Manage Subscription (Coming Soon)
                                     </Button>
                                 )}
                             </CardFooter>
                         </Card>
 
-                        <Card className="border-slate-200 shadow-sm bg-white h-full flex flex-col justify-between">
+                        <Card className="border-border shadow-sm bg-card h-full flex flex-col justify-between">
                             <CardHeader>
-                                <CardTitle className="text-base">Payment Method</CardTitle>
-                                <CardDescription>
+                                <CardTitle className="text-base text-foreground">Payment Method</CardTitle>
+                                <CardDescription className="text-muted-foreground">
                                     Securely managed via Stripe.
                                 </CardDescription>
                             </CardHeader>
                             <CardContent className="flex-1">
                                 <div className="flex items-center gap-4">
-                                    <div className="h-12 w-20 bg-slate-100 rounded border border-slate-200 flex items-center justify-center text-slate-400">
+                                    <div className="h-12 w-20 bg-muted/50 rounded border border-border flex items-center justify-center text-muted-foreground">
                                         <CreditCard className="w-6 h-6" />
                                     </div>
                                     <div className="flex-1">
-                                        <p className="text-base font-medium text-slate-900">
+                                        <p className="text-base font-medium text-foreground">
                                             {user.subscription_plan === 'free' ? 'No payment method' : '•••• •••• •••• 4242'}
                                         </p>
-                                        <p className="text-xs text-slate-500">
+                                        <p className="text-xs text-muted-foreground">
                                             {user.subscription_plan === 'free' ? 'Add a card to upgrade.' : 'Expires 12/28'}
                                         </p>
                                     </div>
                                 </div>
                             </CardContent>
                             <CardFooter>
-                                <Button variant="outline" className="w-full opacity-50 cursor-not-allowed" disabled>
+                                <Button variant="outline" className="w-full opacity-50 cursor-not-allowed mb-2 md:mb-0" disabled>
                                     Update Payment Method (Coming Soon)
                                 </Button>
                             </CardFooter>
                         </Card>
                     </div>
 
-                    <Card className="border-slate-200 shadow-sm bg-white">
+                    <Card className="border-border shadow-sm bg-card">
                         <CardHeader>
-                            <CardTitle className="flex items-center gap-2 text-base">
+                            <CardTitle className="flex items-center gap-2 text-base text-foreground">
                                 <Zap className="w-5 h-5 text-amber-500" />
                                 Usage & Limits
                             </CardTitle>
-                            <CardDescription>
+                            <CardDescription className="text-muted-foreground">
                                 Track your consumption and billing cycle.
                             </CardDescription>
                         </CardHeader>
                         <CardContent>
                             {user.subscription_plan === 'free' ? (
-                                <div className="space-y-4 bg-slate-50 p-5 rounded-2xl border border-slate-100">
+                                <div className="space-y-4 bg-muted/50 p-5 rounded-2xl border border-border">
                                     <div className="flex justify-between items-center">
                                         <div>
-                                            <p className="font-semibold text-slate-900">Monthly Usage</p>
-                                            <p className="text-xs text-slate-500">Credits reset on the 1st of every month.</p>
+                                            <p className="font-semibold text-foreground">Monthly Usage</p>
+                                            <p className="text-xs text-muted-foreground">Credits reset on the 1st of every month.</p>
                                         </div>
                                         <div className="text-right">
-                                            <span className="text-2xl font-bold text-slate-900">{3 - user.credits}</span>
-                                            <span className="text-sm text-slate-400 font-medium"> / 3 used</span>
+                                            <span className="text-2xl font-bold text-foreground">{3 - user.credits}</span>
+                                            <span className="text-sm text-muted-foreground font-medium"> / 3 used</span>
                                         </div>
                                     </div>
 
-                                    <div className="relative w-full h-3 bg-slate-200 rounded-full overflow-hidden">
+                                    <div className="relative w-full h-3 bg-muted rounded-full overflow-hidden">
                                         <div
                                             className={`absolute left-0 top-0 bottom-0 transition-all duration-500 ease-out rounded-full ${(3 - user.credits) === 3 ? 'bg-red-500' :
                                                 (3 - user.credits) >= 2 ? 'bg-amber-500' :
@@ -480,22 +485,22 @@ function SettingsContent() {
                                     </div>
 
                                     {user.credits === 0 ? (
-                                        <div className="rounded-lg bg-red-50 p-3 text-xs text-red-700 border border-red-100 flex items-start gap-2">
+                                        <div className="rounded-lg bg-red-50 dark:bg-red-900/20 p-3 text-xs text-red-700 dark:text-red-400 border border-red-100 dark:border-red-900 flex items-start gap-2">
                                             <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" />
                                             <p>You have used all your credits. Upgrade to Pro for unlimited access.</p>
                                         </div>
                                     ) : (
-                                        <p className="text-xs text-slate-500 text-center">
+                                        <p className="text-xs text-muted-foreground text-center">
                                             {user.credits} analyses remaining
                                         </p>
                                     )}
                                 </div>
                             ) : (
-                                <div className="space-y-4 bg-emerald-50/50 p-5 rounded-2xl border border-emerald-100/50">
+                                <div className="space-y-4 bg-emerald-50/50 dark:bg-emerald-900/10 p-5 rounded-2xl border border-emerald-100/50 dark:border-emerald-900/40">
                                     <div className="flex justify-between items-center mb-2">
                                         <div>
-                                            <p className="font-semibold text-slate-900">Billing Cycle</p>
-                                            <p className="text-xs text-emerald-600/80 font-medium">
+                                            <p className="font-semibold text-foreground">Billing Cycle</p>
+                                            <p className="text-xs text-emerald-600 dark:text-emerald-400/80 font-medium">
                                                 Running smoothly
                                             </p>
                                         </div>
@@ -510,8 +515,8 @@ function SettingsContent() {
 
                                             return (
                                                 <div className="text-right">
-                                                    <span className="text-2xl font-bold text-slate-900">{daysLeft}</span>
-                                                    <span className="text-sm text-slate-400 font-medium"> days left</span>
+                                                    <span className="text-2xl font-bold text-foreground">{daysLeft}</span>
+                                                    <span className="text-sm text-muted-foreground font-medium"> days left</span>
                                                 </div>
                                             );
                                         })()}
@@ -525,7 +530,7 @@ function SettingsContent() {
                                         const progress = Math.min(100, Math.max(0, ((totalDuration - timeLeft) / totalDuration) * 100));
 
                                         return (
-                                            <div className="relative w-full h-3 bg-emerald-100 rounded-full overflow-hidden">
+                                            <div className="relative w-full h-3 bg-emerald-100 dark:bg-emerald-900/30 rounded-full overflow-hidden">
                                                 <div
                                                     className="absolute left-0 top-0 bottom-0 bg-emerald-500 transition-all duration-500 ease-out rounded-full"
                                                     style={{ width: `${progress}%` }}
@@ -537,10 +542,10 @@ function SettingsContent() {
                                     <div className="flex justify-between items-center pt-2">
                                         <div className="flex items-center gap-2">
                                             <Zap className="w-4 h-4 text-amber-500" />
-                                            <span className="text-sm text-slate-600 font-medium">{usageStats.totalAnalyses} <span className="text-slate-400 text-xs font-normal">analyses completed</span></span>
+                                            <span className="text-sm text-foreground font-medium">{usageStats.totalAnalyses} <span className="text-muted-foreground text-xs font-normal">analyses completed</span></span>
                                         </div>
                                         {user.subscription_period_end && (
-                                            <span className="text-xs text-slate-400">
+                                            <span className="text-xs text-muted-foreground">
                                                 Renews {new Date(user.subscription_period_end).toLocaleDateString()}
                                             </span>
                                         )}
@@ -551,7 +556,7 @@ function SettingsContent() {
                     </Card>
                 </TabsContent>
             </Tabs>
-        </div>
+        </div >
     );
 }
 

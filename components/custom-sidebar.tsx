@@ -73,14 +73,33 @@ export function CustomSidebar({ className, collapsed = false, setCollapsed, onCl
             const supabase = createClient()
             const { data: { user } } = await supabase.auth.getUser()
             if (user) {
+                // Force a refresh of user data from the session to get latest metadata
+                const { data: { session } } = await supabase.auth.getSession()
+
+                // Get the most up-to-date user object
+                const currentUser = session?.user || user;
+
                 setUser({
-                    name: user.user_metadata?.name || user.email?.split('@')[0] || "User",
-                    email: user.email || "",
-                    avatar: user.user_metadata?.avatar_url || "",
+                    name: currentUser.user_metadata?.name || currentUser.email?.split('@')[0] || "User",
+                    email: currentUser.email || "",
+                    avatar: currentUser.user_metadata?.avatar_url || "",
                 })
             }
         }
+
+        // Initial fetch
         fetchUser()
+
+        // Listen for profile updates
+        const handleProfileUpdate = () => {
+            fetchUser();
+        };
+
+        window.addEventListener('user-profile-updated', handleProfileUpdate);
+
+        return () => {
+            window.removeEventListener('user-profile-updated', handleProfileUpdate);
+        };
     }, [])
 
     const handleLogout = async () => {
@@ -124,7 +143,7 @@ export function CustomSidebar({ className, collapsed = false, setCollapsed, onCl
     )
 
     const SidebarContentInner = () => (
-        <div className="flex flex-col h-full bg-background/80 backdrop-blur-xl border-r border-border/40 p-3 pt-4 transition-all duration-300">
+        <div className="flex flex-col h-full bg-background/80 backdrop-blur-xl border-r border-border/5 md:border-border/40 p-3 pt-4 transition-all duration-300">
             {/* Header */}
             <Link href="/" onClick={() => onClose?.()} className={cn("h-12 flex items-center mb-6 transition-all cursor-pointer hover:opacity-80", collapsed ? "justify-center px-0" : "gap-3 px-2")}>
                 <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-primary text-primary-foreground font-bold shrink-0">
@@ -141,7 +160,7 @@ export function CustomSidebar({ className, collapsed = false, setCollapsed, onCl
                             <Button
                                 className={cn(
                                     "shadow-md hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300 font-medium",
-                                    collapsed ? "w-10 h-10 p-0 rounded-xl justify-center bg-slate-900 text-white" : "w-full justify-start gap-2 bg-slate-900 text-white hover:bg-slate-800"
+                                    collapsed ? "w-10 h-10 p-0 rounded-xl justify-center bg-primary text-primary-foreground" : "w-full justify-start gap-2 bg-primary text-primary-foreground hover:bg-primary/90"
                                 )}
                                 size={collapsed ? "icon" : "lg"}
                             >
@@ -291,7 +310,7 @@ export function MobileSidebar({ open, onOpenChange }: MobileSidebarProps) {
     return (
         <Sheet open={open} onOpenChange={onOpenChange}>
             <SheetContent side="left" className="p-0 w-72 bg-transparent border-r-0">
-                <div className="h-full bg-background border-r border-border/20">
+                <div className="h-full bg-background">
                     <CustomSidebar
                         className="!block !fixed !inset-0 !w-full !relative"
                         onClose={() => onOpenChange(false)}

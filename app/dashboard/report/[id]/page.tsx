@@ -56,7 +56,7 @@ const CircularScore = ({ score, label, color, delay = 0 }: { score: number, labe
                         stroke="currentColor"
                         strokeWidth="8"
                         fill="transparent"
-                        className="text-slate-100"
+                        className="text-muted/20"
                     />
                     {/* Progress Circle */}
                     <motion.circle
@@ -85,7 +85,7 @@ const CircularScore = ({ score, label, color, delay = 0 }: { score: number, labe
                     </motion.span>
                 </div>
             </div>
-            <span className="text-sm font-semibold tracking-wide text-slate-500 uppercase">{label}</span>
+            <span className="text-sm font-semibold tracking-wide text-muted-foreground uppercase">{label}</span>
         </div>
     );
 };
@@ -135,20 +135,20 @@ export default function ReportPage() {
         return (
             <div className="flex flex-col items-center justify-center min-h-[60vh] space-y-6">
                 <div className="relative w-16 h-16">
-                    <div className="absolute inset-0 rounded-full border-4 border-slate-100"></div>
+                    <div className="absolute inset-0 rounded-full border-4 border-border"></div>
                     <div className="absolute inset-0 rounded-full border-4 border-emerald-500 border-t-transparent animate-spin"></div>
                 </div>
-                <p className="text-lg font-medium text-slate-500 animate-pulse tracking-wide">Loading Analysis...</p>
+                <p className="text-lg font-medium text-muted-foreground animate-pulse tracking-wide">Loading Analysis...</p>
             </div>
         );
     }
 
     if (error || !data || !data.reports?.[0]) return (
         <div className="flex flex-col items-center justify-center min-h-[60vh] text-center space-y-6">
-            <div className="p-8 bg-slate-50 rounded-3xl shadow-sm">
-                <AlertTriangle className="w-12 h-12 text-slate-400 mx-auto" />
-                <h2 className="text-xl font-bold text-slate-900 mt-4">Report Not Found</h2>
-                <p className="text-slate-500 mt-2 max-w-xs mx-auto">We couldn't retrieve this analysis report details.</p>
+            <div className="p-8 bg-muted rounded-3xl shadow-sm">
+                <AlertTriangle className="w-12 h-12 text-muted-foreground mx-auto" />
+                <h2 className="text-xl font-bold text-foreground mt-4">Report Not Found</h2>
+                <p className="text-muted-foreground mt-2 max-w-xs mx-auto">We couldn't retrieve this analysis report details.</p>
             </div>
             <Link href="/dashboard"><Button variant="outline" className="rounded-full px-6">Return to Dashboard</Button></Link>
         </div>
@@ -174,15 +174,15 @@ export default function ReportPage() {
             {/* Minimal Header */}
             <div className="flex items-center justify-between py-4">
                 <Link href="/dashboard" className="group">
-                    <div className="flex items-center gap-2 text-slate-500 hover:text-slate-900 transition-colors">
-                        <div className="p-2 rounded-full bg-white shadow-sm ring-1 ring-slate-100 group-hover:ring-slate-300 transition-all">
+                    <div className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors">
+                        <div className="p-2 rounded-full bg-card shadow-sm ring-1 ring-slate-100 group-hover:ring-slate-300 transition-all">
                             <ArrowLeft className="w-4 h-4" />
                         </div>
                         <span className="text-sm font-medium">Dashboard</span>
                     </div>
                 </Link>
                 <div className="flex items-center gap-2">
-                    <span className="text-xs font-medium text-slate-400 bg-slate-50 px-3 py-1 rounded-full border border-slate-100">
+                    <span className="text-xs font-medium text-muted-foreground bg-muted px-3 py-1 rounded-full border border-border">
                         Analyzed {new Date().toLocaleDateString()}
                     </span>
                 </div>
@@ -193,23 +193,23 @@ export default function ReportPage() {
                 <motion.div
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
-                    className="lg:col-span-3 relative overflow-hidden bg-white rounded-[2rem] shadow-[0_8px_30px_rgb(0,0,0,0.04)] p-8 sm:p-12 hover:shadow-[0_8px_30px_rgb(0,0,0,0.08)] transition-shadow duration-500"
+                    className="lg:col-span-3 relative overflow-hidden bg-card rounded-[2rem] shadow-[0_8px_30px_rgb(0,0,0,0.04)] p-8 sm:p-12 hover:shadow-[0_8px_30px_rgb(0,0,0,0.08)] transition-shadow duration-500"
                 >
                     {/* Background Gradients */}
-                    <div className="absolute top-0 right-0 w-64 h-64 bg-emerald-50 rounded-full blur-3xl opacity-50 -translate-y-1/2 translate-x-1/3"></div>
-                    <div className="absolute bottom-0 left-0 w-64 h-64 bg-slate-50 rounded-full blur-3xl opacity-50 translate-y-1/2 -translate-x-1/3"></div>
+                    <div className="absolute top-0 right-0 w-64 h-64 bg-emerald-50 dark:bg-emerald-900/20 rounded-full blur-3xl opacity-50 -translate-y-1/2 translate-x-1/3"></div>
+                    <div className="absolute bottom-0 left-0 w-64 h-64 bg-muted rounded-full blur-3xl opacity-50 translate-y-1/2 -translate-x-1/3"></div>
 
                     <div className="relative z-10 flex flex-col h-full justify-between">
                         <div className="flex items-center justify-between mb-8">
                             <div>
-                                <h1 className="text-3xl sm:text-4xl font-black text-slate-900 tracking-tight mb-2">
+                                <h1 className="text-3xl sm:text-4xl font-black text-foreground tracking-tight mb-2">
                                     {isWinner ? "You're Leading!" : "Opportunity Ahead"}
                                 </h1>
-                                <p className="text-slate-500 font-medium text-lg">
+                                <p className="text-muted-foreground font-medium text-lg">
                                     {isWinner ? "Your strategy is effectively outperforming the competition." : "Your competitor has a slight edge in conversion alignment."}
                                 </p>
                             </div>
-                            <div className={`hidden sm:flex px-4 py-2 rounded-full text-sm font-bold tracking-wide shadow-sm items-center gap-2 ${isWinner ? 'bg-emerald-100 text-emerald-800' : 'bg-amber-100 text-amber-800'}`}>
+                            <div className={`hidden sm:flex px-4 py-2 rounded-full text-sm font-bold tracking-wide shadow-sm items-center gap-2 ${isWinner ? 'bg-emerald-100 dark:bg-emerald-900/40 text-emerald-800' : 'bg-amber-100 dark:bg-amber-900/40 text-amber-800'}`}>
                                 {isWinner ? <CheckCircle2 className="w-4 h-4" /> : <TrendingUp className="w-4 h-4" />}
                                 {isWinner ? 'MARKET LEADER' : 'GROWTH MODE'}
                             </div>
@@ -221,19 +221,19 @@ export default function ReportPage() {
                             <div className="flex flex-col items-center">
                                 <div className="text-4xl font-black text-slate-200 select-none">VS</div>
                                 {scoreDifference > 0 && (
-                                    <Badge variant="secondary" className="mt-2 bg-slate-100 text-slate-600 border-none font-bold px-3">
+                                    <Badge variant="secondary" className="mt-2 bg-muted text-muted-foreground border-none font-bold px-3">
                                         +{scoreDifference} pts
                                     </Badge>
                                 )}
                             </div>
 
-                            <CircularScore score={competitorScore} label="Competitor" color="text-slate-400" delay={0.4} />
+                            <CircularScore score={competitorScore} label="Competitor" color="text-muted-foreground" delay={0.4} />
                         </div>
 
-                        <div className="mt-auto bg-slate-50/80 backdrop-blur-sm rounded-2xl p-5 border border-slate-100/50">
+                        <div className="mt-auto bg-muted/80 backdrop-blur-sm rounded-2xl p-5 border border-border/50">
                             <div className="flex items-start gap-4">
                                 <Sparkles className="w-5 h-5 text-indigo-500 mt-1 shrink-0" />
-                                <p className="text-slate-700 leading-relaxed font-medium">
+                                <p className="text-foreground leading-relaxed font-medium">
                                     "{verdict}"
                                 </p>
                             </div>
@@ -250,46 +250,46 @@ export default function ReportPage() {
                 >
                     {/* Modern Stat Cards */}
                     <div className="grid grid-cols-1 gap-4 h-full">
-                        <div className="bg-white rounded-3xl p-6 shadow-[0_4px_20px_rgb(0,0,0,0.03)] border-none flex flex-col justify-center">
+                        <div className="bg-card rounded-3xl p-6 shadow-[0_4px_20px_rgb(0,0,0,0.03)] border-none flex flex-col justify-center">
                             <div className="flex items-center gap-4">
-                                <div className="h-12 w-12 rounded-2xl bg-blue-50 flex items-center justify-center text-blue-600">
+                                <div className="h-12 w-12 rounded-2xl bg-blue-50 dark:bg-blue-900/20 flex items-center justify-center text-blue-600">
                                     <BarChart3 className="w-6 h-6" />
                                 </div>
                                 <div>
-                                    <p className="text-slate-500 text-sm font-semibold uppercase tracking-wider">Potential Gain</p>
-                                    <p className="text-2xl font-bold text-slate-900">+15% Conversion</p>
+                                    <p className="text-muted-foreground text-sm font-semibold uppercase tracking-wider">Potential Gain</p>
+                                    <p className="text-2xl font-bold text-foreground">+15% Conversion</p>
                                 </div>
                             </div>
                         </div>
 
-                        <div className="bg-white rounded-3xl p-6 shadow-[0_4px_20px_rgb(0,0,0,0.03)] border-none flex flex-col justify-center">
+                        <div className="bg-card rounded-3xl p-6 shadow-[0_4px_20px_rgb(0,0,0,0.03)] border-none flex flex-col justify-center">
                             <div className="flex items-center gap-4">
-                                <div className="h-12 w-12 rounded-2xl bg-amber-50 flex items-center justify-center text-amber-600">
+                                <div className="h-12 w-12 rounded-2xl bg-amber-50 dark:bg-amber-900/20 flex items-center justify-center text-amber-600">
                                     <Target className="w-6 h-6" />
                                 </div>
                                 <div>
-                                    <p className="text-slate-500 text-sm font-semibold uppercase tracking-wider">Missing Features</p>
-                                    <p className="text-2xl font-bold text-slate-900">{gapAnalysis.length} Key Gaps</p>
+                                    <p className="text-muted-foreground text-sm font-semibold uppercase tracking-wider">Missing Features</p>
+                                    <p className="text-2xl font-bold text-foreground">{gapAnalysis.length} Key Gaps</p>
                                 </div>
                             </div>
                         </div>
 
                         {/* Collapsible Deep Dive Analysis - Floating Card */}
-                        <div className="bg-white rounded-3xl p-0 shadow-[0_4px_20px_rgb(0,0,0,0.03)] border-none overflow-hidden">
+                        <div className="bg-card rounded-3xl p-0 shadow-[0_4px_20px_rgb(0,0,0,0.03)] border-none overflow-hidden">
                             <Accordion type="single" collapsible className="w-full">
                                 {/* Trust Factors - First for variety */}
-                                <AccordionItem value="trust-analysis" className="border-b border-slate-50 px-6">
+                                <AccordionItem value="trust-analysis" className="border-b border-border px-6">
                                     <AccordionTrigger className="hover:no-underline py-5 group">
                                         <div className="flex items-center gap-3 w-full">
-                                            <div className="p-2 rounded-xl bg-purple-50 text-purple-600 group-hover:scale-110 transition-transform">
+                                            <div className="p-2 rounded-xl bg-purple-50 dark:bg-purple-900/20 text-purple-600 group-hover:scale-110 transition-transform">
                                                 <CheckCircle2 className="w-4 h-4" />
                                             </div>
-                                            <span className="font-semibold text-slate-900">Trust Factors</span>
+                                            <span className="font-semibold text-foreground">Trust Factors</span>
                                         </div>
                                     </AccordionTrigger>
                                     <AccordionContent className="pb-6 px-1">
-                                        <div className="p-4 bg-purple-50/50 rounded-2xl">
-                                            <p className="text-slate-700 leading-relaxed font-medium">
+                                        <div className="p-4 bg-purple-50/50 dark:bg-purple-900/20 rounded-2xl">
+                                            <p className="text-foreground leading-relaxed font-medium">
                                                 {deepAnalysis.trust_analysis || "No trust analysis available."}
                                             </p>
                                         </div>
@@ -297,18 +297,18 @@ export default function ReportPage() {
                                 </AccordionItem>
 
                                 {/* Headline Analysis */}
-                                <AccordionItem value="headline-analysis" className="border-b border-slate-50 px-6">
+                                <AccordionItem value="headline-analysis" className="border-b border-border px-6">
                                     <AccordionTrigger className="hover:no-underline py-5 group">
                                         <div className="flex items-center gap-3 w-full">
-                                            <div className="p-2 rounded-xl bg-blue-50 text-blue-600 group-hover:scale-110 transition-transform">
+                                            <div className="p-2 rounded-xl bg-blue-50 dark:bg-blue-900/20 text-blue-600 group-hover:scale-110 transition-transform">
                                                 <FileText className="w-4 h-4" />
                                             </div>
-                                            <span className="font-semibold text-slate-900">Headline Check</span>
+                                            <span className="font-semibold text-foreground">Headline Check</span>
                                         </div>
                                     </AccordionTrigger>
                                     <AccordionContent className="pb-6 px-1">
-                                        <div className="p-4 bg-blue-50/50 rounded-2xl">
-                                            <p className="text-slate-700 leading-relaxed font-medium">
+                                        <div className="p-4 bg-blue-50/50 dark:bg-blue-900/20 rounded-2xl">
+                                            <p className="text-foreground leading-relaxed font-medium">
                                                 {deepAnalysis.hook_critique || "No headline analysis available."}
                                             </p>
                                         </div>
@@ -319,11 +319,11 @@ export default function ReportPage() {
                                 <AccordionItem value="missing-features" className="border-none px-6">
                                     <AccordionTrigger className="hover:no-underline py-5 group">
                                         <div className="flex items-center gap-3 w-full">
-                                            <div className="p-2 rounded-xl bg-red-50 text-red-600 group-hover:scale-110 transition-transform">
+                                            <div className="p-2 rounded-xl bg-red-50 dark:bg-red-900/20 text-red-600 group-hover:scale-110 transition-transform">
                                                 <AlertTriangle className="w-4 h-4" />
                                             </div>
-                                            <span className="font-semibold text-slate-900">Feature Gaps</span>
-                                            <span className="ml-auto bg-slate-100 text-slate-600 text-xs font-bold px-2 py-1 rounded-lg">
+                                            <span className="font-semibold text-foreground">Feature Gaps</span>
+                                            <span className="ml-auto bg-muted text-muted-foreground text-xs font-bold px-2 py-1 rounded-lg">
                                                 {gapAnalysis.length}
                                             </span>
                                         </div>
@@ -331,9 +331,9 @@ export default function ReportPage() {
                                     <AccordionContent className="pb-6 px-1">
                                         <div className="space-y-2">
                                             {gapAnalysis.map((gap: string, i: number) => (
-                                                <div key={i} className="flex items-start gap-3 p-3 bg-red-50/30 rounded-xl">
+                                                <div key={i} className="flex items-start gap-3 p-3 bg-red-50/30 dark:bg-red-900/10 rounded-xl">
                                                     <div className="w-1.5 h-1.5 rounded-full bg-red-400 mt-2 shrink-0"></div>
-                                                    <span className="text-slate-700 font-medium text-sm">{gap}</span>
+                                                    <span className="text-foreground font-medium text-sm">{gap}</span>
                                                 </div>
                                             ))}
                                         </div>
@@ -348,13 +348,13 @@ export default function ReportPage() {
             {/* Action Plan Section - Clean & Floating */}
             <div className="space-y-6">
                 <div className="flex items-center justify-between px-2">
-                    <h2 className="text-2xl font-bold text-slate-900 flex items-center gap-3">
-                        <div className="p-2 bg-indigo-50 rounded-xl text-indigo-600">
+                    <h2 className="text-2xl font-bold text-foreground flex items-center gap-3">
+                        <div className="p-2 bg-indigo-50 dark:bg-indigo-900/20 rounded-xl text-indigo-600">
                             <Lightbulb className="w-6 h-6" />
                         </div>
                         Action Plan
                     </h2>
-                    <span className="text-slate-500 font-medium">{rewrites.length} opportunities found</span>
+                    <span className="text-muted-foreground font-medium">{rewrites.length} opportunities found</span>
                 </div>
 
                 <div className="grid md:grid-cols-2 gap-6">
@@ -364,18 +364,18 @@ export default function ReportPage() {
                             initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ delay: 0.2 + (index * 0.1) }}
-                            className="bg-white rounded-3xl p-6 sm:p-8 shadow-[0_4px_20px_rgb(0,0,0,0.03)] hover:shadow-[0_12px_30px_rgb(0,0,0,0.06)] hover:-translate-y-1 transition-all duration-300 border border-slate-50 flex flex-col h-full"
+                            className="bg-card rounded-3xl p-6 sm:p-8 shadow-[0_4px_20px_rgb(0,0,0,0.03)] hover:shadow-[0_12px_30px_rgb(0,0,0,0.06)] hover:-translate-y-1 transition-all duration-300 border border-border flex flex-col h-full"
                         >
                             <div className="flex items-start justify-between mb-6">
                                 <div className="space-y-1">
-                                    <h3 className="font-bold text-lg text-slate-900 leading-tight">
+                                    <h3 className="font-bold text-lg text-foreground leading-tight">
                                         {fix.element || fix.title || "Optimization Update"}
                                     </h3>
                                     {fix.reason && (
-                                        <p className="text-sm text-slate-500">{fix.reason}</p>
+                                        <p className="text-sm text-muted-foreground">{fix.reason}</p>
                                     )}
                                 </div>
-                                <div className="h-10 w-10 shrink-0 flex items-center justify-center rounded-2xl bg-slate-50 text-slate-900 font-black text-lg border border-slate-100">
+                                <div className="h-10 w-10 shrink-0 flex items-center justify-center rounded-2xl bg-muted text-foreground font-black text-lg border border-border">
                                     {index + 1}
                                 </div>
                             </div>
@@ -386,7 +386,7 @@ export default function ReportPage() {
                                     <div className="absolute left-0 top-3 bottom-3 w-1 bg-red-200 rounded-full group-hover:bg-red-400 transition-colors"></div>
                                     <div className="pl-4">
                                         <p className="text-xs font-bold text-red-500 uppercase tracking-wider mb-1">Current</p>
-                                        <p className="text-slate-600 text-sm leading-relaxed opacity-80 decoration-slate-300">
+                                        <p className="text-muted-foreground text-sm leading-relaxed opacity-80 decoration-slate-300">
                                             {fix.current}
                                         </p>
                                     </div>
@@ -395,11 +395,11 @@ export default function ReportPage() {
                                 {/* After */}
                                 <div className="group relative">
                                     <div className="absolute left-0 top-3 bottom-0 w-1 bg-emerald-400 rounded-full shadow-[0_0_10px_rgba(52,211,153,0.5)]"></div>
-                                    <div className="pl-4 py-2 bg-emerald-50/30 rounded-r-xl">
+                                    <div className="pl-4 py-2 bg-emerald-50/30 dark:bg-emerald-900/10 rounded-r-xl">
                                         <p className="text-xs font-bold text-emerald-600 uppercase tracking-wider mb-1 flex items-center gap-2">
                                             Suggested <Sparkles className="w-3 h-3" />
                                         </p>
-                                        <p className="text-slate-900 font-medium text-base leading-relaxed">
+                                        <p className="text-foreground font-medium text-base leading-relaxed">
                                             {fix.suggested || fix.description}
                                         </p>
                                     </div>
@@ -407,12 +407,12 @@ export default function ReportPage() {
                             </div>
                         </motion.div>
                     )) : (
-                        <div className="col-span-full py-12 text-center bg-white rounded-[2rem] shadow-sm border border-slate-100">
-                            <div className="w-20 h-20 bg-emerald-50 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <div className="col-span-full py-12 text-center bg-card rounded-[2rem] shadow-sm border border-border">
+                            <div className="w-20 h-20 bg-emerald-50 dark:bg-emerald-900/20 rounded-full flex items-center justify-center mx-auto mb-4">
                                 <Award className="w-10 h-10 text-emerald-500" />
                             </div>
-                            <h3 className="text-xl font-bold text-slate-900">Perfection Achieved!</h3>
-                            <p className="text-slate-500 mt-2">No major issues found. You are crushing it.</p>
+                            <h3 className="text-xl font-bold text-foreground">Perfection Achieved!</h3>
+                            <p className="text-muted-foreground mt-2">No major issues found. You are crushing it.</p>
                         </div>
                     )}
                 </div>

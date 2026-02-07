@@ -65,24 +65,24 @@ export default function AnalysisPage() {
         <div className="w-full max-w-5xl space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
             <PricingModal open={showPricing} onOpenChange={setShowPricing} />
             <div>
-                <h1 className="text-2xl md:text-3xl font-bold tracking-tight text-slate-900 mb-2">
+                <h1 className="text-2xl md:text-3xl font-bold tracking-tight text-foreground mb-2">
                     Start New Analysis
                 </h1>
-                <p className="text-slate-600 text-sm">
+                <p className="text-muted-foreground text-sm">
                     See exactly why they are winning in just 30 seconds.
                 </p>
             </div>
 
             {/* Rest of the component... */}
-            <Card className="border-slate-200 shadow-lg bg-white">
+            <Card className="bg-card border-border shadow-lg">
                 <CardHeader className="pb-4">
-                    <CardTitle className="text-lg flex items-center gap-2 text-slate-900">
-                        <div className="w-8 h-8 rounded-lg bg-emerald-100 flex items-center justify-center">
+                    <CardTitle className="text-lg flex items-center gap-2 text-foreground">
+                        <div className="w-8 h-8 rounded-lg bg-emerald-100 dark:bg-emerald-900/20 flex items-center justify-center">
                             <Zap className="w-4 h-4 text-emerald-600" />
                         </div>
                         AI Comparison Engine
                     </CardTitle>
-                    <CardDescription className="text-slate-600">
+                    <CardDescription className="text-muted-foreground">
                         Our agents will browse both sites, analyzing design, copy, technical performance, and SEO.
                     </CardDescription>
                 </CardHeader>
@@ -91,8 +91,8 @@ export default function AnalysisPage() {
                         <div className="grid md:grid-cols-2 gap-6">
                             {/* Your Website */}
                             <div className="space-y-3">
-                                <label htmlFor="your-website" className="text-sm font-semibold text-slate-900 flex items-center gap-2">
-                                    <Globe className="w-4 h-4 text-slate-600" />
+                                <label htmlFor="your-website" className="text-sm font-semibold text-foreground flex items-center gap-2">
+                                    <Globe className="w-4 h-4 text-muted-foreground" />
                                     Your Website
                                 </label>
                                 <Input
@@ -102,17 +102,17 @@ export default function AnalysisPage() {
                                     value={yourWebsite}
                                     onChange={(e) => setYourWebsite(e.target.value)}
                                     required
-                                    className="bg-white border-slate-200 focus-visible:ring-emerald-500 focus-visible:border-emerald-500 h-11 rounded-lg text-slate-900 placeholder:text-slate-400"
+                                    className="bg-background border-input focus-visible:ring-emerald-500 focus-visible:border-emerald-500 h-11 rounded-lg text-foreground placeholder:text-muted-foreground"
                                 />
-                                <p className="text-xs text-slate-500">
+                                <p className="text-xs text-muted-foreground">
                                     The site you want to improve.
                                 </p>
                             </div>
 
                             {/* Competitor Website */}
                             <div className="space-y-3">
-                                <label htmlFor="competitor-website" className="text-sm font-semibold text-slate-900 flex items-center gap-2">
-                                    <Search className="w-4 h-4 text-slate-600" />
+                                <label htmlFor="competitor-website" className="text-sm font-semibold text-foreground flex items-center gap-2">
+                                    <Search className="w-4 h-4 text-muted-foreground" />
                                     Competitor's Website
                                 </label>
                                 <Input
@@ -122,9 +122,9 @@ export default function AnalysisPage() {
                                     value={competitorWebsite}
                                     onChange={(e) => setCompetitorWebsite(e.target.value)}
                                     required
-                                    className="bg-white border-slate-200 focus-visible:ring-emerald-500 focus-visible:border-emerald-500 h-11 rounded-lg text-slate-900 placeholder:text-slate-400"
+                                    className="bg-background border-input focus-visible:ring-emerald-500 focus-visible:border-emerald-500 h-11 rounded-lg text-foreground placeholder:text-muted-foreground"
                                 />
-                                <p className="text-xs text-slate-500">
+                                <p className="text-xs text-muted-foreground">
                                     The winner you want to overtake.
                                 </p>
                             </div>
@@ -139,7 +139,7 @@ export default function AnalysisPage() {
                             {loading ? (
                                 <>
                                     <Loader2 className="w-5 h-5 mr-2 animate-spin" />
-                                    Initializing Agents...
+                                    Preparing Agents...
                                 </>
                             ) : (
                                 <>
@@ -161,7 +161,7 @@ export default function AnalysisPage() {
                     { label: "Conversion Tactics" },
                     { label: "Keywords Gap" },
                 ].map((item, i) => (
-                    <div key={i} className="flex items-center justify-center p-3 rounded-lg bg-white border border-slate-200 text-xs font-medium text-slate-700 shadow-sm hover:shadow-md transition-shadow">
+                    <div key={i} className="flex items-center justify-center p-3 rounded-lg bg-card border border-border text-xs font-medium text-muted-foreground shadow-sm hover:shadow-md transition-shadow">
                         <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 mr-2" />
                         {item.label}
                     </div>

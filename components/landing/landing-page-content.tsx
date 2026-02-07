@@ -73,8 +73,8 @@ export function LandingPageContent() {
             <div className="fixed pointer-events-none inset-0 flex items-center justify-center bg-slate-950/80 [mask-image:radial-gradient(ellipse_at_center,transparent_0%,black_100%)]" />
 
             {/* Dynamic Colored Blobs with Animation */}
-            <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[500px] bg-blue-600/20 rounded-full blur-[120px] pointer-events-none mix-blend-screen opacity-50 animate-pulse" />
-            <div className="absolute bottom-0 right-0 w-[800px] h-[600px] bg-emerald-600/10 rounded-full blur-[100px] pointer-events-none mix-blend-screen opacity-40 animate-pulse" style={{ animationDelay: '1s' }} />
+            <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[300px] h-[300px] md:w-[800px] md:h-[500px] bg-blue-600/20 rounded-full blur-[60px] md:blur-[120px] pointer-events-none mix-blend-screen opacity-50 animate-pulse" />
+            <div className="absolute bottom-0 right-0 w-[300px] h-[400px] md:w-[800px] md:h-[600px] bg-emerald-600/10 rounded-full blur-[50px] md:blur-[100px] pointer-events-none mix-blend-screen opacity-40 animate-pulse" style={{ animationDelay: '1s' }} />
 
             <main className="pt-36 pb-24 px-6 lg:px-12 max-w-7xl mx-auto relative z-10">
                 {/* Hero Section - Enhanced */}

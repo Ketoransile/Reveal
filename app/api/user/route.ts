@@ -68,6 +68,32 @@ export async function GET() {
             console.error('[API] Error fetching analyses:', analysesError);
         }
 
+        // Auto-fail stuck analyses (older than 5 minutes)
+        const now = new Date();
+        const stuckAnalyses = analysesData?.filter(a =>
+            a.status === 'processing' &&
+            (now.getTime() - new Date(a.created_at).getTime()) > 5 * 60 * 1000
+        ) || [];
+
+        if (stuckAnalyses.length > 0) {
+            console.log(`[API] Found ${stuckAnalyses.length} stuck analyses. Marking as failed.`);
+
+            // Update in DB
+            await Promise.all(stuckAnalyses.map(async (analysis) => {
+                await supabase
+                    .from('analyses')
+                    .update({
+                        status: 'failed',
+                        error_message: 'Analysis timed out (system cleanup)'
+                    })
+                    .eq('id', analysis.id);
+
+                // Update local object for response
+                analysis.status = 'failed';
+                analysis.error_message = 'Analysis timed out (system cleanup)';
+            }));
+        }
+
         return NextResponse.json({
             user: userData,
             analyses: analysesData || []

@@ -5,8 +5,8 @@ export const FeaturesSection = () => {
     return (
         <section id="features" className="py-24 relative overflow-hidden bg-slate-950/50">
             {/* Background Gradients */}
-            <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-blue-500/5 rounded-full blur-[100px] pointer-events-none" />
-            <div className="absolute bottom-0 left-0 w-[600px] h-[600px] bg-purple-500/5 rounded-full blur-[100px] pointer-events-none" />
+            <div className="absolute top-0 right-0 w-[300px] h-[300px] md:w-[600px] md:h-[600px] bg-blue-500/5 rounded-full blur-[50px] md:blur-[100px] pointer-events-none" />
+            <div className="absolute bottom-0 left-0 w-[300px] h-[300px] md:w-[600px] md:h-[600px] bg-purple-500/5 rounded-full blur-[50px] md:blur-[100px] pointer-events-none" />
 
             <div className="container px-4 md:px-6 mx-auto relative z-10">
                 <div className="flex flex-col items-center justify-center space-y-4 text-center mb-20">

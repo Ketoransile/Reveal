@@ -91,13 +91,13 @@ export async function POST(request: Request) {
             try {
                 try {
                     // First try with domcontentloaded
-                    const response = await page.goto(url, { waitUntil: 'domcontentloaded', timeout: 60000 });
+                    const response = await page.goto(url, { waitUntil: 'domcontentloaded', timeout: 25000 });
                     if (!response || !response.ok()) {
                         throw new Error(`Failed to load page (Status: ${response?.status()})`);
                     }
                 } catch (navError) {
                     console.log(`[API] Initial navigation failed for ${url}, retrying with 'load' event...`);
-                    const response = await page.goto(url, { waitUntil: 'load', timeout: 60000 });
+                    const response = await page.goto(url, { waitUntil: 'load', timeout: 25000 });
                     if (!response || !response.ok()) {
                         throw new Error(`Failed to load page on retry (Status: ${response?.status()})`);
                     }
@@ -172,10 +172,26 @@ export async function POST(request: Request) {
 
     // 7. Perform Analysis (Sync for now)
     try {
-        await performComparisonAnalysis(supabase, analysis.id, yourUrl, competitorUrl, yourContent, competitorContent);
-    } catch (err) {
+        // Enforce a strict 50s timeout for the entire analysis process to prevent Vercel timeouts (60s limit)
+        // If it takes longer, we fail it so the user isn't stuck in "Processing" forever.
+        const analysisPromise = performComparisonAnalysis(supabase, analysis.id, yourUrl, competitorUrl, yourContent, competitorContent);
+
+        const timeoutPromise = new Promise((_, reject) =>
+            setTimeout(() => reject(new Error("Analysis timed out (exceeded 50s limit)")), 50000)
+        );
+
+        await Promise.race([analysisPromise, timeoutPromise]);
+    } catch (err: any) {
         console.error('[API] Analysis execution error:', err);
-        // Allow response to return success as analysis record exists
+
+        // Ensure we mark it as failed if it timed out here
+        await supabase
+            .from('analyses')
+            .update({
+                status: 'failed',
+                error_message: err.message || 'Analysis processing failed'
+            })
+            .eq('id', analysis.id);
     }
 
     return NextResponse.json({

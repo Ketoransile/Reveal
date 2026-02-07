@@ -7,7 +7,7 @@ export const PricingSection = () => {
         <section id="pricing" className="py-24 relative overflow-hidden">
             {/* Background Elements */}
             <div className="absolute top-0 left-0 w-full h-full bg-slate-950 -z-10" />
-            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-emerald-500/5 rounded-full blur-[120px] pointer-events-none" />
+            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[350px] h-[350px] md:w-[800px] md:h-[800px] bg-emerald-500/5 rounded-full blur-[80px] md:blur-[120px] pointer-events-none" />
 
             <div className="container px-4 md:px-6 mx-auto relative z-10">
                 <div className="flex flex-col items-center justify-center space-y-4 text-center mb-12">

@@ -43,21 +43,21 @@ export default function RecentReportsPage() {
         switch (status) {
             case 'processing':
                 return (
-                    <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-blue-50 border border-blue-200 text-blue-700 text-xs font-medium">
+                    <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-900 text-blue-700 dark:text-blue-400 text-xs font-medium">
                         <Clock className="w-3.5 h-3.5 animate-spin" />
                         Processing
                     </div>
                 );
             case 'completed':
                 return (
-                    <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-700 text-xs font-semibold">
+                    <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-50 dark:bg-emerald-900/20 border border-emerald-200 dark:border-emerald-900 text-emerald-700 dark:text-emerald-400 text-xs font-semibold">
                         <CheckCircle2 className="w-3.5 h-3.5" />
                         Complete
                     </div>
                 );
             case 'failed':
                 return (
-                    <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-red-50 border border-red-200 text-red-700 text-xs font-medium">
+                    <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-900 text-red-700 dark:text-red-400 text-xs font-medium">
                         <XCircle className="w-3.5 h-3.5" />
                         Failed
                     </div>

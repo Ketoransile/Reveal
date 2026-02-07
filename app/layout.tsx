@@ -63,9 +63,8 @@ export default function RootLayout({
         <ScrollbarTheme />
         <ThemeProvider
           attribute="class"
-          defaultTheme="light"
-          forcedTheme="light"
-          enableSystem={false}
+          defaultTheme="system"
+          enableSystem
           disableTransitionOnChange
         >
           <SmoothScrolling />

@@ -101,15 +101,15 @@ export default function DashboardPage() {
             {/* Header Section */}
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                 <div>
-                    <h1 className="text-2xl md:text-3xl font-bold tracking-tight text-slate-900">
+                    <h1 className="text-2xl md:text-3xl font-bold tracking-tight text-foreground">
                         Dashboard
                     </h1>
-                    <p className="text-slate-600 text-sm mt-1">
+                    <p className="text-muted-foreground text-sm mt-1">
                         Track your competitive intelligence and insights
                     </p>
                 </div>
                 <Link href="/dashboard/analysis">
-                    <Button className="bg-slate-900 text-white hover:bg-slate-800 shadow-lg shadow-slate-900/10 rounded-full px-6 h-11 transition-all hover:scale-105 active:scale-95">
+                    <Button className="bg-primary text-primary-foreground hover:bg-primary/90 shadow-lg shadow-slate-900/10 rounded-full px-6 h-11 transition-all hover:scale-105 active:scale-95">
                         <Plus className="w-4 h-4 mr-2" />
                         New Analysis
                     </Button>
@@ -125,10 +125,10 @@ export default function DashboardPage() {
 
             {/* Quick Stats */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <Card className="border-slate-200 hover:shadow-md transition-shadow bg-white relative overflow-hidden group">
+                <Card className="border-border hover:shadow-md transition-shadow bg-card relative overflow-hidden group">
                     <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-br from-emerald-500/10 to-transparent rounded-bl-full -mr-4 -mt-4 transition-transform group-hover:scale-110" />
                     <CardHeader className="flex flex-row items-center justify-between pb-2 relative z-10">
-                        <CardTitle className="text-sm font-medium text-slate-600">
+                        <CardTitle className="text-sm font-medium text-muted-foreground">
                             {userData?.subscription_plan === 'pro' || userData?.subscription_plan === 'agency'
                                 ? 'Subscription Status'
                                 : 'Available Credits'}
@@ -140,55 +140,55 @@ export default function DashboardPage() {
                     <CardContent className="relative z-10">
                         {userData?.subscription_plan === 'pro' || userData?.subscription_plan === 'agency' ? (
                             <div>
-                                <div className="text-2xl font-bold text-slate-900 flex items-center gap-2">
+                                <div className="text-2xl font-bold text-foreground flex items-center gap-2">
                                     Unlimited <span className="text-lg bg-indigo-100 text-indigo-700 px-2 py-0.5 rounded text-xs font-bold uppercase tracking-wider">Pro</span>
                                 </div>
                                 {userData?.subscription_period_end ? (
-                                    <p className="text-xs text-slate-500 mt-1">
+                                    <p className="text-xs text-muted-foreground mt-1">
                                         Renews on {new Date(userData.subscription_period_end).toLocaleDateString(undefined, { month: 'short', day: 'numeric' })}
                                     </p>
                                 ) : (
-                                    <p className="text-xs text-slate-500 mt-1">Active Plan</p>
+                                    <p className="text-xs text-muted-foreground mt-1">Active Plan</p>
                                 )}
                             </div>
                         ) : (
                             <div>
-                                <div className="text-2xl font-bold text-slate-900">
-                                    {loading ? '...' : userData?.credits || 0} <span className="text-sm text-slate-400 font-normal">/ 3</span>
+                                <div className="text-2xl font-bold text-foreground">
+                                    {loading ? '...' : userData?.credits || 0} <span className="text-sm text-muted-foreground font-normal">/ 3</span>
                                 </div>
-                                <p className="text-xs text-slate-500 mt-1">Credits remaining this month</p>
+                                <p className="text-xs text-muted-foreground mt-1">Credits remaining this month</p>
                             </div>
                         )}
                     </CardContent>
                 </Card>
 
-                <Card className="border-slate-200 hover:shadow-md transition-shadow bg-white">
+                <Card className="border-border hover:shadow-md transition-shadow bg-card">
                     <CardHeader className="flex flex-row items-center justify-between pb-2">
-                        <CardTitle className="text-sm font-medium text-slate-600">Completed</CardTitle>
+                        <CardTitle className="text-sm font-medium text-muted-foreground">Completed</CardTitle>
                         <div className="w-8 h-8 rounded-lg bg-blue-100 flex items-center justify-center">
                             <CheckCircle2 className="w-4 h-4 text-blue-600" />
                         </div>
                     </CardHeader>
                     <CardContent>
-                        <div className="text-2xl font-bold text-slate-900">
+                        <div className="text-2xl font-bold text-foreground">
                             {loading ? '...' : completedAnalyses.length}
                         </div>
-                        <p className="text-xs text-slate-500 mt-1">Lifetime analyses</p>
+                        <p className="text-xs text-muted-foreground mt-1">Lifetime analyses</p>
                     </CardContent>
                 </Card>
 
-                <Card className="border-slate-200 hover:shadow-md transition-shadow bg-white">
+                <Card className="border-border hover:shadow-md transition-shadow bg-card">
                     <CardHeader className="flex flex-row items-center justify-between pb-2">
-                        <CardTitle className="text-sm font-medium text-slate-600">In Progress</CardTitle>
+                        <CardTitle className="text-sm font-medium text-muted-foreground">In Progress</CardTitle>
                         <div className="w-8 h-8 rounded-lg bg-orange-100 flex items-center justify-center">
                             <Clock className="w-4 h-4 text-orange-600" />
                         </div>
                     </CardHeader>
                     <CardContent>
-                        <div className="text-2xl font-bold text-slate-900">
+                        <div className="text-2xl font-bold text-foreground">
                             {loading ? '...' : processingAnalyses.length}
                         </div>
-                        <p className="text-xs text-slate-500 mt-1">Processing now</p>
+                        <p className="text-xs text-muted-foreground mt-1">Processing now</p>
                     </CardContent>
                 </Card>
             </div>
@@ -196,24 +196,24 @@ export default function DashboardPage() {
             {/* Analysis List */}
             <div className="space-y-4">
                 <div className="flex items-center gap-2">
-                    <BarChart3 className="w-5 h-5 text-slate-700" />
-                    <h2 className="text-lg font-bold text-slate-900">Recent Analyses</h2>
+                    <BarChart3 className="w-5 h-5 text-muted-foreground" />
+                    <h2 className="text-lg font-bold text-foreground">Recent Analyses</h2>
                 </div>
 
-                <Card className="border-slate-200 bg-white shadow-sm">
+                <Card className="border-border bg-card shadow-sm">
                     <CardContent className="p-0">
                         {loading ? (
-                            <div className="flex flex-col items-center justify-center py-16 text-slate-500">
+                            <div className="flex flex-col items-center justify-center py-16 text-muted-foreground">
                                 <div className="w-8 h-8 border-2 border-emerald-600 border-t-transparent rounded-full animate-spin mb-4" />
                                 <p className="text-sm">Loading your data...</p>
                             </div>
                         ) : analyses.length === 0 ? (
-                            <div className="flex flex-col items-center justify-center py-20 text-slate-500">
-                                <div className="w-16 h-16 bg-slate-100 rounded-full flex items-center justify-center mb-4">
-                                    <BarChart3 className="w-8 h-8 text-slate-400" />
+                            <div className="flex flex-col items-center justify-center py-20 text-muted-foreground">
+                                <div className="w-16 h-16 bg-muted rounded-full flex items-center justify-center mb-4">
+                                    <BarChart3 className="w-8 h-8 text-muted-foreground" />
                                 </div>
-                                <h3 className="text-lg font-semibold text-slate-900 mb-2">No analyses yet</h3>
-                                <p className="text-slate-500 max-w-sm text-center mb-6 text-sm">
+                                <h3 className="text-lg font-semibold text-foreground mb-2">No analyses yet</h3>
+                                <p className="text-muted-foreground max-w-sm text-center mb-6 text-sm">
                                     Start your first competitive analysis to uncover actionable insights.
                                 </p>
                                 <Link href="/dashboard/analysis">
@@ -224,7 +224,7 @@ export default function DashboardPage() {
                                 </Link>
                             </div>
                         ) : (
-                            <div className="divide-y divide-slate-100">
+                            <div className="divide-y divide-border">
                                 {analyses.map((analysis) => (
                                     <div
                                         key={analysis.id}
@@ -235,18 +235,18 @@ export default function DashboardPage() {
                                         }}
                                         className={`p-5 flex flex-col md:flex-row md:items-center justify-between gap-4 transition-all duration-200 
                                             ${analysis.status === 'completed'
-                                                ? 'hover:bg-slate-50 cursor-pointer group'
+                                                ? 'hover:bg-muted cursor-pointer group'
                                                 : 'opacity-75 cursor-default'}`}
                                     >
                                         <div className="flex-1 min-w-0">
                                             <div className="flex items-center gap-3 mb-2">
-                                                <h3 className="text-base font-semibold text-slate-900 truncate group-hover:text-emerald-700 transition-colors">
-                                                    {new URL(analysis.your_url).hostname} <span className="text-slate-400 font-normal">vs</span> {new URL(analysis.competitor_url).hostname}
+                                                <h3 className="text-base font-semibold text-foreground truncate group-hover:text-emerald-700 transition-colors">
+                                                    {new URL(analysis.your_url).hostname} <span className="text-muted-foreground font-normal">vs</span> {new URL(analysis.competitor_url).hostname}
                                                 </h3>
                                                 <StatusBadge status={analysis.status} />
                                             </div>
 
-                                            <div className="flex items-center gap-3 text-xs text-slate-500">
+                                            <div className="flex items-center gap-3 text-xs text-muted-foreground">
                                                 <span>{new Date(analysis.created_at).toLocaleDateString()}</span>
                                                 <span>•</span>
                                                 <span className="truncate max-w-[200px]">{analysis.your_url}</span>
@@ -265,8 +265,8 @@ export default function DashboardPage() {
                                                 null
                                             ) : analysis.status === 'processing' ? (
                                                 <div className="text-right">
-                                                    <p className="text-sm text-slate-600 animate-pulse font-medium">Analyzing...</p>
-                                                    <p className="text-[10px] text-slate-400">Approx 30s remaining</p>
+                                                    <p className="text-sm text-muted-foreground animate-pulse font-medium">Analyzing...</p>
+                                                    <p className="text-[10px] text-muted-foreground">Approx 30s remaining</p>
                                                 </div>
                                             ) : null}
                                         </div>

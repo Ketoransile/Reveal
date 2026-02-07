@@ -82,7 +82,7 @@ export function SiteHeaderCustom({ onMenuClick, collapsed = false, onToggleColla
                 </Breadcrumb>
             </div>
             <div className="flex items-center gap-2">
-                {/* <ThemeToggle /> */}
+                <ThemeToggle />
             </div>
         </header>
     )
