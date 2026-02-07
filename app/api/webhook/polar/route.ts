@@ -18,31 +18,56 @@ export const POST = Webhooks({
         const order = orderPayload as any;
         console.log('Order created:', order.id);
 
-        // Extract customer email
-        // Note: Adjust property access based on exact SDK typing if needed
-        // 'order' object typically has customer details
         const email = order.customer_email || order.customer?.email;
 
         if (email) {
-            console.log(`Upgrading user ${email} to Pro`);
+            console.log(`Processing Order for ${email}`);
+            await updateUserSubscription(email, 'pro');
+        }
+    },
+    onSubscriptionCreated: async (payload) => {
+        const subscription = payload as any;
+        console.log('Subscription created:', subscription.id);
 
-            // Update user to PRO plan
-            // In a real app, check order.product_id to distinguish Pro vs Agency
-            const { error } = await supabaseAdmin
-                .from('users')
-                .update({
-                    subscription_plan: 'pro',
-                    credits: 9999 // Give unlimited credits conceptually 
-                })
-                .eq('email', email);
+        const email = subscription.customer?.email || subscription.email;
+        if (email) {
+            console.log(`Processing Subscription Creation for ${email}`);
+            await updateUserSubscription(email, 'pro');
+        }
+    },
+    onSubscriptionUpdated: async (payload) => {
+        const subscription = payload as any;
+        console.log('Subscription updated:', subscription.id, 'Status:', subscription.status);
 
-            if (error) {
-                console.error('Database update failed:', error);
-            } else {
-                console.log(`Success: User ${email} is now Pro`);
-            }
-        } else {
-            console.log('No email found in order, skipping update.');
+        const email = subscription.customer?.email || subscription.email;
+        if (email) {
+            // Only keep as pro if active or trialing
+            const isActive = ['active', 'trialing'].includes(subscription.status);
+            const plan = isActive ? 'pro' : 'free';
+
+            console.log(`Updating Subscription for ${email} to ${plan} (Status: ${subscription.status})`);
+            await updateUserSubscription(email, plan);
         }
     }
 });
+
+async function updateUserSubscription(email: string, plan: string) {
+    const { error } = await supabaseAdmin
+        .from('users')
+        .update({
+            subscription_plan: plan,
+            // If pro, we conceptually give unlimited, but let's keep credits high just in case legacy logic checks it
+            ...(plan === 'pro' || plan === 'agency' ? {
+                credits: 1000000,
+                subscription_period_end: new Date(new Date().setMonth(new Date().getMonth() + 1)).toISOString()
+            } : {})
+        })
+        .eq('email', email);
+
+    if (error) {
+        console.error(`Database update failed for ${email}:`, error);
+    } else {
+        console.log(`Success: User ${email} updated to ${plan}`);
+    }
+}
+

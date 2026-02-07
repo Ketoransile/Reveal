@@ -19,8 +19,25 @@ export const FloatingNav = ({ user: initialUser }: { user: any }) => {
         const supabase = createClient();
 
         // Get current user session
-        supabase.auth.getUser().then(({ data: { user } }) => {
-            setUser(user);
+        supabase.auth.getUser().then(async ({ data: { user } }) => {
+            if (user) {
+                // Verify user has a public profile
+                const { data: profile, error } = await supabase
+                    .from('users')
+                    .select('id')
+                    .eq('id', user.id)
+                    .single();
+
+                if (error || !profile) {
+                    console.log("User missing profile on client check, signing out...");
+                    await supabase.auth.signOut();
+                    setUser(null);
+                } else {
+                    setUser(user);
+                }
+            } else {
+                setUser(null);
+            }
         });
 
         // Listen for auth state changes

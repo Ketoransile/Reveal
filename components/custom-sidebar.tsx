@@ -64,11 +64,7 @@ export function CustomSidebar({ className, collapsed = false, setCollapsed, onCl
     const router = useRouter()
     const [mounted, setMounted] = React.useState(false)
     const [showLogoutDialog, setShowLogoutDialog] = React.useState(false)
-    const [user, setUser] = React.useState<any>({
-        name: "User",
-        email: "user@example.com",
-        avatar: "",
-    })
+    const [user, setUser] = React.useState<any>(null)
 
     React.useEffect(() => {
         setMounted(true)
@@ -144,12 +140,12 @@ export function CustomSidebar({ className, collapsed = false, setCollapsed, onCl
                         <TooltipTrigger asChild>
                             <Button
                                 className={cn(
-                                    "bg-white text-slate-900 border border-slate-200 hover:bg-slate-50 shadow-sm transition-all",
-                                    collapsed ? "w-10 h-10 p-0 rounded-lg justify-center" : "w-full justify-start gap-2"
+                                    "shadow-md hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300 font-medium",
+                                    collapsed ? "w-10 h-10 p-0 rounded-xl justify-center bg-slate-900 text-white" : "w-full justify-start gap-2 bg-slate-900 text-white hover:bg-slate-800"
                                 )}
                                 size={collapsed ? "icon" : "lg"}
                             >
-                                <Plus className="w-5 h-5" />
+                                <Plus className={cn("w-5 h-5", collapsed ? "mr-0" : "mr-1")} />
                                 {!collapsed && <span>New Analysis</span>}
                             </Button>
                         </TooltipTrigger>
@@ -197,17 +193,31 @@ export function CustomSidebar({ className, collapsed = false, setCollapsed, onCl
                     <DropdownMenuTrigger asChild>
                         <Button variant="ghost" className={cn("w-full h-14 hover:bg-accent group transition-all", collapsed ? "justify-center px-0" : "justify-start px-2")}>
                             <div className="flex items-center gap-3 w-full">
-                                <Avatar className="h-8 w-8 rounded-lg border shrink-0">
-                                    <AvatarImage src={user.avatar} alt={user.name} />
-                                    <AvatarFallback className="rounded-lg">CN</AvatarFallback>
-                                </Avatar>
-                                {!collapsed && (
+                                {user ? (
                                     <>
-                                        <div className="grid flex-1 text-left text-sm leading-tight overflow-hidden">
-                                            <span className="truncate font-semibold">{user.name}</span>
-                                            <span className="truncate text-xs text-muted-foreground">{user.email}</span>
-                                        </div>
-                                        <ChevronsUpDown className="ml-auto size-4 opacity-50 group-hover:opacity-100 transition-opacity shrink-0" />
+                                        <Avatar className="h-8 w-8 rounded-lg shrink-0">
+                                            <AvatarImage src={user.avatar} alt={user.name} />
+                                            <AvatarFallback className="rounded-lg">CN</AvatarFallback>
+                                        </Avatar>
+                                        {!collapsed && (
+                                            <>
+                                                <div className="grid flex-1 text-left text-sm leading-tight overflow-hidden">
+                                                    <span className="truncate font-semibold">{user.name}</span>
+                                                    <span className="truncate text-xs text-muted-foreground">{user.email}</span>
+                                                </div>
+                                                <ChevronsUpDown className="ml-auto size-4 opacity-50 group-hover:opacity-100 transition-opacity shrink-0" />
+                                            </>
+                                        )}
+                                    </>
+                                ) : (
+                                    <>
+                                        <div className="h-8 w-8 rounded-lg bg-muted animate-pulse shrink-0" />
+                                        {!collapsed && (
+                                            <div className="flex-1 space-y-2">
+                                                <div className="h-4 w-24 bg-muted animate-pulse rounded" />
+                                                <div className="h-3 w-32 bg-muted animate-pulse rounded" />
+                                            </div>
+                                        )}
                                     </>
                                 )}
                             </div>

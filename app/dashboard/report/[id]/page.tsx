@@ -138,7 +138,7 @@ export default function ReportPage() {
                     <div className="absolute inset-0 rounded-full border-4 border-slate-100"></div>
                     <div className="absolute inset-0 rounded-full border-4 border-emerald-500 border-t-transparent animate-spin"></div>
                 </div>
-                <p className="text-lg font-medium text-slate-500 animate-pulse tracking-wide">Analysing Strategies...</p>
+                <p className="text-lg font-medium text-slate-500 animate-pulse tracking-wide">Loading Analysis...</p>
             </div>
         );
     }

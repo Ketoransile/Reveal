@@ -22,7 +22,7 @@ export async function POST(request: Request) {
     // 2. Check Credits
     const { data: userData, error: userError } = await supabase
         .from('users')
-        .select('credits')
+        .select('credits, subscription_plan')
         .eq('id', user.id)
         .single();
 
@@ -31,12 +31,12 @@ export async function POST(request: Request) {
         return NextResponse.json({ error: 'Failed to fetch user data' }, { status: 500 });
     }
 
-    if (userData.credits < 1) {
+    if (userData.credits < 1 && userData.subscription_plan !== 'pro' && userData.subscription_plan !== 'agency') {
         console.log('[API] Insufficient credits for user:', user.id);
         return NextResponse.json({ error: 'Insufficient credits' }, { status: 402 });
     }
 
-    console.log('[API] User has', userData.credits, 'credits');
+    console.log('[API] User has', userData.credits, 'credits', 'Plan:', userData.subscription_plan);
 
     // 3. Parse Request
     let body;
@@ -160,13 +160,15 @@ export async function POST(request: Request) {
 
     console.log('[API] Created analysis with ID:', analysis.id);
 
-    // 6. Deduct Credit
-    const { error: creditError } = await supabase
-        .from('users')
-        .update({ credits: userData.credits - 1 })
-        .eq('id', user.id);
+    // 6. Deduct Credit (only for free plan)
+    if (userData.subscription_plan !== 'pro' && userData.subscription_plan !== 'agency') {
+        const { error: creditError } = await supabase
+            .from('users')
+            .update({ credits: userData.credits - 1 })
+            .eq('id', user.id);
 
-    if (creditError) console.error('[API] Error deducting credit:', creditError);
+        if (creditError) console.error('[API] Error deducting credit:', creditError);
+    }
 
     // 7. Perform Analysis (Sync for now)
     try {

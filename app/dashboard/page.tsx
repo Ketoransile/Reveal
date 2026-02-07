@@ -105,18 +105,40 @@ export default function DashboardPage() {
 
             {/* Quick Stats */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <Card className="border-slate-200 hover:shadow-md transition-shadow bg-white">
-                    <CardHeader className="flex flex-row items-center justify-between pb-2">
-                        <CardTitle className="text-sm font-medium text-slate-600">Credits</CardTitle>
-                        <div className="w-8 h-8 rounded-lg bg-emerald-100 flex items-center justify-center">
-                            <Zap className="w-4 h-4 text-emerald-600" />
+                <Card className="border-slate-200 hover:shadow-md transition-shadow bg-white relative overflow-hidden group">
+                    <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-br from-emerald-500/10 to-transparent rounded-bl-full -mr-4 -mt-4 transition-transform group-hover:scale-110" />
+                    <CardHeader className="flex flex-row items-center justify-between pb-2 relative z-10">
+                        <CardTitle className="text-sm font-medium text-slate-600">
+                            {userData?.subscription_plan === 'pro' || userData?.subscription_plan === 'agency'
+                                ? 'Subscription Status'
+                                : 'Available Credits'}
+                        </CardTitle>
+                        <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${userData?.subscription_plan === 'pro' || userData?.subscription_plan === 'agency' ? 'bg-indigo-100 text-indigo-600' : 'bg-emerald-100 text-emerald-600'}`}>
+                            {userData?.subscription_plan === 'pro' || userData?.subscription_plan === 'agency' ? <Clock className="w-4 h-4" /> : <Zap className="w-4 h-4" />}
                         </div>
                     </CardHeader>
-                    <CardContent>
-                        <div className="text-2xl font-bold text-slate-900">
-                            {loading ? '...' : userData?.credits || 0}
-                        </div>
-                        <p className="text-xs text-slate-500 mt-1">Analyses remaining</p>
+                    <CardContent className="relative z-10">
+                        {userData?.subscription_plan === 'pro' || userData?.subscription_plan === 'agency' ? (
+                            <div>
+                                <div className="text-2xl font-bold text-slate-900 flex items-center gap-2">
+                                    Unlimited <span className="text-lg bg-indigo-100 text-indigo-700 px-2 py-0.5 rounded text-xs font-bold uppercase tracking-wider">Pro</span>
+                                </div>
+                                {userData?.subscription_period_end ? (
+                                    <p className="text-xs text-slate-500 mt-1">
+                                        Renews on {new Date(userData.subscription_period_end).toLocaleDateString(undefined, { month: 'short', day: 'numeric' })}
+                                    </p>
+                                ) : (
+                                    <p className="text-xs text-slate-500 mt-1">Active Plan</p>
+                                )}
+                            </div>
+                        ) : (
+                            <div>
+                                <div className="text-2xl font-bold text-slate-900">
+                                    {loading ? '...' : userData?.credits || 0} <span className="text-sm text-slate-400 font-normal">/ 3</span>
+                                </div>
+                                <p className="text-xs text-slate-500 mt-1">Credits remaining this month</p>
+                            </div>
+                        )}
                     </CardContent>
                 </Card>
 

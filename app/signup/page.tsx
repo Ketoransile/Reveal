@@ -41,6 +41,7 @@ export default function SignupPage() {
     };
 
     const handleOAuthLogin = async (provider: 'github' | 'google') => {
+        console.log('[Signup] Starting OAuth login with:', provider);
         const supabase = createClient();
         const { error } = await supabase.auth.signInWithOAuth({
             provider,
@@ -48,7 +49,12 @@ export default function SignupPage() {
                 redirectTo: `${location.origin}/auth/callback`,
             },
         })
-        if (error) setError(error.message);
+        if (error) {
+            console.error('[Signup] OAuth error:', error);
+            setError(error.message);
+        } else {
+            console.log('[Signup] OAuth initiated successfully');
+        }
     }
 
     return (
