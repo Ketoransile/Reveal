@@ -13,7 +13,7 @@ const steps = [
     {
         icon: <Zap className="w-8 h-8 text-amber-400" />,
         title: "2. AI Scans Deep",
-        description: "Our agents simulate a user journey, scraping design, SEO, and tech stack data hidden from plain sight.",
+        description: "Our agents simulate a user journey, analyzing content, structure, and persuasion techniques hidden from plain sight.",
         color: "amber"
     },
     {

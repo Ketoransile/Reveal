@@ -25,11 +25,11 @@ export const FeaturesSection = () => {
                     {/* Feature 1 */}
                     <div className="group p-8 rounded-3xl bg-slate-900/40 border border-slate-800 hover:border-blue-500/40 transition-all duration-500 hover:bg-slate-900/60 hover:-translate-y-2">
                         <div className="w-14 h-14 rounded-2xl bg-blue-500/10 border border-blue-500/20 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-500">
-                            <Search className="w-7 h-7 text-blue-400 group-hover:text-blue-300" />
+                            <Sparkles className="w-7 h-7 text-blue-400 group-hover:text-blue-300" />
                         </div>
-                        <h3 className="text-xl font-bold text-slate-100 mb-3 group-hover:text-blue-200 transition-colors">SEO Backlink Spy</h3>
+                        <h3 className="text-xl font-bold text-slate-100 mb-3 group-hover:text-blue-200 transition-colors">AI Competitor Comparison</h3>
                         <p className="text-slate-400 leading-relaxed">
-                            See exactly who links to them. Replicate their high-authority backlinks to boost your own domain authority.
+                            Get an objective, side-by-side analysis of your landing page vs. your top competitor. See exactly who wins and why.
                         </p>
                     </div>
 
@@ -38,9 +38,9 @@ export const FeaturesSection = () => {
                         <div className="w-14 h-14 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-500">
                             <MousePointerClick className="w-7 h-7 text-emerald-400 group-hover:text-emerald-300" />
                         </div>
-                        <h3 className="text-xl font-bold text-slate-100 mb-3 group-hover:text-emerald-200 transition-colors">UX/UI Pattern Detection</h3>
+                        <h3 className="text-xl font-bold text-slate-100 mb-3 group-hover:text-emerald-200 transition-colors">Conversion Gap Analysis</h3>
                         <p className="text-slate-400 leading-relaxed">
-                            Identify the design patterns they use to drive conversions. Buttons, layouts, and user flows analyzed by AI.
+                            Identify specific features and psychological triggers your competitor is using to convert users that you are missing.
                         </p>
                     </div>
 
@@ -49,9 +49,9 @@ export const FeaturesSection = () => {
                         <div className="w-14 h-14 rounded-2xl bg-purple-500/10 border border-purple-500/20 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-500">
                             <FileText className="w-7 h-7 text-purple-400 group-hover:text-purple-300" />
                         </div>
-                        <h3 className="text-xl font-bold text-slate-100 mb-3 group-hover:text-purple-200 transition-colors">Content Strategy decoding</h3>
+                        <h3 className="text-xl font-bold text-slate-100 mb-3 group-hover:text-purple-200 transition-colors">Actionable Copy Fixes</h3>
                         <p className="text-slate-400 leading-relaxed">
-                            Analyze their top-performing blog posts and landing pages. Know what topics resonate with your shared audience.
+                            Don't just get data—get solutions. Our AI rewrites your headlines and CTAs to match the persuasion level of market leaders.
                         </p>
                     </div>
 
@@ -60,9 +60,9 @@ export const FeaturesSection = () => {
                         <div className="w-14 h-14 rounded-2xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-500">
                             <Zap className="w-7 h-7 text-amber-400 group-hover:text-amber-300" />
                         </div>
-                        <h3 className="text-xl font-bold text-slate-100 mb-3 group-hover:text-amber-200 transition-colors">Performance Benchmarking</h3>
+                        <h3 className="text-xl font-bold text-slate-100 mb-3 group-hover:text-amber-200 transition-colors">Strategic Swot Analysis</h3>
                         <p className="text-slate-400 leading-relaxed">
-                            Compare load speeds, core web vitals, and mobile responsiveness. Don't let slow tech kill your conversions.
+                            Understand the strengths and weaknesses of both pages. Leverage your strengths and fix your weaknesses to dominate.
                         </p>
                     </div>
 
@@ -71,9 +71,9 @@ export const FeaturesSection = () => {
                         <div className="w-14 h-14 rounded-2xl bg-pink-500/10 border border-pink-500/20 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-500">
                             <Lock className="w-7 h-7 text-pink-400 group-hover:text-pink-300" />
                         </div>
-                        <h3 className="text-xl font-bold text-slate-100 mb-3 group-hover:text-pink-200 transition-colors">Tech Stack Reveal</h3>
+                        <h3 className="text-xl font-bold text-slate-100 mb-3 group-hover:text-pink-200 transition-colors">Trust & Authority Check</h3>
                         <p className="text-slate-400 leading-relaxed">
-                            See under the hood. Detect their CMS, analytics tools, advertising pixels, and backend technologies.
+                            Analyze how your competitor builds trust through testimonials, logos, and guarantees, and how you can do it better.
                         </p>
                     </div>
 
@@ -82,9 +82,9 @@ export const FeaturesSection = () => {
                         <div className="w-14 h-14 rounded-2xl bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-500">
                             <BarChart3 className="w-7 h-7 text-cyan-400 group-hover:text-cyan-300" />
                         </div>
-                        <h3 className="text-xl font-bold text-slate-100 mb-3 group-hover:text-cyan-200 transition-colors">Traffic Source Breakdown</h3>
+                        <h3 className="text-xl font-bold text-slate-100 mb-3 group-hover:text-cyan-200 transition-colors">AI Chatbot Analyst</h3>
                         <p className="text-slate-400 leading-relaxed">
-                            Do they get users from organic search, paid ads, or social? Know where to spend your marketing budget.
+                            Have follow-up questions? Chat directly with the AI analyst to get deeper insights and custom advice for your specific situation.
                         </p>
                     </div>
                 </div>

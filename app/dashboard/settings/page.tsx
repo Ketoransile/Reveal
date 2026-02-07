@@ -188,7 +188,7 @@ function SettingsContent() {
             </div>
 
             <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-                <TabsList className="grid w-full grid-cols-2 md:w-auto md:inline-grid md:grid-cols-4 bg-muted">
+                <TabsList className="grid w-full grid-cols-2 h-auto md:w-auto md:inline-grid md:grid-cols-4 bg-muted">
                     <TabsTrigger value="account">Account</TabsTrigger>
                     <TabsTrigger value="appearance">Appearance</TabsTrigger>
                     <TabsTrigger value="notifications">Notifications</TabsTrigger>
