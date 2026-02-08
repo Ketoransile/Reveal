@@ -2,7 +2,7 @@
 
 import { Separator } from '@/components/ui/separator'
 import { Button } from '@/components/ui/button'
-import { Menu, ChevronLeft, ChevronRight } from "lucide-react"
+import { Menu, PanelLeft } from "lucide-react"
 import {
     Breadcrumb,
     BreadcrumbItem,
@@ -48,7 +48,7 @@ export function SiteHeaderCustom({ onMenuClick, collapsed = false, onToggleColla
                         className="hidden md:flex h-8 w-8 -ml-2"
                         onClick={onToggleCollapse}
                     >
-                        {collapsed ? <ChevronRight className="h-4 w-4" /> : <ChevronLeft className="h-4 w-4" />}
+                        <PanelLeft className="h-5 w-5" />
                         <span className="sr-only">Toggle sidebar</span>
                     </Button>
                 )}

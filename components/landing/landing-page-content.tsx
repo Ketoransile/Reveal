@@ -6,7 +6,7 @@ import { ArrowRight, Sparkles, TrendingUp, Shield } from "lucide-react";
 import { FeaturesSection } from "@/components/landing/features-section";
 import { AnalysisPreview } from "@/components/landing/analysis-preview";
 import { HowItWorks } from "@/components/landing/how-it-works";
-import { motion } from "framer-motion";
+import { motion, Variants } from "framer-motion";
 import { createClient } from "@/lib/supabase/client";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
@@ -34,7 +34,7 @@ export function LandingPageContent() {
         }
     };
 
-    const fadeInUp = {
+    const fadeInUp: Variants = {
         hidden: { opacity: 0, y: 30 },
         visible: (custom: number) => ({
             opacity: 1,
@@ -43,7 +43,7 @@ export function LandingPageContent() {
         })
     };
 
-    const sectionVariants = {
+    const sectionVariants: Variants = {
         hidden: { opacity: 0, y: 50 },
         visible: {
             opacity: 1,

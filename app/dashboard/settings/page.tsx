@@ -368,8 +368,8 @@ function SettingsContent() {
 
                 <TabsContent value="billing" className="space-y-6">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <Card className="overflow-hidden border-border shadow-sm bg-card h-full flex flex-col">
-                            <div className={`h-2 w-full ${user.subscription_plan === 'free' ? 'bg-muted' : 'bg-gradient-to-r from-emerald-500 to-emerald-400'}`} />
+                        <Card className="overflow-hidden border-none shadow-xl shadow-zinc-200/60 dark:border-border dark:shadow-sm bg-white dark:bg-card h-full flex flex-col">
+                            <div className={`h-2 w-full ${user.subscription_plan === 'free' ? 'bg-muted' : 'bg-zinc-100 dark:bg-muted/40'}`} />
                             <CardHeader>
                                 <div className="flex items-center justify-between">
                                     <div className="flex items-center gap-3 mb-1">
@@ -420,7 +420,7 @@ function SettingsContent() {
                             </CardFooter>
                         </Card>
 
-                        <Card className="border-border shadow-sm bg-card h-full flex flex-col justify-between">
+                        <Card className="border-none shadow-xl shadow-zinc-200/60 dark:border-border dark:shadow-sm bg-white dark:bg-card h-full flex flex-col justify-between">
                             <CardHeader>
                                 <CardTitle className="text-base text-foreground">Payment Method</CardTitle>
                                 <CardDescription className="text-muted-foreground">
@@ -450,7 +450,7 @@ function SettingsContent() {
                         </Card>
                     </div>
 
-                    <Card className="border-border shadow-sm bg-card">
+                    <Card className="border-none shadow-xl shadow-zinc-200/60 dark:border-border dark:shadow-sm bg-white dark:bg-card">
                         <CardHeader>
                             <CardTitle className="flex items-center gap-2 text-base text-foreground">
                                 <Zap className="w-5 h-5 text-amber-500" />
@@ -462,7 +462,7 @@ function SettingsContent() {
                         </CardHeader>
                         <CardContent>
                             {user.subscription_plan === 'free' ? (
-                                <div className="space-y-4 bg-muted/50 p-5 rounded-2xl border border-border">
+                                <div className="space-y-4 bg-zinc-50/80 dark:bg-muted/20 p-6 rounded-xl border-none shadow-none">
                                     <div className="flex justify-between items-center">
                                         <div>
                                             <p className="font-semibold text-foreground">Monthly Usage</p>
@@ -496,11 +496,11 @@ function SettingsContent() {
                                     )}
                                 </div>
                             ) : (
-                                <div className="space-y-4 bg-emerald-50/50 dark:bg-emerald-900/10 p-5 rounded-2xl border border-emerald-100/50 dark:border-emerald-900/40">
+                                <div className="space-y-4 bg-zinc-50/80 dark:bg-emerald-900/10 p-6 rounded-xl border-none shadow-none">
                                     <div className="flex justify-between items-center mb-2">
                                         <div>
                                             <p className="font-semibold text-foreground">Billing Cycle</p>
-                                            <p className="text-xs text-emerald-600 dark:text-emerald-400/80 font-medium">
+                                            <p className="text-xs text-muted-foreground font-medium">
                                                 Running smoothly
                                             </p>
                                         </div>
@@ -530,9 +530,9 @@ function SettingsContent() {
                                         const progress = Math.min(100, Math.max(0, ((totalDuration - timeLeft) / totalDuration) * 100));
 
                                         return (
-                                            <div className="relative w-full h-3 bg-emerald-100 dark:bg-emerald-900/30 rounded-full overflow-hidden">
+                                            <div className="relative w-full h-3 bg-zinc-200 dark:bg-zinc-800 rounded-full overflow-hidden">
                                                 <div
-                                                    className="absolute left-0 top-0 bottom-0 bg-emerald-500 transition-all duration-500 ease-out rounded-full"
+                                                    className="absolute left-0 top-0 bottom-0 bg-zinc-500 transition-all duration-500 ease-out rounded-full"
                                                     style={{ width: `${progress}%` }}
                                                 />
                                             </div>
