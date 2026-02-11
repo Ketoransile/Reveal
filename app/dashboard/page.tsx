@@ -179,10 +179,10 @@ export default function DashboardPage() {
                             {getGreeting()}{firstName ? `, ${firstName}` : ''}
                         </motion.p>
                         <h1 className="text-2xl md:text-3xl font-bold tracking-tight text-white">
-                            Command Center
+                            Competitive Intelligence
                         </h1>
                         <p className="text-slate-400 text-sm mt-1.5 max-w-md">
-                            Monitor your competitive intelligence and discover actionable insights.
+                            Track your rivals, uncover hidden strategies, and gain the advantage your business deserves.
                         </p>
                     </div>
                     <Link href="/dashboard/analysis">
