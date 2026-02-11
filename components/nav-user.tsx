@@ -71,7 +71,7 @@ export function NavUser({
                         <DropdownMenuTrigger asChild>
                             <SidebarMenuButton
                                 size="lg"
-                                className="data-[state=open]:bg-slate-100 hover:bg-slate-50 text-slate-700 h-14 px-3 rounded-lg bg-transparent transition-all"
+                                className="data-[state=open]:bg-accent hover:bg-accent/50 text-foreground h-14 px-3 rounded-lg bg-transparent transition-all"
                             >
                                 <Avatar className="h-9 w-9 rounded-lg border-2 border-white shadow-sm">
                                     <AvatarImage src={user.avatar} alt={user.name} />
@@ -80,22 +80,22 @@ export function NavUser({
                                     </AvatarFallback>
                                 </Avatar>
                                 <div className="grid flex-1 text-left leading-tight ml-0.5">
-                                    <span className="truncate font-semibold text-slate-900 text-sm">{user.name}</span>
-                                    <span className="truncate text-xs text-slate-500">
+                                    <span className="truncate font-semibold text-foreground text-sm">{user.name}</span>
+                                    <span className="truncate text-xs text-muted-foreground">
                                         {user.email}
                                     </span>
                                 </div>
-                                <MoreVertical className="ml-auto h-4 w-4 text-slate-400" />
+                                <MoreVertical className="ml-auto h-4 w-4 text-muted-foreground" />
                             </SidebarMenuButton>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent
-                            className="w-56 rounded-lg bg-white border-slate-200 shadow-lg p-2"
+                            className="w-56 rounded-lg bg-popover border-border shadow-lg p-2"
                             side={isMobile ? "bottom" : "right"}
                             align="end"
                             sideOffset={8}
                         >
                             <DropdownMenuLabel className="p-0 font-normal mb-2">
-                                <div className="flex items-center gap-3 px-2 py-2 bg-slate-50 rounded-lg">
+                                <div className="flex items-center gap-3 px-2 py-2 bg-muted rounded-lg">
                                     <Avatar className="h-9 w-9 rounded-lg border-2 border-white shadow-sm">
                                         <AvatarImage src={user.avatar} alt={user.name} />
                                         <AvatarFallback className="rounded-lg bg-gradient-to-br from-emerald-500 to-emerald-600 text-white font-bold text-sm">
@@ -103,30 +103,30 @@ export function NavUser({
                                         </AvatarFallback>
                                     </Avatar>
                                     <div className="grid flex-1 text-left leading-tight">
-                                        <span className="truncate font-semibold text-slate-900 text-sm">{user.name}</span>
-                                        <span className="truncate text-xs text-slate-500">
+                                        <span className="truncate font-semibold text-foreground text-sm">{user.name}</span>
+                                        <span className="truncate text-xs text-muted-foreground">
                                             {user.email}
                                         </span>
                                     </div>
                                 </div>
                             </DropdownMenuLabel>
-                            <DropdownMenuSeparator className="bg-slate-200 my-2" />
+                            <DropdownMenuSeparator className="bg-border my-2" />
                             <DropdownMenuGroup className="space-y-0.5">
-                                <DropdownMenuItem asChild className="hover:bg-slate-100 text-slate-900 cursor-pointer rounded-md h-9">
+                                <DropdownMenuItem asChild className="hover:bg-accent text-foreground cursor-pointer rounded-md h-9">
                                     <Link href="/dashboard/settings">
-                                        <UserCircle className="mr-3 h-4 w-4 text-slate-500" />
+                                        <UserCircle className="mr-3 h-4 w-4 text-muted-foreground" />
                                         <span className="text-sm">Account</span>
                                     </Link>
                                 </DropdownMenuItem>
-                                <DropdownMenuItem asChild className="hover:bg-slate-100 text-slate-900 cursor-pointer rounded-md h-9">
+                                <DropdownMenuItem asChild className="hover:bg-accent text-foreground cursor-pointer rounded-md h-9">
                                     <Link href="/dashboard/settings?tab=billing">
-                                        <CreditCard className="mr-3 h-4 w-4 text-slate-500" />
+                                        <CreditCard className="mr-3 h-4 w-4 text-muted-foreground" />
                                         <span className="text-sm">Billing</span>
                                     </Link>
                                 </DropdownMenuItem>
-                                <DropdownMenuItem asChild className="hover:bg-slate-100 text-slate-900 cursor-pointer rounded-md h-9">
+                                <DropdownMenuItem asChild className="hover:bg-accent text-foreground cursor-pointer rounded-md h-9">
                                     <Link href="/dashboard/settings?tab=notifications">
-                                        <Bell className="mr-3 h-4 w-4 text-slate-500" />
+                                        <Bell className="mr-3 h-4 w-4 text-muted-foreground" />
                                         <span className="text-sm">Notifications</span>
                                     </Link>
                                 </DropdownMenuItem>
@@ -145,7 +145,7 @@ export function NavUser({
             </SidebarMenu>
 
             <AlertDialog open={showLogoutDialog} onOpenChange={setShowLogoutDialog}>
-                <AlertDialogContent className="bg-white">
+                <AlertDialogContent className="bg-background border-border text-foreground">
                     <AlertDialogHeader>
                         <AlertDialogTitle>Are you sure you want to log out?</AlertDialogTitle>
                         <AlertDialogDescription>

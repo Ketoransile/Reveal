@@ -27,29 +27,56 @@ export async function middleware(request: NextRequest) {
         }
     )
 
-    // Get user session
-    const {
-        data: { user },
-    } = await supabase.auth.getUser()
+    // Determine auth state resiliently:
+    // 1. Try getUser() first — this makes a network call to verify the token
+    //    and also refreshes the session cookie if needed.
+    // 2. If the network call fails (e.g. offline), fall back to getSession()
+    //    which reads from the cookie without requiring a network round-trip.
+    //    This prevents wrongly redirecting the user to /login on temporary disconnects.
+    let isAuthenticated = false
+
+    try {
+        const { data: { user }, error } = await supabase.auth.getUser()
+        if (user && !error) {
+            isAuthenticated = true
+        } else {
+            // getUser returned no user (e.g. expired or invalid token)
+            // Fall back to session check — the session cookie might still be valid
+            const { data: { session } } = await supabase.auth.getSession()
+            isAuthenticated = !!session
+        }
+    } catch {
+        // Network error — can't reach Supabase.
+        // Fall back to cookie-based session check (no network needed).
+        try {
+            const { data: { session } } = await supabase.auth.getSession()
+            isAuthenticated = !!session
+        } catch {
+            // Even getSession failed — assume user is still authenticated
+            // if we have any supabase auth cookies present.
+            // This prevents kicking users out on brief connectivity issues.
+            const hasAuthCookie = request.cookies.getAll().some(
+                cookie => cookie.name.startsWith('sb-') && cookie.name.includes('auth')
+            )
+            isAuthenticated = hasAuthCookie
+        }
+    }
 
     const isAuthPage = request.nextUrl.pathname.startsWith('/login') ||
         request.nextUrl.pathname.startsWith('/signup')
     const isDashboardPage = request.nextUrl.pathname.startsWith('/dashboard')
 
     // Redirect authenticated users away from auth pages
-    if (user && isAuthPage) {
+    if (isAuthenticated && isAuthPage) {
         return NextResponse.redirect(new URL('/dashboard', request.url))
     }
 
     // Redirect unauthenticated users to login from dashboard
-    if (!user && isDashboardPage) {
+    if (!isAuthenticated && isDashboardPage) {
         const redirectUrl = new URL('/login', request.url)
-        // Add the original URL as a redirect parameter
         redirectUrl.searchParams.set('redirect', request.nextUrl.pathname)
         return NextResponse.redirect(redirectUrl)
     }
-
-
 
     return supabaseResponse
 }

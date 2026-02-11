@@ -424,7 +424,7 @@ function SettingsContent() {
                             <CardHeader>
                                 <CardTitle className="text-base text-foreground">Payment Method</CardTitle>
                                 <CardDescription className="text-muted-foreground">
-                                    Securely managed via Stripe.
+                                    Securely managed via Polar.
                                 </CardDescription>
                             </CardHeader>
                             <CardContent className="flex-1">

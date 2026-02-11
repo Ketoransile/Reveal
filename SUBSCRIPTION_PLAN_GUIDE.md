@@ -59,7 +59,7 @@ The billing section now displays:
 3. **All-time Stats:**
    - Total analyses created
    - Total completed analyses
-4. **Manage Billing Button:** (Currently disabled, ready for Stripe integration)
+4. **Manage Billing Button:** (Currently disabled, ready for Polar integration)
 
 ## Usage Tracking
 
@@ -100,7 +100,7 @@ When fetching user data via `/api/user`, the following properties are now availa
 ## Next Steps for Full Implementation
 
 1. **Run the migration** in your Supabase dashboard
-2. **Implement Stripe integration** for actual payment processing
+2. **Implement Polar integration** for actual payment processing
 3. **Update credit deduction logic** in `/app/api/analyze/route.ts` to check subscription_plan
 4. **Add webhook handlers** to update subscription_plan when payments succeed
 5. **Implement monthly credit reset** (for free users) via cron job or Supabase function
@@ -114,4 +114,4 @@ When fetching user data via `/api/user`, the following properties are now availa
 
 ---
 
-**Note:** The subscription_plan field defaults to 'free' for all existing and new users. You'll need to update this field via Stripe webhooks when users upgrade.
+**Note:** The subscription_plan field defaults to 'free' for all existing and new users. You'll need to update this field via Polar webhooks when users upgrade.
