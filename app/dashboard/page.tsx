@@ -144,7 +144,9 @@ export default function DashboardPage() {
     };
 
     const fullName = userData?.name || userData?.email?.split('@')[0] || '';
-    const firstName = fullName.split(' ')[0];
+    // Format name: split by space or dot (for emails like john.doe), take first part, and capitalize
+    const rawName = fullName.split(/[ .]/)[0];
+    const firstName = rawName.charAt(0).toUpperCase() + rawName.slice(1).toLowerCase();
 
     return (
         <motion.div
@@ -154,10 +156,16 @@ export default function DashboardPage() {
             className="space-y-8"
         >
             {/* Hero Header */}
-            <motion.div variants={itemVariants} className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 dark:from-slate-900 dark:via-slate-800/80 dark:to-slate-900 p-6 md:p-8 border border-white/5">
-                {/* Decorative gradient orbs */}
-                <div className="absolute top-0 right-0 w-72 h-72 bg-emerald-500/10 rounded-full blur-[100px] pointer-events-none" />
-                <div className="absolute bottom-0 left-0 w-56 h-56 bg-blue-500/10 rounded-full blur-[80px] pointer-events-none" />
+            <motion.div
+                variants={itemVariants}
+                className="relative overflow-hidden rounded-3xl bg-slate-950 border border-white/5 shadow-2xl shadow-emerald-500/5 p-8 md:p-10 group isolate"
+            >
+                {/* Background Grid Pattern */}
+                <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px] pointer-events-none opacity-20" />
+
+                {/* Vibrant Glowing Orbs */}
+                <div className="absolute -top-24 -right-24 w-96 h-96 bg-emerald-500/20 rounded-full blur-[100px] pointer-events-none animate-pulse" />
+                <div className="absolute -bottom-24 -left-24 w-80 h-80 bg-indigo-500/10 rounded-full blur-[100px] pointer-events-none" />
 
                 <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-5">
                     <div>

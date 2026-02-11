@@ -4,6 +4,9 @@ import { Button } from "@/components/ui/button";
 import {
     Dialog,
     DialogContent,
+    DialogHeader,
+    DialogTitle,
+    DialogDescription,
 } from "@/components/ui/dialog";
 import { Check, Shield, Crown, X } from "lucide-react";
 import { useState } from "react";
@@ -25,6 +28,12 @@ export function PricingModal({ open, onOpenChange }: PricingModalProps) {
     return (
         <Dialog open={open} onOpenChange={onOpenChange}>
             <DialogContent className="sm:max-w-[850px] bg-white dark:bg-slate-950 p-0 overflow-hidden border-0 shadow-2xl rounded-2xl gap-0">
+                <DialogHeader className="sr-only">
+                    <DialogTitle>Upgrade to Pro</DialogTitle>
+                    <DialogDescription>
+                        Choose the plan that fits you best
+                    </DialogDescription>
+                </DialogHeader>
                 <div className="grid md:grid-cols-2">
 
                     {/* Free Plan (Left) */}
