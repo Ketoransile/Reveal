@@ -278,7 +278,7 @@ export function CustomSidebar({ className, collapsed = false, setCollapsed, onCl
             </aside>
 
             <AlertDialog open={showLogoutDialog} onOpenChange={setShowLogoutDialog}>
-                <AlertDialogContent className="bg-white">
+                <AlertDialogContent className="bg-white dark:bg-black">
                     <AlertDialogHeader>
                         <AlertDialogTitle>Are you sure you want to log out?</AlertDialogTitle>
                         <AlertDialogDescription>

@@ -3,14 +3,11 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { motion, useScroll, useMotionValueEvent, AnimatePresence } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 import { Menu, X } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 
 export const FloatingNav = ({ user: initialUser }: { user: any }) => {
-    const { scrollY } = useScroll();
-    const [hidden, setHidden] = useState(false);
-    const [scrolled, setScrolled] = useState(false);
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
     const [user, setUser] = useState(initialUser);
 
@@ -50,63 +47,16 @@ export const FloatingNav = ({ user: initialUser }: { user: any }) => {
         };
     }, []);
 
-    useMotionValueEvent(scrollY, "change", (latest) => {
-        const previous = scrollY.getPrevious() ?? 0;
 
-        // Hide when scrolling down, Show when scrolling up - DESKTOP ONLY
-        // On mobile, we keep it static as requested.
-        if (typeof window !== 'undefined' && window.innerWidth >= 768) {
-            if (latest > previous && latest > 150) {
-                setHidden(true);
-            } else {
-                setHidden(false);
-            }
-        } else {
-            setHidden(false);
-        }
-
-        // Add background blur when scrolled down
-        if (latest > 50) {
-            setScrolled(true);
-        } else {
-            setScrolled(false);
-        }
-    });
 
     return (
         <>
-            <motion.div
-                variants={{
-                    visible: { y: 0, opacity: 1 },
-                    hidden: { y: -100, opacity: 0 },
-                }}
-                animate={hidden ? "hidden" : "visible"}
-                transition={{ duration: 0.35, ease: "easeInOut" }}
-                className={`fixed left-0 right-0 z-50 flex justify-center pointer-events-none md:top-4 md:px-4 ${mobileMenuOpen ? 'top-0' : 'top-0 px-0'}`}
+            <div
+                className="absolute top-0 left-0 right-0 z-50 flex justify-center md:px-4 md:pt-4"
             >
                 <nav
-                    className={`
-                        pointer-events-auto w-full md:max-w-5xl md:rounded-full px-6 py-4 
-                        flex items-center justify-between transition-all duration-500
-                        ${scrolled || mobileMenuOpen
-                            ? `
-                                bg-slate-950/40 backdrop-blur-2xl 
-                                border-b md:border border-white/20 
-                                shadow-[0_8px_32px_rgba(0,0,0,0.4),0_0_1px_rgba(255,255,255,0.1)_inset]
-                                md:ring-1 md:ring-white/10
-                                relative overflow-hidden
-                            `
-                            : `
-                                bg-transparent
-                                border-none
-                            `
-                        }
-                    `}
+                    className="w-full md:max-w-5xl md:rounded-full px-6 py-4 flex items-center justify-between bg-transparent"
                 >
-                    {/* Subtle gradient overlay for depth */}
-                    {(scrolled || mobileMenuOpen) && (
-                        <div className="absolute inset-0 md:rounded-full bg-gradient-to-br from-blue-500/5 via-transparent to-purple-500/5 pointer-events-none" />
-                    )}
 
                     {/* Logo */}
                     <Link href="/" className="flex items-center gap-3 group relative z-10" onClick={() => setMobileMenuOpen(false)}>
@@ -140,7 +90,7 @@ export const FloatingNav = ({ user: initialUser }: { user: any }) => {
                             <Link href="/dashboard" className="hidden md:block">
                                 <Button
                                     size="sm"
-                                    className="rounded-xl h-10 px-5 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-semibold shadow-[0_0_20px_rgba(16,185,129,0.3)] hover:shadow-[0_0_30px_rgba(16,185,129,0.5)] transition-all duration-300 border border-emerald-400/30 hover:scale-105"
+                                    className="rounded-xl h-10 px-5 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-semibold shadow-[0_0_20px_rgba(16,185,129,0.3)] hover:shadow-[0_0_30px_rgba(16,185,129,0.5)] transition-all duration-300 border border-emerald-400/30 hover:scale-105 cursor-pointer"
                                 >
                                     Dashboard
                                 </Button>
@@ -176,7 +126,7 @@ export const FloatingNav = ({ user: initialUser }: { user: any }) => {
                     </div>
 
                 </nav>
-            </motion.div>
+            </div>
 
             {/* Mobile Menu Overlay */}
             <AnimatePresence>

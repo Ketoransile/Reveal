@@ -42,9 +42,11 @@ export default function AnalysisPage() {
             }
 
             if (!response.ok) {
-                toast.error("Unable to start analysis", {
-                    description: data.error || 'Failed to create analysis',
-                });
+                toast.error("Unable to start analysis",
+                    //      {
+                    //     description: data.error || 'Failed to create analysis',
+                    // }
+                );
                 setLoading(false);
                 return;
             }
