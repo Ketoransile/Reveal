@@ -1,6 +1,5 @@
 "use client"
 
-import { Separator } from '@/components/ui/separator'
 import { Button } from '@/components/ui/button'
 import { Menu, PanelLeft } from "lucide-react"
 import {
@@ -33,9 +32,9 @@ export function SiteHeaderCustom({ onMenuClick, collapsed = false, onToggleColla
     }
 
     return (
-        <header className={`flex h-16 shrink-0 items-center justify-between gap-2 border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 fixed top-0 right-0 z-50 px-4 md:px-6 transition-all duration-300 ${collapsed ? 'md:left-20' : 'md:left-64'} left-0`}>
-            <div className="flex items-center gap-2">
-                <Button variant="ghost" size="icon" className="md:hidden -ml-2" onClick={onMenuClick}>
+        <header className={`flex h-[60px] shrink-0 items-center justify-between gap-4 bg-background/80 backdrop-blur-xl supports-[backdrop-filter]:bg-background/60 fixed top-0 right-0 z-40 px-4 md:px-8 transition-[left] duration-300 ease-in-out border-b border-border/40 ${collapsed ? 'md:left-20' : 'md:left-64'} left-0`}>
+            <div className="flex items-center gap-3">
+                <Button variant="ghost" size="icon" className="md:hidden -ml-2 text-muted-foreground hover:text-foreground" onClick={onMenuClick}>
                     <Menu className="h-5 w-5" />
                     <span className="sr-only">Toggle menu</span>
                 </Button>
@@ -45,15 +44,16 @@ export function SiteHeaderCustom({ onMenuClick, collapsed = false, onToggleColla
                     <Button
                         variant="ghost"
                         size="icon"
-                        className="hidden md:flex h-8 w-8 -ml-2"
+                        className="hidden md:flex h-8 w-8 -ml-2 text-muted-foreground hover:text-foreground transition-colors"
                         onClick={onToggleCollapse}
                     >
-                        <PanelLeft className="h-5 w-5" />
+                        <PanelLeft className="h-[18px] w-[18px]" />
                         <span className="sr-only">Toggle sidebar</span>
                     </Button>
                 )}
 
-                <Separator orientation="vertical" className="mr-2 h-4 bg-border hidden md:block" />
+                <div className="h-4 w-px bg-border/50 hidden md:block mx-1" />
+
                 <Breadcrumb className="hidden sm:block">
                     <BreadcrumbList>
                         {segments.map((segment, index) => {
@@ -65,24 +65,27 @@ export function SiteHeaderCustom({ onMenuClick, collapsed = false, onToggleColla
                                 <React.Fragment key={href}>
                                     <BreadcrumbItem>
                                         {isLast ? (
-                                            <BreadcrumbPage className="font-semibold text-foreground">
+                                            <BreadcrumbPage className="font-semibold text-foreground tracking-tight">
                                                 {formattedName}
                                             </BreadcrumbPage>
                                         ) : (
-                                            <BreadcrumbLink href={href} className="text-muted-foreground hover:text-foreground">
+                                            <BreadcrumbLink href={href} className="text-muted-foreground hover:text-foreground font-medium transition-colors tracking-tight">
                                                 {formattedName}
                                             </BreadcrumbLink>
                                         )}
                                     </BreadcrumbItem>
-                                    {!isLast && <BreadcrumbSeparator />}
+                                    {!isLast && <BreadcrumbSeparator className="text-muted-foreground/50" />}
                                 </React.Fragment>
                             )
                         })}
                     </BreadcrumbList>
                 </Breadcrumb>
             </div>
-            <div className="flex items-center gap-2">
-                <ThemeToggle />
+            
+            <div className="flex items-center gap-3">
+                <div className="bg-muted/50 rounded-full p-1 border border-border/50 shadow-sm">
+                    <ThemeToggle />
+                </div>
             </div>
         </header>
     )

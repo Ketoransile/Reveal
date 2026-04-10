@@ -125,8 +125,8 @@ export function CustomSidebar({ className, collapsed = false, setCollapsed, onCl
                         variant="ghost"
                         className={cn(
                             "mb-1 transition-all duration-200",
-                            collapsed ? "w-10 h-10 p-0 justify-center rounded-lg" : "w-full justify-start gap-3",
-                            isActive ? "bg-accent text-accent-foreground font-medium" : "text-muted-foreground hover:text-foreground"
+                            collapsed ? "w-10 h-10 p-0 justify-center rounded-xl" : "w-full justify-start gap-3 rounded-xl h-10",
+                            isActive ? "bg-primary/10 text-primary font-semibold shadow-sm ring-1 ring-primary/20" : "text-muted-foreground hover:text-foreground hover:bg-muted/60"
                         )}
                     >
                         <item.icon className="w-5 h-5 shrink-0" />
@@ -152,35 +152,12 @@ export function CustomSidebar({ className, collapsed = false, setCollapsed, onCl
                 {!collapsed && <span className="text-lg font-bold tracking-tight whitespace-nowrap overflow-hidden">Reveal</span>}
             </Link>
 
-            {/* New Analysis Button - Prominent */}
-            <div className={cn("mb-6 transition-all", collapsed ? "px-0 flex justify-center" : "px-2")}>
-                <Link href="/dashboard/analysis" onClick={() => onClose?.()} className={cn("flex items-center", collapsed ? "justify-center" : "w-full")}>
-                    <Tooltip delayDuration={0}>
-                        <TooltipTrigger asChild>
-                            <Button
-                                className={cn(
-                                    "shadow-md hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300 font-medium",
-                                    collapsed ? "w-10 h-10 p-0 rounded-xl justify-center bg-primary text-primary-foreground" : "w-full justify-start gap-2 bg-primary text-primary-foreground hover:bg-primary/90"
-                                )}
-                                size={collapsed ? "icon" : "lg"}
-                            >
-                                <Plus className={cn("w-5 h-5", collapsed ? "mr-0" : "mr-1")} />
-                                {!collapsed && <span>New Analysis</span>}
-                            </Button>
-                        </TooltipTrigger>
-                        {collapsed && <TooltipContent side="right">New Analysis</TooltipContent>}
-                    </Tooltip>
-                </Link>
-            </div>
-
             {/* Navigation */}
             <TooltipProvider>
                 <div className="flex-1 space-y-6 overflow-y-auto overflow-x-hidden no-scrollbar px-1 py-1">
 
                     {/* Main Nav */}
-                    <div className="space-y-1">
-                        {!collapsed && <h4 className="text-xs font-medium text-muted-foreground px-2 py-2 mb-1 uppercase tracking-wider animate-in fade-in">Platform</h4>}
-                        {collapsed && <div className="h-4" />} {/* Spacer for consistency */}
+                    <div className="space-y-1 mt-4">
                         {NAV_MAIN.map((item) => (
                             <NavItem key={item.url} item={item} isActive={pathname === item.url} />
                         ))}
@@ -196,9 +173,8 @@ export function CustomSidebar({ className, collapsed = false, setCollapsed, onCl
                     </div> */}
 
                     {/* Secondary Nav */}
-                    <div className="space-y-1">
-                        {!collapsed && <h4 className="text-xs font-medium text-muted-foreground px-2 py-2 mb-1 uppercase tracking-wider animate-in fade-in">Support</h4>}
-                        {collapsed && <div className="h-4" />}
+                    <div className="space-y-1 mt-6">
+                        <div className="h-px bg-border/40 mx-3 mb-4" />
                         {NAV_SECONDARY.map((item) => (
                             <NavItem key={item.url} item={item} isActive={pathname === item.url} />
                         ))}

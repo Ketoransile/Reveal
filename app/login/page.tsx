@@ -14,6 +14,7 @@ export default function LoginPage() {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [loading, setLoading] = useState(false);
+    const [oauthLoading, setOauthLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const router = useRouter();
 
@@ -32,27 +33,39 @@ export default function LoginPage() {
             setError(error.message);
             setLoading(false);
         } else {
-            router.push("/dashboard");
+            const params = new URLSearchParams(window.location.search);
+            const redirectUrl = params.get('redirect') || "/dashboard";
+            router.push(redirectUrl);
             router.refresh();
         }
     };
 
     const handleOAuthLogin = async (provider: 'github' | 'google') => {
         console.log('[Login] Starting OAuth login with:', provider);
+        setOauthLoading(true);
+        setError(null);
+
+        const params = new URLSearchParams(window.location.search);
+        const redirectUrl = params.get('redirect') || "/dashboard";
+
         const supabase = createClient();
         const { error } = await supabase.auth.signInWithOAuth({
             provider,
             options: {
-                redirectTo: `${location.origin}/auth/callback`,
+                redirectTo: `${location.origin}/auth/callback?next=${encodeURIComponent(redirectUrl)}`,
             },
         })
         if (error) {
             console.error('[Login] OAuth error:', error);
             setError(error.message);
+            setOauthLoading(false);
         } else {
             console.log('[Login] OAuth initiated successfully');
+            // Keep loading state — browser will redirect
         }
     }
+
+    const isDisabled = loading || oauthLoading;
 
     return (
         <div className="min-h-screen flex items-center justify-center bg-slate-950 relative overflow-hidden p-4">
@@ -164,13 +177,23 @@ export default function LoginPage() {
                                 variant="outline"
                                 type="button"
                                 onClick={() => handleOAuthLogin('google')}
-                                className="w-full border-white/20 !bg-transparent hover:!bg-white/5 hover:text-white transition-all text-slate-300 h-12 rounded-xl group relative overflow-hidden cursor-pointer"
+                                disabled={isDisabled}
+                                className="w-full border-white/20 !bg-transparent hover:!bg-white/5 hover:text-white transition-all text-slate-300 h-12 rounded-xl group relative overflow-hidden cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed"
                             >
                                 <div className="absolute inset-0 bg-white/5 opacity-0 group-hover:opacity-100 transition-opacity" />
-                                <svg className="mr-2 h-5 w-5 group-hover:scale-110 transition-transform relative z-10" aria-hidden="true" viewBox="0 0 24 24">
-                                    <path d="M12.48 10.92v3.28h7.84c-.24 1.84-.853 3.187-1.787 4.133-1.147 1.147-2.933 2.4-6.053 2.4-4.827 0-8.6-3.893-8.6-8.72s3.773-8.72 8.6-8.72c2.6 0 4.507 1.027 5.907 2.347l2.307-2.307C18.747 1.44 16.133 0 12.48 0 5.867 0 .533 5.333.533 12S5.867 24 12.48 24c3.44 0 6.04-1.133 7.973-3.267 2.027-1.92 2.6-4.84 2.6-7.253 0-.693-.067-1.347-.187-1.973z" fill="currentColor" />
-                                </svg>
-                                <span className="relative z-10">Continue with Google</span>
+                                {oauthLoading ? (
+                                    <span className="relative z-10 flex items-center gap-2">
+                                        <Loader2 className="h-5 w-5 animate-spin" />
+                                        Redirecting to Google...
+                                    </span>
+                                ) : (
+                                    <>
+                                        <svg className="mr-2 h-5 w-5 group-hover:scale-110 transition-transform relative z-10" aria-hidden="true" viewBox="0 0 24 24">
+                                            <path d="M12.48 10.92v3.28h7.84c-.24 1.84-.853 3.187-1.787 4.133-1.147 1.147-2.933 2.4-6.053 2.4-4.827 0-8.6-3.893-8.6-8.72s3.773-8.72 8.6-8.72c2.6 0 4.507 1.027 5.907 2.347l2.307-2.307C18.747 1.44 16.133 0 12.48 0 5.867 0 .533 5.333.533 12S5.867 24 12.48 24c3.44 0 6.04-1.133 7.973-3.267 2.027-1.92 2.6-4.84 2.6-7.253 0-.693-.067-1.347-.187-1.973z" fill="currentColor" />
+                                        </svg>
+                                        <span className="relative z-10">Continue with Google</span>
+                                    </>
+                                )}
                             </Button>
                         </motion.div>
 
@@ -213,6 +236,7 @@ export default function LoginPage() {
                                     value={email}
                                     onChange={(e) => setEmail(e.target.value)}
                                     required
+                                    disabled={isDisabled}
                                     className="!bg-transparent border-white/20 focus-visible:ring-emerald-500/50 focus-visible:border-emerald-500/50 transition-all hover:border-white/30 h-12 rounded-xl text-white placeholder:text-slate-500"
                                 />
                             </div>
@@ -224,13 +248,14 @@ export default function LoginPage() {
                                     value={password}
                                     onChange={(e) => setPassword(e.target.value)}
                                     required
+                                    disabled={isDisabled}
                                     className="!bg-transparent border-white/20 focus-visible:ring-emerald-500/50 focus-visible:border-emerald-500/50 transition-all hover:border-white/30 h-12 rounded-xl text-white placeholder:text-slate-500"
                                 />
                             </div>
                             <Button
                                 className="w-full bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-bold h-12 rounded-xl shadow-[0_0_30px_rgba(16,185,129,0.3)] hover:shadow-[0_0_50px_rgba(16,185,129,0.5)] transition-all duration-300 relative overflow-hidden group cursor-pointer"
                                 type="submit"
-                                disabled={loading}
+                                disabled={isDisabled}
                             >
                                 <span className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000" />
                                 {loading ? (

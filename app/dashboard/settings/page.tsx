@@ -178,7 +178,7 @@ function SettingsContent() {
 
     return (
         <div className="space-y-6 animate-in fade-in duration-700 max-w-4xl">
-            <div>
+            <div className="pb-6 border-b border-border">
                 <h1 className="text-2xl md:text-3xl font-bold tracking-tight text-foreground">
                     Settings
                 </h1>
@@ -257,10 +257,10 @@ function SettingsContent() {
                             </CardDescription>
                         </CardHeader>
                         <CardContent>
-                            <div className="flex items-center justify-between p-4 border border-red-200 rounded-lg bg-red-50">
+                            <div className="flex items-center justify-between p-4 border border-red-500/20 rounded-lg bg-red-500/5 dark:bg-red-500/10">
                                 <div>
-                                    <div className="font-medium text-red-900">Delete Account</div>
-                                    <div className="text-sm text-red-700">
+                                    <div className="font-medium text-red-600 dark:text-red-400">Delete Account</div>
+                                    <div className="text-sm text-red-600/70 dark:text-red-400/70">
                                         Permanently delete your account and all data.
                                     </div>
                                 </div>
@@ -368,22 +368,19 @@ function SettingsContent() {
 
                 <TabsContent value="billing" className="space-y-6">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <Card className="overflow-hidden border-none shadow-xl shadow-zinc-200/60 dark:border-border dark:shadow-sm bg-white dark:bg-card h-full flex flex-col">
-                            <div className={`h-2 w-full ${user.subscription_plan === 'free' ? 'bg-muted' : 'bg-zinc-100 dark:bg-muted/40'}`} />
+                        <Card className="overflow-hidden border-border bg-card h-full flex flex-col">
+                            <div className={`h-1 w-full ${user.subscription_plan === 'free' ? 'bg-muted' : 'bg-muted'}`} />
                             <CardHeader>
                                 <div className="flex items-center justify-between">
                                     <div className="flex items-center gap-3 mb-1">
                                         <CardTitle className="text-base text-foreground">Current Plan</CardTitle>
-                                        <span className={`px-2.5 py-0.5 rounded-full text-xs font-bold tracking-wide uppercase ${user.subscription_plan === 'free'
-                                            ? 'bg-muted text-muted-foreground'
-                                            : 'bg-emerald-100 dark:bg-emerald-900/40 text-emerald-700 dark:text-emerald-400 ring-1 ring-emerald-200 dark:ring-emerald-900'
-                                            }`}>
+                                        <span className="px-2.5 py-0.5 rounded-full text-xs font-bold tracking-wide uppercase bg-muted text-muted-foreground">
                                             {user.subscription_plan === 'free' ? 'Starter' : user.subscription_plan === 'agency' ? 'Agency' : 'Pro'}
                                         </span>
                                     </div>
                                     {user.subscription_plan !== 'free' && (
                                         <div className="hidden sm:block">
-                                            <Shield className="w-8 h-8 text-emerald-500 opacity-20" />
+                                            <Shield className="w-8 h-8 text-muted-foreground/20" />
                                         </div>
                                     )}
                                 </div>
@@ -395,7 +392,7 @@ function SettingsContent() {
                                 <div>
                                     <div className="font-bold text-2xl text-foreground flex items-center gap-2">
                                         {user.subscription_plan === 'free' ? 'Starter Plan' : user.subscription_plan === 'agency' ? 'Agency Plan' : 'Pro Plan'}
-                                        {user.subscription_plan !== 'free' && <CheckCircle2 className="w-5 h-5 text-emerald-600" />}
+                                        {user.subscription_plan !== 'free' && <CheckCircle2 className="w-5 h-5 text-muted-foreground" />}
                                     </div>
                                     <p className="text-sm text-muted-foreground mt-2">
                                         {user.subscription_plan === 'free' && 'Includes 3 comprehensive analyses per month.'}
@@ -407,20 +404,21 @@ function SettingsContent() {
                             <CardFooter className="pt-0">
                                 {user.subscription_plan === 'free' ? (
                                     <Button
-                                        className="w-full bg-primary text-primary-foreground hover:bg-primary/90 shadow-lg shadow-primary/10 rounded-full transition-all"
+
+                                        className="w-full rounded-lg"
                                         onClick={() => router.push('/pricing')}
                                     >
                                         Upgrade Plan
                                     </Button>
                                 ) : (
-                                    <Button variant="outline" disabled className="w-full rounded-full border-emerald-200 dark:border-emerald-800 text-emerald-700 dark:text-emerald-400 opacity-50 cursor-not-allowed mb-2 md:mb-0">
+                                    <Button variant="outline" disabled className="w-full rounded-lg opacity-50 cursor-not-allowed mb-2 md:mb-0">
                                         Manage Subscription (Coming Soon)
                                     </Button>
                                 )}
                             </CardFooter>
                         </Card>
 
-                        <Card className="border-none shadow-xl shadow-zinc-200/60 dark:border-border dark:shadow-sm bg-white dark:bg-card h-full flex flex-col justify-between">
+                        <Card className="border-border bg-card h-full flex flex-col justify-between">
                             <CardHeader>
                                 <CardTitle className="text-base text-foreground">Payment Method</CardTitle>
                                 <CardDescription className="text-muted-foreground">
@@ -443,17 +441,17 @@ function SettingsContent() {
                                 </div>
                             </CardContent>
                             <CardFooter>
-                                <Button variant="outline" className="w-full opacity-50 cursor-not-allowed mb-2 md:mb-0" disabled>
+                                <Button variant="outline" className="w-full rounded-lg opacity-50 cursor-not-allowed mb-2 md:mb-0" disabled>
                                     Update Payment Method (Coming Soon)
                                 </Button>
                             </CardFooter>
                         </Card>
                     </div>
 
-                    <Card className="border-none shadow-xl shadow-zinc-200/60 dark:border-border dark:shadow-sm bg-white dark:bg-card">
+                    <Card className="border-border bg-card">
                         <CardHeader>
                             <CardTitle className="flex items-center gap-2 text-base text-foreground">
-                                <Zap className="w-5 h-5 text-amber-500" />
+                                <Zap className="w-5 h-5 text-muted-foreground" />
                                 Usage & Limits
                             </CardTitle>
                             <CardDescription className="text-muted-foreground">
@@ -462,7 +460,7 @@ function SettingsContent() {
                         </CardHeader>
                         <CardContent>
                             {user.subscription_plan === 'free' ? (
-                                <div className="space-y-4 bg-zinc-50/80 dark:bg-muted/20 p-6 rounded-xl border-none shadow-none">
+                                <div className="space-y-4 bg-muted/50 p-6 rounded-lg">
                                     <div className="flex justify-between items-center">
                                         <div>
                                             <p className="font-semibold text-foreground">Monthly Usage</p>
@@ -474,18 +472,18 @@ function SettingsContent() {
                                         </div>
                                     </div>
 
-                                    <div className="relative w-full h-3 bg-muted rounded-full overflow-hidden">
+                                    <div className="relative w-full h-2 bg-muted rounded-full overflow-hidden">
                                         <div
                                             className={`absolute left-0 top-0 bottom-0 transition-all duration-500 ease-out rounded-full ${(3 - user.credits) === 3 ? 'bg-red-500' :
                                                 (3 - user.credits) >= 2 ? 'bg-amber-500' :
-                                                    'bg-emerald-500'
+                                                    'bg-foreground/60'
                                                 }`}
                                             style={{ width: `${((3 - user.credits) / 3) * 100}%` }}
                                         />
                                     </div>
 
                                     {user.credits === 0 ? (
-                                        <div className="rounded-lg bg-red-50 dark:bg-red-900/20 p-3 text-xs text-red-700 dark:text-red-400 border border-red-100 dark:border-red-900 flex items-start gap-2">
+                                        <div className="rounded-lg bg-red-500/5 dark:bg-red-500/10 p-3 text-xs text-red-600 dark:text-red-400 border border-red-500/20 flex items-start gap-2">
                                             <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" />
                                             <p>You have used all your credits. Upgrade to Pro for unlimited access.</p>
                                         </div>
@@ -496,7 +494,7 @@ function SettingsContent() {
                                     )}
                                 </div>
                             ) : (
-                                <div className="space-y-4 bg-zinc-50/80 dark:bg-emerald-900/10 p-6 rounded-xl border-none shadow-none">
+                                <div className="space-y-4 bg-muted/50 p-6 rounded-lg">
                                     <div className="flex justify-between items-center mb-2">
                                         <div>
                                             <p className="font-semibold text-foreground">Billing Cycle</p>
@@ -530,9 +528,9 @@ function SettingsContent() {
                                         const progress = Math.min(100, Math.max(0, ((totalDuration - timeLeft) / totalDuration) * 100));
 
                                         return (
-                                            <div className="relative w-full h-3 bg-zinc-200 dark:bg-zinc-800 rounded-full overflow-hidden">
+                                            <div className="relative w-full h-2 bg-muted rounded-full overflow-hidden">
                                                 <div
-                                                    className="absolute left-0 top-0 bottom-0 bg-zinc-500 transition-all duration-500 ease-out rounded-full"
+                                                    className="absolute left-0 top-0 bottom-0 bg-foreground/40 transition-all duration-500 ease-out rounded-full"
                                                     style={{ width: `${progress}%` }}
                                                 />
                                             </div>
@@ -541,7 +539,7 @@ function SettingsContent() {
 
                                     <div className="flex justify-between items-center pt-2">
                                         <div className="flex items-center gap-2">
-                                            <Zap className="w-4 h-4 text-amber-500" />
+                                            <Zap className="w-4 h-4 text-muted-foreground" />
                                             <span className="text-sm text-foreground font-medium">{usageStats.totalAnalyses} <span className="text-muted-foreground text-xs font-normal">analyses completed</span></span>
                                         </div>
                                         {user.subscription_period_end && (

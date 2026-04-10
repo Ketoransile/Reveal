@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -119,8 +119,9 @@ export default function AnalysisPage() {
     return (
         <div className="w-full max-w-5xl space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
             <PricingModal open={showPricing} onOpenChange={setShowPricing} />
-            <div>
-                <h1 className="text-2xl md:text-3xl font-bold tracking-tight text-foreground mb-2">
+
+            <div className="pb-6 border-b border-border">
+                <h1 className="text-2xl md:text-3xl font-bold tracking-tight text-foreground mb-1">
                     Start New Analysis
                 </h1>
                 <p className="text-muted-foreground text-sm">
@@ -128,11 +129,11 @@ export default function AnalysisPage() {
                 </p>
             </div>
 
-            <Card className="bg-card border-border shadow-lg">
+            <Card className="bg-card border-border">
                 <CardHeader className="pb-4">
                     <CardTitle className="text-lg flex items-center gap-2 text-foreground">
-                        <div className="w-8 h-8 rounded-lg bg-emerald-100 dark:bg-emerald-900/20 flex items-center justify-center">
-                            <Zap className="w-4 h-4 text-emerald-600" />
+                        <div className="w-8 h-8 rounded-lg bg-muted flex items-center justify-center">
+                            <Zap className="w-4 h-4 text-muted-foreground" />
                         </div>
                         AI Comparison Engine
                     </CardTitle>
@@ -157,7 +158,7 @@ export default function AnalysisPage() {
                                     onChange={(e) => setYourWebsite(e.target.value)}
                                     required
                                     disabled={loading}
-                                    className="bg-background border-input focus-visible:ring-emerald-500 focus-visible:border-emerald-500 h-11 rounded-lg text-foreground placeholder:text-muted-foreground disabled:opacity-50"
+                                    className="bg-background border-input h-11 rounded-lg text-foreground placeholder:text-muted-foreground disabled:opacity-50"
                                 />
                                 <p className="text-xs text-muted-foreground">
                                     The site you want to improve.
@@ -178,7 +179,7 @@ export default function AnalysisPage() {
                                     onChange={(e) => setCompetitorWebsite(e.target.value)}
                                     required
                                     disabled={loading}
-                                    className="bg-background border-input focus-visible:ring-emerald-500 focus-visible:border-emerald-500 h-11 rounded-lg text-foreground placeholder:text-muted-foreground disabled:opacity-50"
+                                    className="bg-background border-input h-11 rounded-lg text-foreground placeholder:text-muted-foreground disabled:opacity-50"
                                 />
                                 <p className="text-xs text-muted-foreground">
                                     The winner you want to overtake.
@@ -196,18 +197,18 @@ export default function AnalysisPage() {
                                     transition={{ duration: 0.4, ease: "easeInOut" }}
                                     className="overflow-hidden"
                                 >
-                                    <div className="rounded-xl border border-emerald-500/20 bg-emerald-500/5 dark:bg-emerald-500/10 p-5 space-y-4">
+                                    <div className="rounded-lg border border-border bg-muted/30 p-5 space-y-4">
                                         {/* Progress bar */}
                                         <div className="space-y-2">
                                             <div className="flex items-center justify-between text-xs">
                                                 <span className="text-muted-foreground font-medium">Analysis Progress</span>
-                                                <span className="text-emerald-600 dark:text-emerald-400 font-semibold tabular-nums">
+                                                <span className="text-foreground font-semibold tabular-nums">
                                                     {Math.round(progressPercent)}%
                                                 </span>
                                             </div>
                                             <div className="h-2 bg-muted rounded-full overflow-hidden">
                                                 <motion.div
-                                                    className="h-full bg-gradient-to-r from-emerald-500 to-teal-400 rounded-full"
+                                                    className="h-full bg-foreground/70 rounded-full"
                                                     initial={{ width: "0%" }}
                                                     animate={{ width: `${progressPercent}%` }}
                                                     transition={{ duration: 0.3, ease: "easeOut" }}
@@ -230,7 +231,7 @@ export default function AnalysisPage() {
                                                         animate={{ opacity: 1, x: 0 }}
                                                         transition={{ delay: index * 0.08, duration: 0.3 }}
                                                         className={`flex items-center gap-3 py-1.5 px-3 rounded-lg transition-all duration-300 ${isActive
-                                                                ? "bg-emerald-500/10 dark:bg-emerald-500/15"
+                                                                ? "bg-accent"
                                                                 : ""
                                                             }`}
                                                     >
@@ -246,9 +247,9 @@ export default function AnalysisPage() {
                                                                 </motion.div>
                                                             ) : isActive ? (
                                                                 <div className="relative">
-                                                                    <StepIcon className="w-5 h-5 text-emerald-500" />
+                                                                    <StepIcon className="w-5 h-5 text-foreground" />
                                                                     <motion.div
-                                                                        className="absolute -inset-1 rounded-full border-2 border-emerald-500/40"
+                                                                        className="absolute -inset-1 rounded-full border-2 border-foreground/30"
                                                                         animate={{ scale: [1, 1.3, 1], opacity: [0.5, 0, 0.5] }}
                                                                         transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
                                                                     />
@@ -276,7 +277,7 @@ export default function AnalysisPage() {
                                                                 {[0, 1, 2].map(dot => (
                                                                     <motion.div
                                                                         key={dot}
-                                                                        className="w-1.5 h-1.5 rounded-full bg-emerald-500"
+                                                                        className="w-1.5 h-1.5 rounded-full bg-foreground/50"
                                                                         animate={{ opacity: [0.3, 1, 0.3] }}
                                                                         transition={{
                                                                             duration: 1,
@@ -314,7 +315,7 @@ export default function AnalysisPage() {
                             type="submit"
                             disabled={loading}
                             size="lg"
-                            className="w-full h-12 text-base rounded-lg bg-emerald-600 text-white hover:bg-emerald-700 shadow-md font-semibold disabled:opacity-80"
+                            className="w-full h-12 text-base rounded-lg font-semibold disabled:opacity-80"
                         >
                             {loading ? (
                                 <>
@@ -341,8 +342,8 @@ export default function AnalysisPage() {
                     { label: "Conversion Tactics" },
                     { label: "Keywords Gap" },
                 ].map((item, i) => (
-                    <div key={i} className="flex items-center justify-center p-3 rounded-lg bg-card border border-border text-xs font-medium text-muted-foreground shadow-sm hover:shadow-md transition-shadow">
-                        <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 mr-2" />
+                    <div key={i} className="flex items-center justify-center p-3 rounded-lg bg-card border border-border text-xs font-medium text-muted-foreground">
+                        <div className="w-1.5 h-1.5 rounded-full bg-foreground/30 mr-2" />
                         {item.label}
                     </div>
                 ))}

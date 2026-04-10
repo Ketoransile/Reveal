@@ -89,34 +89,34 @@ function SuccessContent() {
 
     return (
         <div className="flex flex-col items-center justify-center min-h-[80vh] px-4 animate-in fade-in duration-700">
-            <Card className="w-full max-w-lg border-emerald-100 bg-emerald-50/30 shadow-xl">
+            <Card className="w-full max-w-lg border-border bg-card">
                 <CardHeader className="text-center pb-2">
-                    <div className="mx-auto mb-4 bg-emerald-100 p-3 rounded-full w-fit animate-in zoom-in duration-500">
-                        <CheckCircle2 className="w-10 h-10 text-emerald-600" />
+                    <div className="mx-auto mb-4 bg-muted p-3 rounded-full w-fit animate-in zoom-in duration-500">
+                        <CheckCircle2 className="w-10 h-10 text-emerald-500" />
                     </div>
-                    <CardTitle className="text-2xl font-bold text-emerald-900">Payment Successful!</CardTitle>
-                    <CardDescription className="text-emerald-700 font-medium">
+                    <CardTitle className="text-2xl font-bold text-foreground">Payment Successful!</CardTitle>
+                    <CardDescription className="text-muted-foreground font-medium">
                         Welcome to Pro. Your account has been upgraded.
                     </CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-6">
-                    <div className="bg-white/80 backdrop-blur-sm rounded-xl p-5 border border-emerald-100 shadow-sm">
-                        <h3 className="font-semibold text-emerald-900 mb-3 flex items-center gap-2">
-                            <Zap className="w-4 h-4 text-emerald-500 fill-emerald-500" />
+                    <div className="bg-muted/50 rounded-lg p-5 border border-border">
+                        <h3 className="font-semibold text-foreground mb-3 flex items-center gap-2">
+                            <Zap className="w-4 h-4 text-muted-foreground" />
                             Here's what you've unlocked:
                         </h3>
                         <ul className="space-y-3">
-                            <li className="flex items-start gap-3 text-sm text-slate-700">
+                            <li className="flex items-start gap-3 text-sm text-muted-foreground">
                                 <CheckCircle2 className="w-4 h-4 text-emerald-500 mt-0.5 shrink-0" />
-                                <span><strong>Unlimited Analyses:</strong> Remove all limits and analyze as many competitors as you need.</span>
+                                <span><strong className="text-foreground">Unlimited Analyses:</strong> Remove all limits and analyze as many competitors as you need.</span>
                             </li>
-                            <li className="flex items-start gap-3 text-sm text-slate-700">
+                            <li className="flex items-start gap-3 text-sm text-muted-foreground">
                                 <CheckCircle2 className="w-4 h-4 text-emerald-500 mt-0.5 shrink-0" />
-                                <span><strong>Deep Dive Insights:</strong> Get advanced metrics and conversion optimization tips.</span>
+                                <span><strong className="text-foreground">Deep Dive Insights:</strong> Get advanced metrics and conversion optimization tips.</span>
                             </li>
-                            <li className="flex items-start gap-3 text-sm text-slate-700">
+                            <li className="flex items-start gap-3 text-sm text-muted-foreground">
                                 <CheckCircle2 className="w-4 h-4 text-emerald-500 mt-0.5 shrink-0" />
-                                <span><strong>Priority Support:</strong> Your requests jump to the front of the line.</span>
+                                <span><strong className="text-foreground">Priority Support:</strong> Your requests jump to the front of the line.</span>
                             </li>
                         </ul>
                     </div>
@@ -131,14 +131,14 @@ function SuccessContent() {
                 <CardFooter className="flex flex-col gap-3 pt-2">
                     <Button
                         size="lg"
-                        className="w-full bg-emerald-600 hover:bg-emerald-700 text-white shadow-lg shadow-emerald-600/20 transition-all hover:scale-[1.02]"
+                        className="w-full rounded-lg"
                         asChild
                     >
                         <Link href="/dashboard/analysis">
                             Start Your First Pro Analysis <ArrowRight className="ml-2 w-4 h-4" />
                         </Link>
                     </Button>
-                    <Button variant="ghost" className="w-full text-emerald-700 hover:bg-emerald-100/50 hover:text-emerald-800" asChild>
+                    <Button variant="ghost" className="w-full text-muted-foreground hover:text-foreground" asChild>
                         <Link href="/dashboard">
                             Go to Dashboard
                         </Link>
@@ -151,7 +151,7 @@ function SuccessContent() {
 
 export default function SuccessPage() {
     return (
-        <Suspense fallback={<div className="flex items-center justify-center min-h-screen"><Loader2 className="w-8 h-8 animate-spin text-emerald-500" /></div>}>
+        <Suspense fallback={<div className="flex items-center justify-center min-h-screen"><Loader2 className="w-8 h-8 animate-spin text-muted-foreground" /></div>}>
             <SuccessContent />
         </Suspense>
     );

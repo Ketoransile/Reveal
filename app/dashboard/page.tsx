@@ -2,22 +2,19 @@
 
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import {
     Plus,
-    Zap,
-    BarChart3,
-    TrendingUp,
     Clock,
     CheckCircle2,
-    XCircle,
     AlertCircle,
     ArrowRight,
-    Sparkles,
     Globe,
-    ExternalLink,
     Activity,
     Crown,
+    CreditCard,
+    BarChart,
+    TrendingUp
 } from "lucide-react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
@@ -29,20 +26,18 @@ export default function DashboardPage() {
     const [error, setError] = useState<string | null>(null);
 
     useEffect(() => {
-        // Load cached data first for instant render
         try {
             const cachedUser = localStorage.getItem('dashboard_user');
             const cachedAnalyses = localStorage.getItem('dashboard_analyses');
             if (cachedUser) setUserData(JSON.parse(cachedUser));
             if (cachedAnalyses) setAnalyses(JSON.parse(cachedAnalyses));
-        } catch { /* ignore parse errors */ }
+        } catch { }
 
         async function fetchData() {
             try {
                 const response = await fetch('/api/user');
 
                 if (response.status === 401 || response.status === 403) {
-                    // Clear cached data on genuine auth failure
                     localStorage.removeItem('dashboard_user');
                     localStorage.removeItem('dashboard_analyses');
                     window.location.href = '/login';
@@ -63,22 +58,18 @@ export default function DashboardPage() {
                 setUserData(data.user);
                 setAnalyses(data.analyses || []);
 
-                // Cache fresh data in localStorage
                 try {
                     localStorage.setItem('dashboard_user', JSON.stringify(data.user));
                     localStorage.setItem('dashboard_analyses', JSON.stringify(data.analyses || []));
-                } catch { /* localStorage full or unavailable */ }
+                } catch { }
             } catch (err) {
-                // If it's a network error (offline), don't show error if we have cached data
                 const isNetworkError = err instanceof TypeError && (
                     err.message.includes('fetch') || err.message.includes('network') || err.message.includes('Failed')
                 );
 
                 if (isNetworkError && userData) {
-                    // We have cached data, silently ignore the network error
                     return;
                 }
-
                 setError(err instanceof Error ? err.message : 'An error occurred');
             } finally {
                 setLoading(false);
@@ -96,12 +87,12 @@ export default function DashboardPage() {
         hidden: { opacity: 0 },
         visible: {
             opacity: 1,
-            transition: { staggerChildren: 0.08, delayChildren: 0.1 }
+            transition: { staggerChildren: 0.05, delayChildren: 0.05 }
         }
     };
 
     const itemVariants = {
-        hidden: { opacity: 0, y: 20 },
+        hidden: { opacity: 0, y: 15 },
         visible: {
             opacity: 1, y: 0,
             transition: { duration: 0.5, ease: [0.25, 0.46, 0.45, 0.94] as const }
@@ -112,22 +103,22 @@ export default function DashboardPage() {
         switch (status) {
             case 'processing':
                 return (
-                    <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-blue-500/10 dark:bg-blue-500/20 border border-blue-500/20 text-blue-600 dark:text-blue-400 text-xs font-medium">
+                    <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-amber-500/10 border border-amber-500/20 text-amber-600 dark:text-amber-400 text-[11px] font-semibold tracking-wide uppercase shadow-[0_0_15px_rgba(245,158,11,0.15)]">
                         <Clock className="w-3 h-3 animate-spin" />
                         Processing
                     </div>
                 );
             case 'completed':
                 return (
-                    <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-500/10 dark:bg-emerald-500/20 border border-emerald-500/20 text-emerald-600 dark:text-emerald-400 text-xs font-semibold">
+                    <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-600 dark:text-emerald-400 text-[11px] font-semibold tracking-wide uppercase shadow-[0_0_15px_rgba(16,185,129,0.15)]">
                         <CheckCircle2 className="w-3 h-3" />
                         Complete
                     </div>
                 );
             case 'failed':
                 return (
-                    <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-red-500/10 dark:bg-red-500/20 border border-red-500/20 text-red-600 dark:text-red-400 text-xs font-medium">
-                        <XCircle className="w-3 h-3" />
+                    <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-red-500/10 border border-red-500/20 text-red-600 dark:text-red-400 text-[11px] font-semibold tracking-wide uppercase shadow-[0_0_15px_rgba(239,68,68,0.15)]">
+                        <AlertCircle className="w-3 h-3" />
                         Failed
                     </div>
                 );
@@ -144,335 +135,359 @@ export default function DashboardPage() {
     };
 
     const fullName = userData?.name || userData?.email?.split('@')[0] || '';
-    // Format name: split by space or dot (for emails like john.doe), take first part, and capitalize
     const rawName = fullName.split(/[ .]/)[0];
     const firstName = rawName.charAt(0).toUpperCase() + rawName.slice(1).toLowerCase();
 
     return (
-        <motion.div
-            variants={containerVariants}
-            initial="hidden"
-            animate="visible"
-            className="space-y-8"
-        >
-            {/* Hero Header */}
+        <div className="relative min-h-screen">
+            {/* Background Effects */}
+            <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden">
+                <motion.div
+                    className="absolute top-[-10%] right-[-5%] w-[500px] h-[500px] bg-primary/5 rounded-full blur-[120px] pointer-events-none mix-blend-screen"
+                    animate={{ scale: [1, 1.2, 1], opacity: [0.3, 0.6, 0.3] }}
+                    transition={{ duration: 15, repeat: Infinity, ease: "easeInOut" }}
+                />
+                <motion.div
+                    className="absolute bottom-[-10%] left-[-10%] w-[600px] h-[600px] bg-emerald-500/5 rounded-full blur-[150px] pointer-events-none mix-blend-screen"
+                    animate={{ scale: [1, 1.1, 1], opacity: [0.2, 0.5, 0.2] }}
+                    transition={{ duration: 18, repeat: Infinity, ease: "easeInOut", delay: 2 }}
+                />
+            </div>
+
             <motion.div
-                variants={itemVariants}
-                className="relative overflow-hidden rounded-3xl bg-slate-950 border border-white/5 shadow-2xl shadow-emerald-500/5 p-8 md:p-10 group isolate"
+                variants={containerVariants}
+                initial="hidden"
+                animate="visible"
+                className="relative z-10 space-y-8 max-w-[1600px] mx-auto pb-12"
             >
-                {/* Background Grid Pattern */}
-                <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px] pointer-events-none opacity-20" />
-
-                {/* Vibrant Glowing Orbs */}
-                <div className="absolute -top-24 -right-24 w-96 h-96 bg-emerald-500/20 rounded-full blur-[100px] pointer-events-none animate-pulse" />
-                <div className="absolute -bottom-24 -left-24 w-80 h-80 bg-indigo-500/10 rounded-full blur-[100px] pointer-events-none" />
-
-                <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-5">
-                    <div>
-                        <motion.p
-                            className="text-emerald-400 text-sm font-medium mb-1 flex items-center gap-1.5"
-                            initial={{ opacity: 0, x: -10 }}
-                            animate={{ opacity: 1, x: 0 }}
-                            transition={{ delay: 0.2 }}
-                        >
-                            <Sparkles className="w-3.5 h-3.5" />
+                {/* Header Area */}
+                <motion.div
+                    variants={itemVariants}
+                    className="flex flex-col md:flex-row md:items-end justify-between gap-6 pb-2"
+                >
+                    <div className="relative">
+                        <div className="absolute -left-4 top-1 w-1 h-8 bg-primary rounded-r-full hidden md:block opacity-80" />
+                        <h1 className="text-3xl font-bold tracking-tight text-foreground flex items-center gap-2">
                             {getGreeting()}{firstName ? `, ${firstName}` : ''}
-                        </motion.p>
-                        <h1 className="text-2xl md:text-3xl font-bold tracking-tight text-white">
-                            Competitive Intelligence
+                            <motion.span
+                                animate={{ rotate: [0, 14, -8, 14, -4, 10, 0] }}
+                                transition={{ duration: 2.5, repeat: Infinity, repeatDelay: 5 }}
+                                className="origin-bottom-right"
+                            >
+                                👋
+                            </motion.span>
                         </h1>
-                        <p className="text-slate-400 text-sm mt-1.5 max-w-md">
-                            Track your rivals, uncover hidden strategies, and gain the advantage your business deserves.
+                        <p className="text-muted-foreground text-sm mt-2 max-w-lg leading-relaxed font-medium">
+                            Monitor market movements, analyze competitor strategies, and seize the advantage.
                         </p>
                     </div>
                     <Link href="/dashboard/analysis">
-                        <Button className="bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-400 hover:to-teal-400 text-white font-semibold shadow-lg shadow-emerald-500/20 rounded-xl px-6 h-11 transition-all hover:scale-[1.03] active:scale-95 hover:shadow-emerald-500/30 group cursor-pointer">
-                            <Plus className="w-4 h-4 mr-2" />
-                            New Analysis
-                            <ArrowRight className="w-4 h-4 ml-1 group-hover:translate-x-0.5 transition-transform" />
+                        <Button className="h-11 px-6 rounded-xl font-semibold shadow-[0_0_20px_rgba(16,185,129,0.2)] hover:shadow-[0_0_30px_rgba(16,185,129,0.4)] hover:-translate-y-0.5 transition-all duration-300 relative overflow-hidden group">
+                            <div className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300 ease-out" />
+                            <Plus className="w-4 h-4 mr-2 relative z-10" />
+                            <span className="relative z-10">New Analysis</span>
                         </Button>
                     </Link>
-                </div>
-            </motion.div>
-
-            {error && (
-                <motion.div
-                    variants={itemVariants}
-                    className="p-4 rounded-xl bg-red-500/10 border border-red-500/20 text-red-600 dark:text-red-400 text-sm flex items-center gap-3"
-                >
-                    <AlertCircle className="w-5 h-5 shrink-0" />
-                    <p>{error}</p>
                 </motion.div>
-            )}
 
-            {/* Stats Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-5">
-                {/* Credits / Subscription Card */}
-                <motion.div variants={itemVariants}>
-                    <Card className="border-border/50 hover:border-emerald-500/30 transition-all duration-300 bg-card relative overflow-hidden group hover:shadow-lg hover:shadow-emerald-500/5 h-full">
-                        <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-bl from-emerald-500/8 to-transparent rounded-bl-full pointer-events-none transition-transform duration-500 group-hover:scale-125" />
-                        <CardHeader className="flex flex-row items-center justify-between pb-3 relative z-10">
-                            <CardTitle className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
-                                {isPro ? 'Plan Status' : 'Credits'}
-                            </CardTitle>
-                            <div className={`w-9 h-9 rounded-xl flex items-center justify-center transition-transform group-hover:scale-110 ${isPro
-                                ? 'bg-gradient-to-br from-indigo-500/20 to-purple-500/20 text-indigo-500 dark:text-indigo-400'
-                                : 'bg-gradient-to-br from-emerald-500/20 to-teal-500/20 text-emerald-600 dark:text-emerald-400'}`}
-                            >
-                                {isPro ? <Crown className="w-4 h-4" /> : <Zap className="w-4 h-4" />}
-                            </div>
-                        </CardHeader>
-                        <CardContent className="relative z-10">
-                            {isPro ? (
-                                <div>
-                                    <div className="text-2xl font-bold text-foreground flex items-center gap-2">
-                                        Unlimited
-                                        <span className="text-[10px] bg-gradient-to-r from-indigo-500 to-purple-500 text-white px-2 py-0.5 rounded-full font-bold uppercase tracking-wider">Pro</span>
+                {error && (
+                    <motion.div
+                        variants={itemVariants}
+                        className="p-4 rounded-xl bg-red-500/10 border border-red-500/20 text-red-400 text-sm flex items-center gap-3 backdrop-blur-xl shadow-lg"
+                    >
+                        <AlertCircle className="w-5 h-5 shrink-0" />
+                        <p className="font-medium">{error}</p>
+                    </motion.div>
+                )}
+
+                {/* Premium Stats Grid */}
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+                    {/* Plan Status / Credits */}
+                    <motion.div variants={itemVariants} className="h-full">
+                        <Card className="border-border/40 bg-card/40 backdrop-blur-2xl overflow-hidden h-full shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.2)] hover:shadow-[0_8px_30px_rgb(0,0,0,0.08)] hover:-translate-y-1 transition-all duration-300 relative group rounded-2xl">
+                            <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                            <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-primary/20 to-transparent" />
+                            
+                            <CardContent className="p-6 relative z-10">
+                                <div className="flex justify-between items-start mb-5">
+                                    <div className="p-3 bg-background/50 rounded-2xl text-primary ring-1 ring-border/50 shadow-sm backdrop-blur-sm group-hover:scale-110 group-hover:rotate-3 transition-transform duration-300">
+                                        {isPro ? <Crown className="w-5 h-5" /> : <CreditCard className="w-5 h-5" />}
                                     </div>
-                                    {userData?.subscription_period_end ? (
-                                        <p className="text-xs text-muted-foreground mt-1.5">
-                                            Renews {new Date(userData.subscription_period_end).toLocaleDateString(undefined, { month: 'short', day: 'numeric' })}
-                                        </p>
+                                    <div className="px-2.5 py-1 rounded-full bg-background/50 border border-border/50 text-[10px] font-bold uppercase tracking-widest text-muted-foreground backdrop-blur-sm">
+                                        {isPro ? 'Plan' : 'Credits'}
+                                    </div>
+                                </div>
+                                <div className="space-y-1 mt-auto">
+                                    {isPro ? (
+                                        <div className="pt-2">
+                                            <div className="text-4xl font-bold text-foreground flex items-center gap-3 tracking-tighter">
+                                                Pro
+                                                <div className="px-2 py-0.5 rounded-full bg-gradient-to-r from-emerald-500/20 to-teal-500/20 text-emerald-500 border border-emerald-500/30 text-[11px] uppercase font-bold tracking-widest shadow-[0_0_15px_rgba(16,185,129,0.2)]">
+                                                    Active
+                                                </div>
+                                            </div>
+                                            <p className="text-sm text-muted-foreground mt-3 font-medium">
+                                                Unlimited analyses available
+                                            </p>
+                                        </div>
                                     ) : (
-                                        <p className="text-xs text-muted-foreground mt-1.5">Active subscription</p>
+                                        <div className="pt-2">
+                                            <div className="flex items-baseline gap-1.5 focus:outline-none">
+                                                <span className="text-4xl font-bold text-foreground tabular-nums tracking-tighter">
+                                                    {loading ? (
+                                                        <div className="w-8 h-10 bg-muted/80 animate-pulse rounded-lg" />
+                                                    ) : (
+                                                        userData?.credits || 0
+                                                    )}
+                                                </span>
+                                                {!loading && <span className="text-muted-foreground font-semibold text-lg">/ 3</span>}
+                                            </div>
+                                            {!loading && (
+                                                <div className="mt-5 h-2 bg-background/50 rounded-full overflow-hidden w-full max-w-[200px] ring-1 ring-inset ring-border/50">
+                                                    <motion.div
+                                                        className={`h-full rounded-full transition-all relative overflow-hidden ${((userData?.credits || 0) / 3) <= 0.33 ? 'bg-gradient-to-r from-amber-500 to-orange-400' : 'bg-gradient-to-r from-emerald-500 to-teal-400'}`}
+                                                        initial={{ width: 0 }}
+                                                        animate={{ width: `${((userData?.credits || 0) / 3) * 100}%` }}
+                                                        transition={{ delay: 0.3, duration: 1, ease: "easeOut" }}
+                                                    >
+                                                        <div className="absolute inset-0 bg-white/20 animate-pulse" />
+                                                    </motion.div>
+                                                </div>
+                                            )}
+                                        </div>
                                     )}
                                 </div>
-                            ) : (
-                                <div>
-                                    <div className="flex items-baseline gap-1.5">
-                                        <span className="text-3xl font-black text-foreground tabular-nums">
-                                            {loading ? '–' : userData?.credits || 0}
-                                        </span>
-                                        <span className="text-sm text-muted-foreground font-medium">/ 3</span>
+                            </CardContent>
+                        </Card>
+                    </motion.div>
+
+                    {/* Lifetime Analyses */}
+                    <motion.div variants={itemVariants} className="h-full">
+                        <Card className="border-border/40 bg-card/40 backdrop-blur-2xl overflow-hidden h-full shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.2)] hover:shadow-[0_8px_30px_rgb(0,0,0,0.08)] hover:-translate-y-1 transition-all duration-300 relative group rounded-2xl">
+                            <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/5 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                            <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-emerald-500/20 to-transparent" />
+                            
+                            <CardContent className="p-6 relative z-10">
+                                <div className="flex justify-between items-start mb-5">
+                                    <div className="p-3 bg-background/50 rounded-2xl text-emerald-500 ring-1 ring-border/50 shadow-sm backdrop-blur-sm group-hover:scale-110 group-hover:-rotate-3 transition-transform duration-300">
+                                        <BarChart className="w-5 h-5" />
                                     </div>
-                                    <div className="mt-3 h-1.5 bg-muted rounded-full overflow-hidden">
-                                        <motion.div
-                                            className="h-full bg-gradient-to-r from-emerald-500 to-teal-400 rounded-full"
-                                            initial={{ width: 0 }}
-                                            animate={{ width: `${((userData?.credits || 0) / 3) * 100}%` }}
-                                            transition={{ delay: 0.5, duration: 0.8, ease: "easeOut" }}
-                                        />
+                                    <div className="px-2.5 py-1 rounded-full bg-background/50 border border-border/50 text-[10px] font-bold uppercase tracking-widest text-muted-foreground backdrop-blur-sm">
+                                        Completed
                                     </div>
-                                    <p className="text-xs text-muted-foreground mt-2">Credits remaining</p>
                                 </div>
-                            )}
-                        </CardContent>
-                    </Card>
-                </motion.div>
+                                <div className="space-y-1 pt-2">
+                                    <div className="flex items-baseline gap-2">
+                                        <span className="text-4xl font-bold text-foreground tabular-nums tracking-tighter">
+                                            {loading ? (
+                                                <div className="w-8 h-10 bg-muted/80 animate-pulse rounded-lg" />
+                                            ) : (
+                                                completedAnalyses.length
+                                            )}
+                                        </span>
+                                    </div>
+                                    <p className="text-sm text-emerald-600 dark:text-emerald-400 mt-3 font-medium flex items-center gap-1.5">
+                                        <TrendingUp className="w-4 h-4" />
+                                        Lifetime analyses run
+                                    </p>
+                                </div>
+                            </CardContent>
+                        </Card>
+                    </motion.div>
 
-                {/* Completed Card */}
-                <motion.div variants={itemVariants}>
-                    <Card className="border-border/50 hover:border-blue-500/30 transition-all duration-300 bg-card relative overflow-hidden group hover:shadow-lg hover:shadow-blue-500/5 h-full">
-                        <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-bl from-blue-500/8 to-transparent rounded-bl-full pointer-events-none transition-transform duration-500 group-hover:scale-125" />
-                        <CardHeader className="flex flex-row items-center justify-between pb-3 relative z-10">
-                            <CardTitle className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Completed</CardTitle>
-                            <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-blue-500/20 to-cyan-500/20 flex items-center justify-center text-blue-600 dark:text-blue-400 transition-transform group-hover:scale-110">
-                                <CheckCircle2 className="w-4 h-4" />
-                            </div>
-                        </CardHeader>
-                        <CardContent className="relative z-10">
-                            <div className="flex items-baseline gap-1.5">
-                                <span className="text-3xl font-black text-foreground tabular-nums">
-                                    {loading ? '–' : completedAnalyses.length}
-                                </span>
-                                <span className="text-sm text-muted-foreground font-medium">analyses</span>
-                            </div>
-                            <p className="text-xs text-muted-foreground mt-1.5 flex items-center gap-1">
-                                <TrendingUp className="w-3 h-3 text-emerald-500" />
-                                Lifetime total
-                            </p>
-                        </CardContent>
-                    </Card>
-                </motion.div>
-
-                {/* In Progress Card */}
-                <motion.div variants={itemVariants}>
-                    <Card className="border-border/50 hover:border-orange-500/30 transition-all duration-300 bg-card relative overflow-hidden group hover:shadow-lg hover:shadow-orange-500/5 h-full">
-                        <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-bl from-orange-500/8 to-transparent rounded-bl-full pointer-events-none transition-transform duration-500 group-hover:scale-125" />
-                        <CardHeader className="flex flex-row items-center justify-between pb-3 relative z-10">
-                            <CardTitle className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">In Progress</CardTitle>
-                            <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-orange-500/20 to-amber-500/20 flex items-center justify-center text-orange-600 dark:text-orange-400 transition-transform group-hover:scale-110">
-                                <Activity className="w-4 h-4" />
-                            </div>
-                        </CardHeader>
-                        <CardContent className="relative z-10">
-                            <div className="flex items-baseline gap-1.5">
-                                <span className="text-3xl font-black text-foreground tabular-nums">
-                                    {loading ? '–' : processingAnalyses.length}
-                                </span>
-                                <span className="text-sm text-muted-foreground font-medium">active</span>
-                            </div>
-                            <p className="text-xs text-muted-foreground mt-1.5 flex items-center gap-1">
-                                {processingAnalyses.length > 0 ? (
-                                    <>
-                                        <Clock className="w-3 h-3 text-orange-500 animate-spin" />
-                                        Processing now
-                                    </>
-                                ) : (
-                                    <>
-                                        <CheckCircle2 className="w-3 h-3 text-emerald-500" />
-                                        All caught up
-                                    </>
-                                )}
-                            </p>
-                        </CardContent>
-                    </Card>
-                </motion.div>
-            </div>
-
-            {/* Recent Analyses Section */}
-            <motion.div variants={itemVariants} className="space-y-4">
-                <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-2.5">
-                        <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-slate-500/10 to-slate-500/5 flex items-center justify-center">
-                            <BarChart3 className="w-4 h-4 text-muted-foreground" />
-                        </div>
-                        <h2 className="text-lg font-bold text-foreground">Recent Analyses</h2>
-                    </div>
-                    {analyses.length > 0 && (
-                        <Link href="/dashboard/all-analyses" className="text-xs font-medium text-muted-foreground hover:text-foreground transition-colors flex items-center gap-1">
-                            View all
-                            <ArrowRight className="w-3 h-3" />
-                        </Link>
-                    )}
+                    {/* Processing Reports */}
+                    <motion.div variants={itemVariants} className="h-full">
+                        <Card className="border-border/40 bg-card/40 backdrop-blur-2xl overflow-hidden h-full shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.2)] hover:shadow-[0_8px_30px_rgb(0,0,0,0.08)] hover:-translate-y-1 transition-all duration-300 relative group rounded-2xl">
+                            <div className="absolute inset-0 bg-gradient-to-br from-amber-500/5 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                            <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-amber-500/20 to-transparent" />
+                            
+                            <CardContent className="p-6 relative z-10">
+                                <div className="flex justify-between items-start mb-5">
+                                    <div className="p-3 bg-background/50 rounded-2xl text-amber-500 ring-1 ring-border/50 shadow-sm backdrop-blur-sm group-hover:scale-110 group-hover:rotate-3 transition-transform duration-300">
+                                        <Activity className="w-5 h-5" />
+                                    </div>
+                                    <div className="px-2.5 py-1 rounded-full bg-background/50 border border-border/50 text-[10px] font-bold uppercase tracking-widest text-muted-foreground backdrop-blur-sm">
+                                        Active
+                                    </div>
+                                </div>
+                                <div className="space-y-1 pt-2">
+                                    <div className="flex items-baseline gap-2">
+                                        <span className="text-4xl font-bold text-foreground tabular-nums tracking-tighter">
+                                            {loading ? (
+                                                <div className="w-8 h-10 bg-muted/80 animate-pulse rounded-lg" />
+                                            ) : (
+                                                processingAnalyses.length
+                                            )}
+                                        </span>
+                                    </div>
+                                    <p className="text-sm text-amber-600 dark:text-amber-400 mt-3 font-medium flex items-center gap-1.5">
+                                        {processingAnalyses.length > 0 ? (
+                                            <>
+                                                <Clock className="w-4 h-4 animate-[spin_3s_linear_infinite]" />
+                                                Running now
+                                            </>
+                                        ) : (
+                                            <span className="text-muted-foreground flex items-center gap-1.5">
+                                                <CheckCircle2 className="w-4 h-4" /> All caught up
+                                            </span>
+                                        )}
+                                    </p>
+                                </div>
+                            </CardContent>
+                        </Card>
+                    </motion.div>
                 </div>
 
-                <Card className="border-border/50 bg-card shadow-sm overflow-hidden">
-                    <CardContent className="p-0">
+                {/* Recent Analyses List */}
+                <motion.div variants={itemVariants} className="space-y-5 pt-6">
+                    <div className="flex items-center justify-between px-1">
+                        <h2 className="text-xl font-bold text-foreground tracking-tight">Recent Activity</h2>
+                        {analyses.length > 0 && (
+                            <Link href="/dashboard/all-analyses" className="text-sm font-semibold text-muted-foreground hover:text-foreground transition-colors flex items-center gap-1.5 group">
+                                View all history
+                                <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                            </Link>
+                        )}
+                    </div>
+
+                    <div className="bg-card/40 backdrop-blur-2xl border border-border/40 rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.2)] overflow-hidden relative">
                         {loading ? (
-                            <div className="flex flex-col items-center justify-center py-20 text-muted-foreground">
-                                <div className="relative w-10 h-10 mb-4">
-                                    <div className="absolute inset-0 border-2 border-emerald-500/20 rounded-full" />
-                                    <div className="absolute inset-0 border-2 border-transparent border-t-emerald-500 rounded-full animate-spin" />
-                                </div>
-                                <p className="text-sm font-medium">Loading your data...</p>
+                            <div className="divide-y divide-border/20">
+                                {[1, 2, 3].map((i) => (
+                                    <div key={i} className="p-5 flex items-center gap-5">
+                                        <div className="w-14 h-14 bg-muted/50 rounded-2xl animate-pulse ring-1 ring-border/50" />
+                                        <div className="space-y-3 flex-1">
+                                            <div className="h-4 bg-muted/50 w-1/3 rounded-md animate-pulse" />
+                                            <div className="h-3 bg-muted/50 w-1/4 rounded-md animate-pulse" />
+                                        </div>
+                                        <div className="w-24 h-7 bg-muted/50 rounded-full animate-pulse" />
+                                    </div>
+                                ))}
                             </div>
                         ) : analyses.length === 0 ? (
-                            <div className="flex flex-col items-center justify-center py-20 text-muted-foreground relative">
-                                <div className="absolute inset-0 bg-gradient-to-b from-emerald-500/5 via-transparent to-transparent pointer-events-none" />
-                                <div className="relative z-10 flex flex-col items-center">
-                                    <div className="w-16 h-16 bg-gradient-to-br from-emerald-500/10 to-teal-500/10 rounded-2xl flex items-center justify-center mb-5 border border-emerald-500/10">
-                                        <Globe className="w-7 h-7 text-emerald-500/60" />
-                                    </div>
-                                    <h3 className="text-lg font-bold text-foreground mb-1.5">No analyses yet</h3>
-                                    <p className="text-muted-foreground max-w-xs text-center mb-6 text-sm leading-relaxed">
-                                        Launch your first analysis to uncover competitive insights and growth opportunities.
-                                    </p>
-                                    <Link href="/dashboard/analysis">
-                                        <Button className="rounded-xl bg-gradient-to-r from-emerald-500 to-teal-500 text-white hover:from-emerald-400 hover:to-teal-400 h-11 px-6 font-semibold shadow-lg shadow-emerald-500/15 hover:shadow-emerald-500/25 transition-all hover:scale-[1.03] group cursor-pointer">
-                                            <Sparkles className="w-4 h-4 mr-2" />
-                                            Start First Analysis
-                                            <ArrowRight className="w-4 h-4 ml-1 group-hover:translate-x-0.5 transition-transform" />
-                                        </Button>
-                                    </Link>
+                            <div className="flex flex-col items-center justify-center py-24 text-center px-4 relative overflow-hidden">
+                                <div className="absolute inset-0 bg-gradient-to-b from-transparent to-primary/5 pointer-events-none" />
+                                <div className="w-20 h-20 bg-background/50 backdrop-blur-sm rounded-3xl flex items-center justify-center mb-6 ring-1 ring-border/50 shadow-lg relative z-10">
+                                    <Globe className="w-8 h-8 text-primary" />
                                 </div>
+                                <h3 className="text-xl font-bold text-foreground mb-3 relative z-10 tracking-tight">No analyses yet</h3>
+                                <p className="text-muted-foreground max-w-md text-sm leading-relaxed mb-8 relative z-10 font-medium">
+                                    Launch your first competitor analysis to start uncovering strategies and gaps and gain your unfair advantage.
+                                </p>
+                                <Link href="/dashboard/analysis" className="relative z-10">
+                                    <Button className="h-12 px-8 rounded-xl font-bold shadow-[0_0_20px_rgba(16,185,129,0.2)] hover:shadow-[0_0_30px_rgba(16,185,129,0.4)] hover:-translate-y-0.5 transition-all duration-300">
+                                        <Plus className="w-4 h-4 mr-2" />
+                                        Start First Analysis
+                                    </Button>
+                                </Link>
                             </div>
                         ) : (
-                            <AnimatePresence>
-                                <div className="divide-y divide-border/50">
+                            <div className="divide-y divide-border/20">
+                                <AnimatePresence>
                                     {analyses.slice(0, 5).map((analysis, index) => (
                                         <motion.div
                                             key={analysis.id}
-                                            initial={{ opacity: 0, y: 10 }}
-                                            animate={{ opacity: 1, y: 0 }}
-                                            transition={{ delay: index * 0.05, duration: 0.4 }}
-                                            onClick={() => {
-                                                if (analysis.status === 'completed') {
-                                                    window.location.href = `/dashboard/report/${analysis.id}`;
-                                                }
-                                            }}
-                                            className={`p-4 md:p-5 flex flex-col md:flex-row md:items-center justify-between gap-3 transition-all duration-200 
-                                                ${analysis.status === 'completed'
-                                                    ? 'hover:bg-accent/50 cursor-pointer group'
-                                                    : 'opacity-70 cursor-default'}`}
+                                            initial={{ opacity: 0 }}
+                                            animate={{ opacity: 1 }}
+                                            transition={{ delay: index * 0.05 }}
                                         >
-                                            <div className="flex items-start gap-3.5 flex-1 min-w-0">
-                                                <div className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 mt-0.5 ${analysis.status === 'completed'
-                                                    ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400'
-                                                    : analysis.status === 'processing'
-                                                        ? 'bg-blue-500/10 text-blue-600 dark:text-blue-400'
-                                                        : 'bg-red-500/10 text-red-600 dark:text-red-400'
-                                                    }`}>
-                                                    <Globe className="w-4.5 h-4.5" />
+                                            <Link
+                                                href={analysis.status === 'completed' ? `/dashboard/report/${analysis.id}` : '#'}
+                                                className={`flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-5 md:p-6 transition-all duration-300 
+                                                    ${analysis.status === 'completed'
+                                                        ? 'hover:bg-accent/40 group relative overflow-hidden'
+                                                        : 'opacity-80'}`}
+                                            >
+                                                {analysis.status === 'completed' && (
+                                                    <div className="absolute inset-0 bg-gradient-to-r from-primary/5 to-transparent translate-x-[-100%] group-hover:translate-x-0 transition-transform duration-500 ease-out pointer-events-none" />
+                                                )}
+                                                
+                                                <div className="flex items-start sm:items-center gap-5 flex-1 min-w-0 relative z-10">
+                                                    <div className="w-14 h-14 rounded-2xl bg-background/50 backdrop-blur-sm border border-border/50 flex items-center justify-center shrink-0 shadow-sm text-foreground/70 group-hover:border-primary/30 group-hover:text-primary transition-colors duration-300">
+                                                        <Globe className="w-6 h-6" />
+                                                    </div>
+                                                    <div className="flex-1 min-w-0">
+                                                        <div className="flex items-center gap-3 mb-1.5 flex-wrap">
+                                                            <h3 className="text-base font-bold text-foreground tracking-tight truncate group-hover:text-primary transition-colors">
+                                                                {(() => {
+                                                                    try { return new URL(analysis.your_url).hostname.replace('www.', ''); } catch { return analysis.your_url; }
+                                                                })()}
+                                                                <span className="text-muted-foreground font-semibold mx-3 opacity-50 bg-muted/50 px-2 py-0.5 rounded-md text-[10px] uppercase tracking-widest">vs</span>
+                                                                {(() => {
+                                                                    try { return new URL(analysis.competitor_url).hostname.replace('www.', ''); } catch { return analysis.competitor_url; }
+                                                                })()}
+                                                            </h3>
+                                                        </div>
+
+                                                        <div className="flex items-center gap-3 text-[13px] text-muted-foreground font-medium">
+                                                            <span className="flex items-center gap-1.5">
+                                                                <Clock className="w-3.5 h-3.5 opacity-70" />
+                                                                {new Date(analysis.created_at).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' })}
+                                                            </span>
+                                                        </div>
+
+                                                        {analysis.status === 'failed' && analysis.error_message && (
+                                                            <p className="text-xs text-red-500 mt-2 flex items-center gap-1.5 bg-red-500/10 px-3 py-1.5 rounded-md border border-red-500/20 w-fit">
+                                                                <AlertCircle className="w-3 h-3 shrink-0" />
+                                                                {analysis.error_message}
+                                                            </p>
+                                                        )}
+                                                    </div>
                                                 </div>
-                                                <div className="flex-1 min-w-0">
-                                                    <div className="flex items-center gap-2.5 mb-1.5 flex-wrap">
-                                                        <h3 className="text-sm font-semibold text-foreground truncate group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors">
-                                                            {(() => {
-                                                                try { return new URL(analysis.your_url).hostname; } catch { return analysis.your_url; }
-                                                            })()}
-                                                            <span className="text-muted-foreground font-normal mx-1.5">vs</span>
-                                                            {(() => {
-                                                                try { return new URL(analysis.competitor_url).hostname; } catch { return analysis.competitor_url; }
-                                                            })()}
-                                                        </h3>
-                                                        <StatusBadge status={analysis.status} />
-                                                    </div>
 
-                                                    <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                                                        <Clock className="w-3 h-3" />
-                                                        <span>{new Date(analysis.created_at).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' })}</span>
-                                                    </div>
+                                                <div className="flex items-center gap-5 shrink-0 sm:ml-auto relative z-10">
+                                                    <StatusBadge status={analysis.status} />
 
-                                                    {analysis.status === 'failed' && analysis.error_message && (
-                                                        <p className="text-xs text-red-500 mt-2 flex items-center gap-1.5 bg-red-500/5 px-2.5 py-1.5 rounded-lg">
-                                                            <AlertCircle className="w-3 h-3 shrink-0" />
-                                                            {analysis.error_message}
-                                                        </p>
+                                                    {analysis.status === 'completed' && (
+                                                        <div className="hidden sm:flex w-10 h-10 items-center justify-center rounded-xl bg-background/50 backdrop-blur-sm border border-border/50 shadow-sm group-hover:bg-primary group-hover:text-primary-foreground group-hover:border-primary group-hover:shadow-[0_0_15px_rgba(16,185,129,0.3)] transition-all duration-300 text-muted-foreground">
+                                                            <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
+                                                        </div>
                                                     )}
                                                 </div>
-                                            </div>
-
-                                            <div className="flex items-center gap-3 shrink-0 ml-auto">
-                                                {analysis.status === 'completed' && (
-                                                    <div className="flex items-center gap-1 text-xs text-muted-foreground group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors">
-                                                        <span className="hidden md:inline">View Report</span>
-                                                        <ExternalLink className="w-3.5 h-3.5 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
-                                                    </div>
-                                                )}
-                                                {analysis.status === 'processing' && (
-                                                    <div className="text-right">
-                                                        <div className="flex items-center gap-2 text-sm text-blue-600 dark:text-blue-400 font-medium">
-                                                            <div className="w-4 h-4 border-2 border-blue-500/30 border-t-blue-500 rounded-full animate-spin" />
-                                                            Analyzing...
-                                                        </div>
-                                                    </div>
-                                                )}
-                                            </div>
+                                            </Link>
                                         </motion.div>
                                     ))}
-                                </div>
-                            </AnimatePresence>
-                        )}
-                    </CardContent>
-                </Card>
-            </motion.div>
-
-            {/* Upgrade CTA for free users */}
-            {!loading && !isPro && (
-                <motion.div variants={itemVariants}>
-                    <Card className="border-emerald-500/20 bg-gradient-to-r from-emerald-500/5 via-teal-500/5 to-cyan-500/5 dark:from-emerald-500/10 dark:via-teal-500/10 dark:to-cyan-500/10 overflow-hidden relative">
-                        <div className="absolute top-0 right-0 w-40 h-40 bg-emerald-500/5 rounded-full blur-[60px] pointer-events-none" />
-                        <CardContent className="p-5 md:p-6 flex flex-col md:flex-row md:items-center justify-between gap-4 relative z-10">
-                            <div className="flex items-start gap-3.5">
-                                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-500/20 to-teal-500/20 flex items-center justify-center shrink-0">
-                                    <Crown className="w-5 h-5 text-emerald-600 dark:text-emerald-400" />
-                                </div>
-                                <div>
-                                    <h3 className="font-bold text-foreground text-sm">Unlock Unlimited Analyses</h3>
-                                    <p className="text-xs text-muted-foreground mt-0.5">Upgrade to Pro for unlimited analyses, deep AI insights, and priority support.</p>
-                                </div>
+                                </AnimatePresence>
                             </div>
-                            <Link href="/pricing">
-                                <Button variant="outline" className="rounded-xl border-emerald-500/30 text-emerald-600 dark:text-emerald-400 hover:bg-emerald-500/10 font-semibold text-sm h-9 px-5 shrink-0 cursor-pointer">
-                                    View Plans
-                                    <ArrowRight className="w-3.5 h-3.5 ml-1.5" />
-                                </Button>
-                            </Link>
-                        </CardContent>
-                    </Card>
+                        )}
+                    </div>
                 </motion.div>
-            )}
-        </motion.div>
+
+                {/* Premium Upsell for Free Users */}
+                {!loading && !isPro && (
+                    <motion.div variants={itemVariants} className="pt-6">
+                        <div className="relative overflow-hidden rounded-3xl border border-primary/20 bg-card/40 backdrop-blur-2xl p-8 md:p-10 shadow-[0_8px_40px_rgb(0,0,0,0.08)] dark:shadow-[0_8px_40px_rgba(16,185,129,0.05)] group hover:border-primary/40 transition-colors duration-500">
+                            {/* Abstract Premium Background */}
+                            <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-transparent to-transparent opacity-50 pointer-events-none" />
+                            <div className="absolute -right-20 -top-20 w-[400px] h-[400px] bg-primary/10 rounded-full blur-[80px] pointer-events-none mix-blend-screen group-hover:bg-primary/20 transition-colors duration-700" />
+                            
+                            <div className="absolute top-0 right-0 p-12 opacity-[0.02] dark:opacity-[0.04] pointer-events-none scale-150 origin-center group-hover:scale-[1.6] group-hover:rotate-12 transition-transform duration-1000">
+                                <Crown className="w-64 h-64" />
+                            </div>
+
+                            <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-8">
+                                <div className="flex items-start gap-6">
+                                    <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-primary/20 to-primary/5 text-primary flex items-center justify-center shrink-0 border border-primary/30 shadow-[0_0_30px_rgba(16,185,129,0.2)]">
+                                        <Crown className="w-8 h-8" />
+                                    </div>
+                                    <div className="space-y-2">
+                                        <h3 className="font-bold text-2xl text-foreground tracking-tight">Scale your insights with Pro</h3>
+                                        <p className="text-[15px] text-muted-foreground leading-relaxed max-w-xl font-medium">
+                                            Unlock the ultimate competitive edge. Get unlimited analyses, deep metadata extraction, priority queueing, and early access to new AI models.
+                                        </p>
+                                    </div>
+                                </div>
+                                <Link href="/pricing" className="shrink-0">
+                                    <Button className="w-full md:w-auto h-12 px-8 rounded-xl font-bold bg-foreground text-background hover:bg-foreground/90 shadow-xl hover:shadow-2xl hover:-translate-y-1 transition-all duration-300 group ring-1 ring-border/10">
+                                        Upgrade to Pro
+                                        <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1.5 transition-transform" />
+                                    </Button>
+                                </Link>
+                            </div>
+                        </div>
+                    </motion.div>
+                )}
+            </motion.div>
+        </div>
     );
 }

@@ -7,7 +7,7 @@ import { Mail, MessageCircle, FileText } from "lucide-react";
 export default function HelpPage() {
     return (
         <div className="space-y-6 animate-in fade-in duration-700 max-w-4xl">
-            <div>
+            <div className="pb-6 border-b border-border">
                 <h1 className="text-2xl md:text-3xl font-bold tracking-tight text-foreground">
                     Help Center
                 </h1>
@@ -16,41 +16,47 @@ export default function HelpPage() {
                 </p>
             </div>
 
-            <div className="grid md:grid-cols-3 gap-6">
-                <Card>
+            <div className="grid md:grid-cols-3 gap-4">
+                <Card className="border-border bg-card">
                     <CardHeader>
-                        <FileText className="w-8 h-8 text-blue-500 mb-2" />
+                        <div className="w-10 h-10 rounded-lg bg-muted flex items-center justify-center mb-2">
+                            <FileText className="w-5 h-5 text-muted-foreground" />
+                        </div>
                         <CardTitle className="text-lg">Documentation</CardTitle>
                     </CardHeader>
                     <CardContent>
                         <p className="text-sm text-muted-foreground mb-4">
                             Read our detailed guides on how to interpret analysis results.
                         </p>
-                        <a href="#" className="text-sm font-medium text-blue-600 hover:underline">View Guides &rarr;</a>
+                        <a href="#" className="text-sm font-medium text-foreground hover:underline">View Guides &rarr;</a>
                     </CardContent>
                 </Card>
-                <Card>
+                <Card className="border-border bg-card">
                     <CardHeader>
-                        <MessageCircle className="w-8 h-8 text-emerald-500 mb-2" />
+                        <div className="w-10 h-10 rounded-lg bg-muted flex items-center justify-center mb-2">
+                            <MessageCircle className="w-5 h-5 text-muted-foreground" />
+                        </div>
                         <CardTitle className="text-lg">Live Chat</CardTitle>
                     </CardHeader>
                     <CardContent>
                         <p className="text-sm text-muted-foreground mb-4">
                             Chat with our support team manually for quick help.
                         </p>
-                        <a href="#" className="text-sm font-medium text-emerald-600 hover:underline">Start Chat &rarr;</a>
+                        <a href="#" className="text-sm font-medium text-foreground hover:underline">Start Chat &rarr;</a>
                     </CardContent>
                 </Card>
-                <Card>
+                <Card className="border-border bg-card">
                     <CardHeader>
-                        <Mail className="w-8 h-8 text-purple-500 mb-2" />
+                        <div className="w-10 h-10 rounded-lg bg-muted flex items-center justify-center mb-2">
+                            <Mail className="w-5 h-5 text-muted-foreground" />
+                        </div>
                         <CardTitle className="text-lg">Email Support</CardTitle>
                     </CardHeader>
                     <CardContent>
                         <p className="text-sm text-muted-foreground mb-4">
                             Send us an email and we'll get back to you within 24 hours.
                         </p>
-                        <a href="mailto:support@reveal.com" className="text-sm font-medium text-purple-600 hover:underline">Contact Us &rarr;</a>
+                        <a href="mailto:support@reveal.com" className="text-sm font-medium text-foreground hover:underline">Contact Us &rarr;</a>
                     </CardContent>
                 </Card>
             </div>
