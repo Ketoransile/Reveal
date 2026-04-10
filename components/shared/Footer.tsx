@@ -3,10 +3,10 @@ import { Twitter, Linkedin, Github, Mail } from "lucide-react";
 
 export const Footer = () => {
     return (
-        <footer className="border-t border-white/10 bg-slate-950 pt-16 pb-12 relative z-10 overflow-hidden">
+        <footer className="border-t border-border/10 bg-background pt-16 pb-12 relative z-10 overflow-hidden">
 
             {/* Background Glow */}
-            <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[300px] bg-emerald-500/5 rounded-full blur-[100px] pointer-events-none" />
+            <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[300px] bg-foreground/5 rounded-full blur-[100px] pointer-events-none" />
 
             <div className="container mx-auto px-6 max-w-7xl relative">
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-12 mb-16">
@@ -14,24 +14,24 @@ export const Footer = () => {
                     {/* Brand Column */}
                     <div className="lg:col-span-2 space-y-6">
                         <Link href="/" className="flex items-center gap-3 group w-fit">
-                            <div className="w-10 h-10 bg-gradient-to-br from-emerald-500 to-teal-500 rounded-xl flex items-center justify-center shadow-[0_0_20px_rgba(16,185,129,0.3)] group-hover:shadow-[0_0_30px_rgba(16,185,129,0.5)] transition-all">
-                                <span className="text-black font-black text-xl">R</span>
+                            <div className="w-10 h-10 bg-foreground rounded-xl flex items-center justify-center shadow-md border border-border/50 group-hover:shadow-lg transition-all">
+                                <span className="text-background font-black text-xl">R</span>
                             </div>
-                            <span className="text-2xl font-bold tracking-tight text-white">
+                            <span className="text-2xl font-bold tracking-tight text-foreground opacity-90">
                                 Reveal
                             </span>
                         </Link>
-                        <p className="text-slate-400 text-sm leading-relaxed max-w-xs">
+                        <p className="text-muted-foreground text-sm leading-relaxed max-w-xs font-medium">
                             Stop guessing. We analyze your competitor's Strategy, UX, and SEO to give you a clear, data-backed roadmap to win.
                         </p>
                         <div className="flex items-center gap-4">
-                            <Link href="#" className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center text-slate-400 hover:bg-white/10 hover:text-white transition-all group">
+                            <Link href="#" className="w-10 h-10 rounded-full bg-muted/50 flex items-center justify-center text-muted-foreground hover:bg-muted hover:text-foreground transition-all group border border-border/50">
                                 <Twitter className="w-4 h-4" />
                             </Link>
-                            <Link href="#" className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center text-slate-400 hover:bg-white/10 hover:text-white transition-all group">
+                            <Link href="#" className="w-10 h-10 rounded-full bg-muted/50 flex items-center justify-center text-muted-foreground hover:bg-muted hover:text-foreground transition-all group border border-border/50">
                                 <Linkedin className="w-4 h-4" />
                             </Link>
-                            <Link href="#" className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center text-slate-400 hover:bg-white/10 hover:text-white transition-all group">
+                            <Link href="#" className="w-10 h-10 rounded-full bg-muted/50 flex items-center justify-center text-muted-foreground hover:bg-muted hover:text-foreground transition-all group border border-border/50">
                                 <Github className="w-4 h-4" />
                             </Link>
                         </div>
@@ -39,71 +39,71 @@ export const Footer = () => {
 
                     {/* Links Columns */}
                     <div className="space-y-6">
-                        <h4 className="text-white font-bold tracking-wide">Product</h4>
-                        <ul className="space-y-3 text-sm text-slate-400">
+                        <h4 className="text-foreground font-bold tracking-wide">Product</h4>
+                        <ul className="space-y-3 text-sm text-muted-foreground font-medium">
                             <li>
-                                <Link href="/#features" className="hover:text-emerald-400 transition-colors">Features</Link>
+                                <Link href="/#features" className="hover:text-foreground transition-colors">Features</Link>
                             </li>
                             <li>
-                                <Link href="/pricing" className="hover:text-emerald-400 transition-colors">Pricing</Link>
+                                <Link href="/pricing" className="hover:text-foreground transition-colors">Pricing</Link>
                             </li>
                             <li>
-                                <Link href="#" className="hover:text-emerald-400 transition-colors">Case Studies</Link>
+                                <Link href="#" className="hover:text-foreground transition-colors">Case Studies</Link>
                             </li>
                             <li>
-                                <Link href="#" className="hover:text-emerald-400 transition-colors">Roadmap</Link>
+                                <Link href="#" className="hover:text-foreground transition-colors">Roadmap</Link>
                             </li>
                             <li>
-                                <Link href="#" className="hover:text-emerald-400 transition-colors">Changelog</Link>
-                            </li>
-                        </ul>
-                    </div>
-
-                    <div className="space-y-6">
-                        <h4 className="text-white font-bold tracking-wide">Company</h4>
-                        <ul className="space-y-3 text-sm text-slate-400">
-                            <li>
-                                <Link href="#" className="hover:text-emerald-400 transition-colors">About Us</Link>
-                            </li>
-                            <li>
-                                <Link href="#" className="hover:text-emerald-400 transition-colors">Careers</Link>
-                            </li>
-                            <li>
-                                <Link href="#" className="hover:text-emerald-400 transition-colors">Blog</Link>
-                            </li>
-                            <li>
-                                <Link href="#" className="hover:text-emerald-400 transition-colors">Contact</Link>
-                            </li>
-                            <li>
-                                <Link href="#" className="hover:text-emerald-400 transition-colors">Partners</Link>
+                                <Link href="#" className="hover:text-foreground transition-colors">Changelog</Link>
                             </li>
                         </ul>
                     </div>
 
                     <div className="space-y-6">
-                        <h4 className="text-white font-bold tracking-wide">Legal</h4>
-                        <ul className="space-y-3 text-sm text-slate-400">
+                        <h4 className="text-foreground font-bold tracking-wide">Company</h4>
+                        <ul className="space-y-3 text-sm text-muted-foreground font-medium">
                             <li>
-                                <Link href="#" className="hover:text-emerald-400 transition-colors">Privacy Policy</Link>
+                                <Link href="#" className="hover:text-foreground transition-colors">About Us</Link>
                             </li>
                             <li>
-                                <Link href="#" className="hover:text-emerald-400 transition-colors">Terms of Service</Link>
+                                <Link href="#" className="hover:text-foreground transition-colors">Careers</Link>
                             </li>
                             <li>
-                                <Link href="#" className="hover:text-emerald-400 transition-colors">Cookie Policy</Link>
+                                <Link href="#" className="hover:text-foreground transition-colors">Blog</Link>
                             </li>
                             <li>
-                                <Link href="#" className="hover:text-emerald-400 transition-colors">Security</Link>
+                                <Link href="#" className="hover:text-foreground transition-colors">Contact</Link>
+                            </li>
+                            <li>
+                                <Link href="#" className="hover:text-foreground transition-colors">Partners</Link>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div className="space-y-6">
+                        <h4 className="text-foreground font-bold tracking-wide">Legal</h4>
+                        <ul className="space-y-3 text-sm text-muted-foreground font-medium">
+                            <li>
+                                <Link href="#" className="hover:text-foreground transition-colors">Privacy Policy</Link>
+                            </li>
+                            <li>
+                                <Link href="#" className="hover:text-foreground transition-colors">Terms of Service</Link>
+                            </li>
+                            <li>
+                                <Link href="#" className="hover:text-foreground transition-colors">Cookie Policy</Link>
+                            </li>
+                            <li>
+                                <Link href="#" className="hover:text-foreground transition-colors">Security</Link>
                             </li>
                         </ul>
                     </div>
                 </div>
 
-                <div className="pt-8 border-t border-white/5 flex flex-col md:flex-row items-center justify-between gap-4">
-                    <p className="text-slate-500 text-sm">
+                <div className="pt-8 border-t border-border/20 flex flex-col md:flex-row items-center justify-between gap-4">
+                    <p className="text-muted-foreground text-sm font-medium">
                         &copy; 2026 Reveal Inc. All rights reserved.
                     </p>
-                    <div className="flex items-center gap-2 text-sm text-slate-500">
+                    <div className="flex items-center gap-2 text-sm text-muted-foreground font-medium">
                         <Mail className="w-4 h-4" />
                         <span>support@reveal.com</span>
                     </div>

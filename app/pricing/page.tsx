@@ -8,7 +8,7 @@ export const revalidate = 0;
 
 export default function PricingPage() {
     return (
-        <div className="min-h-screen bg-slate-950 text-slate-50 overflow-hidden relative selection:bg-emerald-500/30 font-sans">
+        <div className="min-h-screen bg-background text-foreground overflow-hidden relative selection:bg-primary/20 font-sans">
             <Suspense fallback={null}>
                 <NavBar />
             </Suspense>

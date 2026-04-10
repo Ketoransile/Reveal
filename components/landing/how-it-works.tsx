@@ -5,31 +5,25 @@ import { motion, Variants } from "framer-motion";
 
 const steps = [
     {
-        icon: <Monitor className="w-7 h-7 md:w-8 md:h-8 text-blue-400" />,
+        icon: <Monitor className="w-7 h-7 md:w-8 md:h-8 text-foreground/80 group-hover:text-foreground transition-colors" />,
         title: "Enter URLs",
         description: "Input your website and your top competitor's URL. That's all we need to start.",
-        color: "blue",
-        gradient: "from-blue-500/20 to-indigo-500/20",
-        borderHover: "group-hover:border-blue-500/50",
-        glowColor: "group-hover:shadow-[0_0_40px_rgba(59,130,246,0.2)]",
+        textColor: "text-foreground",
+        bgClass: "bg-muted/30 group-hover:bg-muted/60",
     },
     {
-        icon: <Zap className="w-7 h-7 md:w-8 md:h-8 text-amber-400" />,
+        icon: <Zap className="w-7 h-7 md:w-8 md:h-8 text-foreground/80 group-hover:text-foreground transition-colors" />,
         title: "AI Scans Deep",
         description: "Our agents simulate a user journey, analyzing content, structure, and persuasion techniques hidden from plain sight.",
-        color: "amber",
-        gradient: "from-amber-500/20 to-orange-500/20",
-        borderHover: "group-hover:border-amber-500/50",
-        glowColor: "group-hover:shadow-[0_0_40px_rgba(245,158,11,0.2)]",
+        textColor: "text-foreground",
+        bgClass: "bg-muted/30 group-hover:bg-muted/60",
     },
     {
-        icon: <FileText className="w-7 h-7 md:w-8 md:h-8 text-emerald-400" />,
+        icon: <FileText className="w-7 h-7 md:w-8 md:h-8 text-foreground/80 group-hover:text-foreground transition-colors" />,
         title: "Get Your Roadmap",
         description: "Receive a prioritized 'Victory Plan' showing exactly what to fix to steal their traffic.",
-        color: "emerald",
-        gradient: "from-emerald-500/20 to-teal-500/20",
-        borderHover: "group-hover:border-emerald-500/50",
-        glowColor: "group-hover:shadow-[0_0_40px_rgba(16,185,129,0.2)]",
+        textColor: "text-foreground",
+        bgClass: "bg-muted/30 group-hover:bg-muted/60",
     }
 ];
 
@@ -53,7 +47,7 @@ const itemVariants: Variants = {
 
 export const HowItWorks = () => {
     return (
-        <section id="how-it-works" className="py-32 relative z-10">
+        <section id="how-it-works" className="py-32 relative z-10 bg-background">
             <div className="container mx-auto px-6 max-w-7xl">
 
                 {/* Section Header */}
@@ -63,7 +57,7 @@ export const HowItWorks = () => {
                         whileInView={{ opacity: 1, scale: 1, y: 0 }}
                         viewport={{ once: true }}
                         transition={{ duration: 0.6 }}
-                        className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-emerald-950/50 border border-emerald-500/20 text-xs font-semibold text-emerald-300 backdrop-blur-sm"
+                        className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-muted/50 border border-border/50 text-xs font-semibold text-foreground backdrop-blur-sm"
                     >
                         <CheckCircle className="w-3.5 h-3.5" />
                         Simple 3-Step Process
@@ -74,10 +68,10 @@ export const HowItWorks = () => {
                         whileInView={{ opacity: 1, y: 0 }}
                         viewport={{ once: true }}
                         transition={{ duration: 0.7, delay: 0.1 }}
-                        className="text-3xl md:text-5xl font-black text-white tracking-tight"
+                        className="text-3xl md:text-5xl font-black text-foreground tracking-tight"
                     >
                         How We{" "}
-                        <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-teal-400">
+                        <span className="text-foreground/60">
                             Expose
                         </span>{" "}
                         Their Secrets
@@ -87,7 +81,7 @@ export const HowItWorks = () => {
                         whileInView={{ opacity: 1, y: 0 }}
                         viewport={{ once: true }}
                         transition={{ duration: 0.6, delay: 0.2 }}
-                        className="text-slate-400 max-w-2xl mx-auto text-lg"
+                        className="text-muted-foreground font-medium max-w-2xl mx-auto text-lg"
                     >
                         Three simple steps to go from &ldquo;guessing&rdquo; to &ldquo;knowing exactly what to do.&rdquo;
                     </motion.p>
@@ -110,7 +104,7 @@ export const HowItWorks = () => {
                         transition={{ duration: 1.2, delay: 0.5, ease: "easeOut" }}
                         style={{ transformOrigin: "left" }}
                     >
-                        <div className="w-full h-full bg-gradient-to-r from-blue-500/40 via-amber-500/40 to-emerald-500/40" />
+                        <div className="w-full h-full bg-gradient-to-r from-border/10 via-border to-border/10" />
                     </motion.div>
 
                     {steps.map((step, index) => (
@@ -122,9 +116,9 @@ export const HowItWorks = () => {
                             transition={{ type: "spring", stiffness: 300, damping: 20 }}
                         >
                             {/* Icon Container */}
-                            <div className={`w-24 h-24 md:w-28 md:h-28 rounded-3xl bg-gradient-to-br ${step.gradient} border border-white/10 ${step.borderHover} flex items-center justify-center mb-8 shadow-2xl relative transition-all duration-500 ${step.glowColor}`}>
+                            <div className={`w-24 h-24 md:w-28 md:h-28 rounded-3xl ${step.bgClass} border border-border/50 flex items-center justify-center mb-8 shadow-sm relative transition-all duration-500`}>
                                 {/* Subtle bg glow on hover */}
-                                <div className="absolute inset-0 rounded-3xl bg-white/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                                <div className="absolute inset-0 rounded-3xl bg-foreground/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
                                 <motion.div
                                     whileHover={{ rotate: [0, -10, 10, 0] }}
                                     transition={{ duration: 0.5 }}
@@ -134,18 +128,18 @@ export const HowItWorks = () => {
 
                                 {/* Step Number Badge */}
                                 <motion.div
-                                    className="absolute -top-3 -right-3 w-9 h-9 rounded-full bg-slate-800 border border-white/15 flex items-center justify-center text-sm font-bold text-white shadow-lg"
+                                    className="absolute -top-3 -right-3 w-9 h-9 rounded-full bg-background border border-border/60 flex items-center justify-center text-sm font-bold text-foreground shadow-sm"
                                     whileHover={{ scale: 1.15 }}
                                 >
                                     {index + 1}
                                 </motion.div>
 
                                 {/* Ripple on hover */}
-                                <div className="absolute inset-0 rounded-3xl border-2 border-white/0 group-hover:border-white/10 group-hover:scale-110 transition-all duration-700 pointer-events-none" />
+                                <div className="absolute inset-0 rounded-3xl border-2 border-transparent group-hover:border-border/30 group-hover:scale-110 transition-all duration-700 pointer-events-none" />
                             </div>
 
-                            <h3 className="text-xl font-bold text-white mb-3 group-hover:text-slate-100 transition-colors">{step.title}</h3>
-                            <p className="text-slate-400 leading-relaxed max-w-xs group-hover:text-slate-300 transition-colors duration-300">{step.description}</p>
+                            <h3 className="text-xl font-bold text-foreground mb-3">{step.title}</h3>
+                            <p className="text-muted-foreground font-medium leading-relaxed max-w-xs group-hover:text-foreground/80 transition-colors duration-300">{step.description}</p>
                         </motion.div>
                     ))}
                 </motion.div>

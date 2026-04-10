@@ -84,7 +84,7 @@ const FloatingParticles = () => {
             {particles.map((p) => (
                 <motion.div
                     key={p.id}
-                    className="absolute rounded-full bg-white/20"
+                    className="absolute rounded-full bg-foreground/10"
                     style={{
                         width: p.size,
                         height: p.size,
@@ -163,7 +163,7 @@ export function LandingPageContent() {
     };
 
     return (
-        <div className="min-h-screen bg-slate-950 text-slate-50 overflow-hidden relative selection:bg-emerald-500/30">
+        <div className="min-h-screen bg-background text-foreground overflow-hidden relative selection:bg-foreground/20">
 
             {/* ─── ANIMATED BACKGROUND ─── */}
             <FloatingParticles />
@@ -173,24 +173,24 @@ export function LandingPageContent() {
                 className="fixed inset-0 pointer-events-none z-0"
                 style={{
                     backgroundSize: '80px 80px',
-                    backgroundImage: 'linear-gradient(to right, rgba(255,255,255,0.03) 1px, transparent 1px), linear-gradient(to bottom, rgba(255,255,255,0.03) 1px, transparent 1px)'
+                    backgroundImage: 'linear-gradient(to right, rgba(255,255,255,0.02) 1px, transparent 1px), linear-gradient(to bottom, rgba(255,255,255,0.02) 1px, transparent 1px)'
                 }}
             />
-            <div className="fixed pointer-events-none inset-0 bg-slate-950/60 [mask-image:radial-gradient(ellipse_at_center,transparent_20%,black_100%)]" />
+            <div className="fixed pointer-events-none inset-0 bg-background/60 [mask-image:radial-gradient(ellipse_at_center,transparent_20%,black_100%)]" />
 
-            {/* Morphing Gradient Orbs */}
+            {/* Morphing Gradient Orbs - Monochromatic */}
             <motion.div
-                className="absolute top-[-10%] left-[30%] w-[500px] h-[500px] md:w-[900px] md:h-[700px] bg-gradient-to-br from-blue-600/25 via-indigo-500/15 to-purple-600/20 rounded-full blur-[100px] md:blur-[150px] pointer-events-none mix-blend-screen animate-morph"
+                className="absolute top-[-10%] left-[30%] w-[500px] h-[500px] md:w-[900px] md:h-[700px] bg-foreground/5 rounded-full blur-[100px] md:blur-[150px] pointer-events-none mix-blend-screen animate-morph"
                 animate={{ x: [0, 30, -20, 0], y: [0, -20, 15, 0] }}
                 transition={{ duration: 20, repeat: Infinity, ease: "easeInOut" }}
             />
             <motion.div
-                className="absolute bottom-[10%] right-[-5%] w-[400px] h-[400px] md:w-[700px] md:h-[600px] bg-gradient-to-tl from-emerald-600/15 via-teal-500/10 to-cyan-600/15 rounded-full blur-[80px] md:blur-[130px] pointer-events-none mix-blend-screen animate-morph"
+                className="absolute bottom-[10%] right-[-5%] w-[400px] h-[400px] md:w-[700px] md:h-[600px] bg-foreground/5 rounded-full blur-[80px] md:blur-[130px] pointer-events-none mix-blend-screen animate-morph"
                 animate={{ x: [0, -25, 15, 0], y: [0, 20, -15, 0] }}
                 transition={{ duration: 18, repeat: Infinity, ease: "easeInOut", delay: 2 }}
             />
             <motion.div
-                className="absolute top-[50%] left-[-10%] w-[300px] h-[300px] md:w-[500px] md:h-[500px] bg-gradient-to-tr from-purple-600/10 via-pink-500/10 to-rose-600/10 rounded-full blur-[80px] md:blur-[120px] pointer-events-none mix-blend-screen"
+                className="absolute top-[50%] left-[-10%] w-[300px] h-[300px] md:w-[500px] md:h-[500px] bg-foreground/5 rounded-full blur-[80px] md:blur-[120px] pointer-events-none mix-blend-screen"
                 animate={{ x: [0, 20, -15, 0], y: [0, -30, 20, 0], scale: [1, 1.1, 0.95, 1] }}
                 transition={{ duration: 22, repeat: Infinity, ease: "easeInOut", delay: 4 }}
             />
@@ -205,34 +205,29 @@ export function LandingPageContent() {
                             initial={{ opacity: 0, scale: 0.8, y: 20 }}
                             animate={{ opacity: 1, scale: 1, y: 0 }}
                             transition={{ duration: 0.6, ease: [0.25, 0.46, 0.45, 0.94] }}
-                            className="inline-flex items-center gap-2.5 px-4 py-2 rounded-full bg-gradient-to-r from-blue-950/60 to-purple-950/60 border border-blue-500/25 text-xs font-semibold text-blue-200 mb-10 backdrop-blur-xl cursor-default shadow-[0_0_40px_rgba(59,130,246,0.15)] group hover:border-blue-400/40 hover:shadow-[0_0_60px_rgba(59,130,246,0.25)] transition-all duration-500"
+                            className="inline-flex items-center gap-2.5 px-4 py-2 rounded-full bg-muted/50 border border-border/50 text-xs font-semibold text-foreground mb-10 backdrop-blur-xl cursor-default shadow-sm hover:border-foreground/20 hover:shadow-md transition-all duration-500"
                         >
                             <motion.div
                                 animate={{ rotate: [0, 15, -15, 0] }}
                                 transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
                             >
-                                <Sparkles className="w-3.5 h-3.5 text-blue-400" />
+                                <Sparkles className="w-3.5 h-3.5 text-foreground" />
                             </motion.div>
-                            <span className="bg-gradient-to-r from-blue-300 via-indigo-300 to-purple-300 bg-clip-text text-transparent">
+                            <span className="text-foreground">
                                 AI-Powered Competitor Deep Dive
                             </span>
-                            <motion.div
-                                className="w-1.5 h-1.5 rounded-full bg-emerald-400"
-                                animate={{ scale: [1, 1.4, 1], opacity: [0.7, 1, 0.7] }}
-                                transition={{ duration: 2, repeat: Infinity }}
-                            />
                         </motion.div>
 
                         {/* Hero Title with Word-by-Word Animation */}
-                        <h1 className="text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-black tracking-tight mb-8 leading-[1.08]">
+                        <h1 className="text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-black tracking-tight mb-8 leading-[1.08] text-foreground">
                             <AnimatedWords
                                 text="Find the revenue leak"
-                                className="block bg-clip-text text-transparent bg-gradient-to-b from-white via-slate-100 to-slate-300 drop-shadow-[0_0_40px_rgba(255,255,255,0.1)]"
+                                className="block text-foreground drop-shadow-sm"
                                 delay={0.3}
                             />
                             <AnimatedWords
                                 text="in your landing page."
-                                className="block text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 via-teal-400 to-emerald-500 mt-2"
+                                className="block text-foreground mt-2 opacity-80"
                                 delay={0.8}
                             />
                         </h1>
@@ -242,17 +237,17 @@ export function LandingPageContent() {
                             initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ duration: 0.8, delay: 1.3, ease: "easeOut" }}
-                            className="text-base lg:text-xl text-slate-400 mb-12 max-w-3xl mx-auto leading-relaxed"
+                            className="text-base lg:text-xl text-muted-foreground mb-12 max-w-3xl mx-auto leading-relaxed font-medium"
                         >
                             Your product is ready to scale, but your competitors are stealing your customers.
                             Our AI analyzes their winning strategies to give you a step-by-step roadmap to{" "}
                             <motion.span
-                                className="text-emerald-400 font-semibold relative"
+                                className="text-foreground font-semibold relative"
                                 initial={{ backgroundSize: "0% 2px" }}
                                 animate={{ backgroundSize: "100% 2px" }}
                                 transition={{ duration: 0.8, delay: 2.2 }}
                                 style={{
-                                    backgroundImage: "linear-gradient(to right, #34d399, #2dd4bf)",
+                                    backgroundImage: "linear-gradient(to right, #ffffff, #aaaaaa)",
                                     backgroundRepeat: "no-repeat",
                                     backgroundPosition: "0 100%",
                                 }}
@@ -273,10 +268,10 @@ export function LandingPageContent() {
                                 disabled={isCheckingAuth}
                                 variant="default"
                                 size="lg"
-                                className="h-14 px-8 text-base w-full sm:w-auto rounded-2xl font-bold tracking-tight animate-glow-pulse transition-all duration-500 relative overflow-hidden bg-gradient-to-r from-emerald-600 via-teal-500 to-emerald-600 hover:from-emerald-500 hover:via-teal-400 hover:to-emerald-500 text-white border-0 group cursor-pointer"
+                                className="h-14 px-8 text-base w-full sm:w-auto rounded-xl font-bold tracking-tight bg-foreground text-background hover:bg-foreground/90 transition-all duration-300 relative overflow-hidden shadow-lg hover:shadow-xl hover:-translate-y-0.5 group cursor-pointer border border-border/10"
                             >
                                 {/* Shimmer overlay */}
-                                <span className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000" />
+                                <span className="absolute inset-0 bg-gradient-to-r from-transparent via-background/20 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000" />
                                 <span className="relative flex items-center gap-2">
                                     Reveal Why They Win
                                     <motion.span
@@ -294,18 +289,18 @@ export function LandingPageContent() {
                             initial="hidden"
                             animate="visible"
                             variants={staggerContainer}
-                            className="flex flex-wrap items-center justify-center gap-8 text-xs text-slate-500 font-medium"
+                            className="flex flex-wrap items-center justify-center gap-8 text-xs text-muted-foreground font-semibold uppercase tracking-wider"
                         >
                             {[
-                                { icon: <TrendingUp className="w-3.5 h-3.5 text-emerald-500" />, text: "Analyzed 10,000+ Market Battles" },
-                                { icon: <Shield className="w-3.5 h-3.5 text-blue-500" />, text: "Data-Backed Roadmap" },
-                                { icon: <Zap className="w-3.5 h-3.5 text-amber-500" />, text: "Results in 30 Seconds" },
+                                { icon: <TrendingUp className="w-4 h-4 text-foreground/80" />, text: "Analyzed 10k+ Battles" },
+                                { icon: <Shield className="w-4 h-4 text-foreground/80" />, text: "Data-Backed Roadmap" },
+                                { icon: <Zap className="w-4 h-4 text-foreground/80" />, text: "Results in 30 Seconds" },
                             ].map((item, i) => (
-                                <motion.div key={i} variants={staggerItem} className="flex items-center gap-2 group cursor-default">
+                                <motion.div key={i} variants={staggerItem} className="flex items-center gap-2.5 group cursor-default">
                                     <motion.div whileHover={{ scale: 1.2, rotate: 10 }} transition={{ type: "spring", stiffness: 300 }}>
                                         {item.icon}
                                     </motion.div>
-                                    <span className="group-hover:text-slate-300 transition-colors">{item.text}</span>
+                                    <span className="group-hover:text-foreground transition-colors">{item.text}</span>
                                 </motion.div>
                             ))}
                         </motion.div>
@@ -334,21 +329,21 @@ export function LandingPageContent() {
             >
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-8">
                     {[
-                        { value: 100, suffix: "+", label: "Analyses Run", color: "from-emerald-400 to-teal-400" },
-                        { value: 97, suffix: "%", label: "Accuracy Rate", color: "from-blue-400 to-indigo-400" },
-                        { value: 30, suffix: "s", label: "Avg. Scan Time", color: "from-amber-400 to-orange-400" },
-                        { value: 50, suffix: "+", label: "Growth Teams", color: "from-purple-400 to-pink-400" },
+                        { value: 100, suffix: "+", label: "Analyses Run" },
+                        { value: 97, suffix: "%", label: "Accuracy Rate" },
+                        { value: 30, suffix: "s", label: "Avg. Scan Time" },
+                        { value: 50, suffix: "+", label: "Growth Teams" },
                     ].map((stat, i) => (
                         <motion.div
                             key={i}
                             variants={staggerItem}
-                            className="text-center p-6 rounded-2xl bg-slate-900/40 border border-white/5 backdrop-blur-sm hover:border-white/15 hover:bg-slate-900/60 transition-all duration-500 group"
+                            className="text-center p-6 rounded-3xl bg-card/40 border border-border/40 backdrop-blur-md hover:border-border hover:bg-card/60 transition-all duration-500 group shadow-sm"
                             whileHover={{ y: -5, transition: { duration: 0.3 } }}
                         >
-                            <div className={`text-3xl md:text-4xl font-black bg-gradient-to-r ${stat.color} bg-clip-text text-transparent mb-2`}>
+                            <div className="text-3xl md:text-4xl font-black text-foreground mb-2 tracking-tighter">
                                 <AnimatedCounter target={stat.value} suffix={stat.suffix} />
                             </div>
-                            <div className="text-xs md:text-sm text-slate-500 font-medium group-hover:text-slate-400 transition-colors">{stat.label}</div>
+                            <div className="text-xs md:text-sm text-muted-foreground font-bold tracking-widest uppercase group-hover:text-foreground transition-colors">{stat.label}</div>
                         </motion.div>
                     ))}
                 </div>
@@ -372,9 +367,9 @@ export function LandingPageContent() {
                 variants={sectionVariants}
                 className="text-center mb-32 md:mb-48 relative z-10 px-6 overflow-hidden"
             >
-                <p className="text-xs font-bold text-slate-500 uppercase tracking-[0.3em] mb-14 flex items-center justify-center gap-3">
+                <p className="text-xs font-bold text-muted-foreground uppercase tracking-[0.3em] mb-14 flex items-center justify-center gap-3">
                     <motion.span
-                        className="h-px w-16 bg-gradient-to-r from-transparent to-slate-700"
+                        className="h-px w-16 bg-gradient-to-r from-transparent to-border"
                         initial={{ width: 0 }}
                         whileInView={{ width: 64 }}
                         transition={{ duration: 0.8 }}
@@ -382,7 +377,7 @@ export function LandingPageContent() {
                     />
                     Trusted by growth teams at
                     <motion.span
-                        className="h-px w-16 bg-gradient-to-l from-transparent to-slate-700"
+                        className="h-px w-16 bg-gradient-to-l from-transparent to-border"
                         initial={{ width: 0 }}
                         whileInView={{ width: 64 }}
                         transition={{ duration: 0.8 }}
@@ -392,8 +387,8 @@ export function LandingPageContent() {
 
                 {/* Marquee-style logos */}
                 <div className="relative w-full overflow-hidden">
-                    <div className="absolute left-0 top-0 bottom-0 w-24 bg-gradient-to-r from-slate-950 to-transparent z-10" />
-                    <div className="absolute right-0 top-0 bottom-0 w-24 bg-gradient-to-l from-slate-950 to-transparent z-10" />
+                    <div className="absolute left-0 top-0 bottom-0 w-24 bg-gradient-to-r from-background to-transparent z-10" />
+                    <div className="absolute right-0 top-0 bottom-0 w-24 bg-gradient-to-l from-background to-transparent z-10" />
                     <motion.div
                         className="flex items-center gap-20 whitespace-nowrap"
                         animate={{ x: ["0%", "-50%"] }}
@@ -402,7 +397,7 @@ export function LandingPageContent() {
                         {["Shopify", "Polar", "Notion", "Figma", "Linear", "Vercel", "Shopify", "Polar", "Notion", "Figma", "Linear", "Vercel"].map((name, i) => (
                             <span
                                 key={i}
-                                className="text-2xl font-bold text-slate-600 hover:text-slate-300 transition-colors duration-500 cursor-default select-none"
+                                className="text-2xl font-black tracking-tight text-foreground/20 hover:text-foreground/80 transition-colors duration-500 cursor-default select-none"
                             >
                                 {name}
                             </span>
@@ -431,7 +426,7 @@ export function LandingPageContent() {
             >
                 {/* CTA Glow Background */}
                 <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-                    <div className="w-[500px] h-[500px] bg-emerald-500/10 rounded-full blur-[120px] animate-breathe" />
+                    <div className="w-[500px] h-[500px] bg-foreground/5 rounded-full blur-[120px] animate-breathe" />
                 </div>
 
                 <motion.div
@@ -441,23 +436,23 @@ export function LandingPageContent() {
                     transition={{ duration: 0.8 }}
                     className="relative"
                 >
-                    <h2 className="text-3xl md:text-5xl lg:text-6xl font-black tracking-tight mb-6 text-white">
+                    <h2 className="text-3xl md:text-5xl lg:text-6xl font-black tracking-tight mb-6 text-foreground">
                         Ready to{" "}
-                        <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 via-teal-400 to-emerald-500 animate-text-shimmer" style={{ backgroundSize: "200% auto" }}>
+                        <span className="opacity-70">
                             outsmart
                         </span>
                         {" "}your competition?
                     </h2>
-                    <p className="text-lg text-slate-400 mb-10 max-w-2xl mx-auto">
+                    <p className="text-lg text-muted-foreground mb-10 max-w-2xl mx-auto font-medium">
                         Join thousands of growth teams using Reveal to decode their competitors strategy and win more customers.
                     </p>
                     <Button
                         onClick={handleAnalyzeClick}
                         disabled={isCheckingAuth}
                         size="lg"
-                        className="h-14 px-10 text-base rounded-2xl font-bold animate-glow-pulse bg-gradient-to-r from-emerald-600 via-teal-500 to-emerald-600 hover:from-emerald-500 hover:via-teal-400 hover:to-emerald-500 text-white border-0 group cursor-pointer relative overflow-hidden"
+                        className="h-14 px-10 text-base rounded-xl font-bold bg-foreground text-background hover:bg-foreground/90 transition-all duration-300 relative overflow-hidden shadow-lg hover:shadow-xl hover:-translate-y-0.5 group cursor-pointer border border-border/10"
                     >
-                        <span className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000" />
+                        <span className="absolute inset-0 bg-gradient-to-r from-transparent via-background/20 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000" />
                         <span className="relative flex items-center gap-2">
                             Start Your Free Analysis
                             <motion.span
