@@ -79,7 +79,7 @@ export function NavDocuments({
                                         <span>Share</span>
                                     </DropdownMenuItem>
                                     <DropdownMenuSeparator className="bg-slate-200" />
-                                    <DropdownMenuItem className="text-red-600 hover:bg-red-50 hover:text-red-700 cursor-pointer">
+                                    <DropdownMenuItem className="text-foreground hover:bg-foreground/5 hover:text-foreground cursor-pointer">
                                         <Trash2 className="mr-2 h-4 w-4" />
                                         <span>Delete</span>
                                     </DropdownMenuItem>

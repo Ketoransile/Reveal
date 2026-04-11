@@ -126,7 +126,7 @@ export function CustomSidebar({ className, collapsed = false, setCollapsed, onCl
                         className={cn(
                             "mb-1 transition-all duration-200",
                             collapsed ? "w-10 h-10 p-0 justify-center rounded-xl" : "w-full justify-start gap-3 rounded-xl h-10",
-                            isActive ? "bg-primary/10 text-primary font-semibold shadow-sm ring-1 ring-primary/20" : "text-muted-foreground hover:text-foreground hover:bg-muted/60"
+                            isActive ? "bg-foreground/5 text-foreground font-semibold shadow-sm ring-1 ring-border" : "text-muted-foreground hover:text-foreground hover:bg-muted/60"
                         )}
                     >
                         <item.icon className="w-5 h-5 shrink-0" />
@@ -143,10 +143,10 @@ export function CustomSidebar({ className, collapsed = false, setCollapsed, onCl
     )
 
     const SidebarContentInner = () => (
-        <div className="flex flex-col h-full bg-background/80 backdrop-blur-xl border-r border-border/5 md:border-border/40 p-3 pt-4 transition-all duration-300">
+        <div className="flex flex-col h-full bg-background/80 backdrop-blur-xl border-r border-border p-3 pt-4 transition-all duration-300">
             {/* Header */}
             <Link href="/" onClick={() => onClose?.()} className={cn("h-12 flex items-center mb-6 transition-all cursor-pointer hover:opacity-80", collapsed ? "justify-center px-0" : "gap-3 px-2")}>
-                <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-primary text-primary-foreground font-bold shrink-0">
+                <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-foreground/5 text-foreground-foreground font-bold shrink-0">
                     <Box className="size-4" />
                 </div>
                 {!collapsed && <span className="text-lg font-bold tracking-tight whitespace-nowrap overflow-hidden">Reveal</span>}
@@ -172,18 +172,20 @@ export function CustomSidebar({ className, collapsed = false, setCollapsed, onCl
                         ))}
                     </div> */}
 
-                    {/* Secondary Nav */}
-                    <div className="space-y-1 mt-6">
-                        <div className="h-px bg-border/40 mx-3 mb-4" />
-                        {NAV_SECONDARY.map((item) => (
-                            <NavItem key={item.url} item={item} isActive={pathname === item.url} />
-                        ))}
-                    </div>
+                </div>
+            </TooltipProvider>
+
+            {/* Secondary Nav (Settings) - Pinned near bottom */}
+            <TooltipProvider>
+                <div className="mt-auto px-1 py-1 mb-2">
+                    {NAV_SECONDARY.map((item) => (
+                        <NavItem key={item.url} item={item} isActive={pathname === item.url} />
+                    ))}
                 </div>
             </TooltipProvider>
 
             {/* User Footer */}
-            <div className="mt-auto pt-4 border-t border-border/40">
+            <div className="pt-4 border-t border-border/40">
                 <DropdownMenu>
                     <DropdownMenuTrigger asChild>
                         <Button variant="ghost" className={cn("w-full h-14 hover:bg-accent group transition-all", collapsed ? "justify-center px-0" : "justify-start px-2")}>
@@ -236,7 +238,7 @@ export function CustomSidebar({ className, collapsed = false, setCollapsed, onCl
                         <DropdownMenuSeparator />
                         <DropdownMenuItem
                             onClick={() => setShowLogoutDialog(true)}
-                            className="text-red-500 focus:text-red-600 cursor-pointer"
+                            className="text-foreground focus:text-foreground cursor-pointer"
                         >
                             <LogOut className="mr-2 h-4 w-4" />
                             <span>Log out</span>
@@ -265,7 +267,7 @@ export function CustomSidebar({ className, collapsed = false, setCollapsed, onCl
                         <AlertDialogCancel>Cancel</AlertDialogCancel>
                         <AlertDialogAction
                             onClick={handleLogout}
-                            className="bg-red-600 hover:bg-red-700 text-white"
+                            className="bg-foreground/5 hover:bg-foreground/5 text-white"
                         >
                             Log out
                         </AlertDialogAction>

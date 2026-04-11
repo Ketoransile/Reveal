@@ -27,7 +27,6 @@ import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { AnalysisChat } from "@/components/analysis-chat";
-import { motion } from "framer-motion";
 import {
     Accordion,
     AccordionContent,
@@ -59,10 +58,7 @@ const CircularScore = ({ score, label, color, delay = 0 }: { score: number, labe
                         className="text-muted/20"
                     />
                     {/* Progress Circle */}
-                    <motion.circle
-                        initial={{ strokeDashoffset: circumference }}
-                        animate={{ strokeDashoffset }}
-                        transition={{ duration: 1.5, ease: "easeOut", delay }}
+                    <circle
                         cx="80"
                         cy="80"
                         r="46"
@@ -70,19 +66,15 @@ const CircularScore = ({ score, label, color, delay = 0 }: { score: number, labe
                         strokeWidth="8"
                         fill="transparent"
                         strokeDasharray={circumference}
+                        strokeDashoffset={strokeDashoffset}
                         strokeLinecap="round"
-                        className={`${color}`}
+                        className={`${color} transition-all duration-1000 ease-out`}
                     />
                 </svg>
                 <div className="absolute inset-0 flex flex-col items-center justify-center">
-                    <motion.span
-                        initial={{ opacity: 0, scale: 0.5 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        transition={{ delay: delay + 0.5 }}
-                        className={`text-4xl font-black tracking-tight ${color.replace('text-', 'text-')}`}
-                    >
+                    <span className={`text-4xl font-bold font-display tracking-tight ${color.replace('text-', 'text-')}`}>
                         {score}
-                    </motion.span>
+                    </span>
                 </div>
             </div>
             <span className="text-sm font-semibold tracking-wide text-muted-foreground uppercase">{label}</span>
@@ -136,7 +128,7 @@ export default function ReportPage() {
             <div className="flex flex-col items-center justify-center min-h-[60vh] space-y-6">
                 <div className="relative w-16 h-16">
                     <div className="absolute inset-0 rounded-full border-4 border-border"></div>
-                    <div className="absolute inset-0 rounded-full border-4 border-emerald-500 border-t-transparent animate-spin"></div>
+                    <div className="absolute inset-0 rounded-full border-4 border-border border-t-transparent animate-spin"></div>
                 </div>
                 <p className="text-lg font-medium text-muted-foreground animate-pulse tracking-wide">Loading Analysis...</p>
             </div>
@@ -190,36 +182,32 @@ export default function ReportPage() {
 
             {/* Hero Battle Arena - Modern & Borderless */}
             <div className="grid lg:grid-cols-5 gap-6">
-                <motion.div
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    className="lg:col-span-3 relative overflow-hidden bg-card rounded-[2rem] shadow-[0_8px_30px_rgb(0,0,0,0.04)] p-8 sm:p-12 hover:shadow-[0_8px_30px_rgb(0,0,0,0.08)] transition-shadow duration-500"
-                >
+                <div className="lg:col-span-3 relative overflow-hidden bg-card rounded-[2rem] shadow-[0_8px_30px_rgb(0,0,0,0.04)] p-8 sm:p-12 hover:shadow-[0_8px_30px_rgb(0,0,0,0.08)] transition-shadow duration-500">
                     {/* Background Gradients */}
-                    <div className="absolute top-0 right-0 w-64 h-64 bg-emerald-50 dark:bg-emerald-900/20 rounded-full blur-3xl opacity-50 -translate-y-1/2 translate-x-1/3"></div>
+                    <div className="absolute top-0 right-0 w-64 h-64 bg-foreground/5 dark:bg-foreground/5 rounded-full blur-3xl opacity-50 -translate-y-1/2 translate-x-1/3"></div>
                     <div className="absolute bottom-0 left-0 w-64 h-64 bg-muted rounded-full blur-3xl opacity-50 translate-y-1/2 -translate-x-1/3"></div>
 
                     <div className="relative z-10 flex flex-col h-full justify-between">
                         <div className="flex items-center justify-between mb-8">
                             <div>
-                                <h1 className="text-3xl sm:text-4xl font-black text-foreground tracking-tight mb-2">
+                                <h1 className="text-3xl sm:text-4xl font-semibold font-display text-foreground tracking-tight mb-3">
                                     {isWinner ? "You're Leading!" : "Opportunity Ahead"}
                                 </h1>
                                 <p className="text-muted-foreground font-medium text-lg">
                                     {isWinner ? "Your strategy is effectively outperforming the competition." : "Your competitor has a slight edge in conversion alignment."}
                                 </p>
                             </div>
-                            <div className={`hidden sm:flex px-4 py-2 rounded-full text-sm font-bold tracking-wide shadow-sm items-center gap-2 ${isWinner ? 'bg-emerald-100 dark:bg-emerald-900/40 text-emerald-800' : 'bg-amber-100 dark:bg-amber-900/40 text-amber-800'}`}>
+                            <div className={`hidden sm:flex px-4 py-2 rounded-full text-sm font-bold tracking-wide shadow-sm items-center gap-2 ${isWinner ? 'bg-foreground/5 dark:bg-foreground/5 text-foreground' : 'bg-foreground/5 dark:bg-foreground/5 text-foreground'}`}>
                                 {isWinner ? <CheckCircle2 className="w-4 h-4" /> : <TrendingUp className="w-4 h-4" />}
                                 {isWinner ? 'MARKET LEADER' : 'GROWTH MODE'}
                             </div>
                         </div>
 
                         <div className="flex flex-col sm:flex-row items-center justify-center gap-8 sm:gap-16 py-8">
-                            <CircularScore score={yourScore} label="Your Score" color="text-emerald-500" delay={0.2} />
+                            <CircularScore score={yourScore} label="Your Score" color="text-foreground" delay={0.2} />
 
                             <div className="flex flex-col items-center">
-                                <div className="text-4xl font-black text-slate-200 select-none">VS</div>
+                                <div className="text-4xl font-black font-display text-muted-foreground select-none">VS</div>
                                 {scoreDifference > 0 && (
                                     <Badge variant="secondary" className="mt-2 bg-muted text-muted-foreground border-none font-bold px-3">
                                         +{scoreDifference} pts
@@ -232,27 +220,22 @@ export default function ReportPage() {
 
                         <div className="mt-auto bg-muted/80 backdrop-blur-sm rounded-2xl p-5 border border-border/50">
                             <div className="flex items-start gap-4">
-                                <Sparkles className="w-5 h-5 text-indigo-500 mt-1 shrink-0" />
+                                <Sparkles className="w-5 h-5 text-foreground mt-1 shrink-0" />
                                 <p className="text-foreground leading-relaxed font-medium">
-                                    "{verdict}"
+                                    &quot;{verdict}&quot;
                                 </p>
                             </div>
                         </div>
                     </div>
-                </motion.div>
+                </div>
 
                 {/* Right: Key Stats - Bento Grid Style */}
-                <motion.div
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.1 }}
-                    className="lg:col-span-2 space-y-6"
-                >
+                <div className="lg:col-span-2 space-y-6">
                     {/* Modern Stat Cards */}
                     <div className="grid grid-cols-1 gap-4 h-full">
                         <div className="bg-card rounded-3xl p-6 shadow-[0_4px_20px_rgb(0,0,0,0.03)] border-none flex flex-col justify-center">
                             <div className="flex items-center gap-4">
-                                <div className="h-12 w-12 rounded-2xl bg-blue-50 dark:bg-blue-900/20 flex items-center justify-center text-blue-600">
+                                <div className="h-12 w-12 rounded-2xl bg-foreground/5 dark:bg-foreground/5 flex items-center justify-center text-foreground">
                                     <BarChart3 className="w-6 h-6" />
                                 </div>
                                 <div>
@@ -264,7 +247,7 @@ export default function ReportPage() {
 
                         <div className="bg-card rounded-3xl p-6 shadow-[0_4px_20px_rgb(0,0,0,0.03)] border-none flex flex-col justify-center">
                             <div className="flex items-center gap-4">
-                                <div className="h-12 w-12 rounded-2xl bg-amber-50 dark:bg-amber-900/20 flex items-center justify-center text-amber-600">
+                                <div className="h-12 w-12 rounded-2xl bg-foreground/5 dark:bg-foreground/5 flex items-center justify-center text-foreground">
                                     <Target className="w-6 h-6" />
                                 </div>
                                 <div>
@@ -281,14 +264,14 @@ export default function ReportPage() {
                                 <AccordionItem value="trust-analysis" className="border-b border-border px-6">
                                     <AccordionTrigger className="hover:no-underline py-5 group">
                                         <div className="flex items-center gap-3 w-full">
-                                            <div className="p-2 rounded-xl bg-purple-50 dark:bg-purple-900/20 text-purple-600 group-hover:scale-110 transition-transform">
+                                            <div className="p-2 rounded-xl bg-foreground/5 dark:bg-foreground/5 text-foreground group-hover:scale-110 transition-transform">
                                                 <CheckCircle2 className="w-4 h-4" />
                                             </div>
                                             <span className="font-semibold text-foreground">Trust Factors</span>
                                         </div>
                                     </AccordionTrigger>
                                     <AccordionContent className="pb-6 px-1">
-                                        <div className="p-4 bg-purple-50/50 dark:bg-purple-900/20 rounded-2xl">
+                                        <div className="p-4 bg-foreground/5 dark:bg-foreground/5 rounded-2xl">
                                             <p className="text-foreground leading-relaxed font-medium">
                                                 {deepAnalysis.trust_analysis || "No trust analysis available."}
                                             </p>
@@ -300,14 +283,14 @@ export default function ReportPage() {
                                 <AccordionItem value="headline-analysis" className="border-b border-border px-6">
                                     <AccordionTrigger className="hover:no-underline py-5 group">
                                         <div className="flex items-center gap-3 w-full">
-                                            <div className="p-2 rounded-xl bg-blue-50 dark:bg-blue-900/20 text-blue-600 group-hover:scale-110 transition-transform">
+                                            <div className="p-2 rounded-xl bg-foreground/5 dark:bg-foreground/5 text-foreground group-hover:scale-110 transition-transform">
                                                 <FileText className="w-4 h-4" />
                                             </div>
                                             <span className="font-semibold text-foreground">Headline Check</span>
                                         </div>
                                     </AccordionTrigger>
                                     <AccordionContent className="pb-6 px-1">
-                                        <div className="p-4 bg-blue-50/50 dark:bg-blue-900/20 rounded-2xl">
+                                        <div className="p-4 bg-foreground/5 dark:bg-foreground/5 rounded-2xl">
                                             <p className="text-foreground leading-relaxed font-medium">
                                                 {deepAnalysis.hook_critique || "No headline analysis available."}
                                             </p>
@@ -319,7 +302,7 @@ export default function ReportPage() {
                                 <AccordionItem value="missing-features" className="border-none px-6">
                                     <AccordionTrigger className="hover:no-underline py-5 group">
                                         <div className="flex items-center gap-3 w-full">
-                                            <div className="p-2 rounded-xl bg-red-50 dark:bg-red-900/20 text-red-600 group-hover:scale-110 transition-transform">
+                                            <div className="p-2 rounded-xl bg-foreground/5 dark:bg-foreground/5 text-foreground group-hover:scale-110 transition-transform">
                                                 <AlertTriangle className="w-4 h-4" />
                                             </div>
                                             <span className="font-semibold text-foreground">Feature Gaps</span>
@@ -331,8 +314,8 @@ export default function ReportPage() {
                                     <AccordionContent className="pb-6 px-1">
                                         <div className="space-y-2">
                                             {gapAnalysis.map((gap: string, i: number) => (
-                                                <div key={i} className="flex items-start gap-3 p-3 bg-red-50/30 dark:bg-red-900/10 rounded-xl">
-                                                    <div className="w-1.5 h-1.5 rounded-full bg-red-400 mt-2 shrink-0"></div>
+                                                <div key={i} className="flex items-start gap-3 p-3 bg-foreground/5 dark:bg-foreground/5 rounded-xl">
+                                                    <div className="w-1.5 h-1.5 rounded-full bg-foreground/5 mt-2 shrink-0"></div>
                                                     <span className="text-foreground font-medium text-sm">{gap}</span>
                                                 </div>
                                             ))}
@@ -342,14 +325,14 @@ export default function ReportPage() {
                             </Accordion>
                         </div>
                     </div>
-                </motion.div>
+                </div>
             </div>
 
             {/* Action Plan Section - Clean & Floating */}
             <div className="space-y-6">
                 <div className="flex items-center justify-between px-2">
                     <h2 className="text-2xl font-bold text-foreground flex items-center gap-3">
-                        <div className="p-2 bg-indigo-50 dark:bg-indigo-900/20 rounded-xl text-indigo-600">
+                        <div className="p-2 bg-foreground/5 dark:bg-foreground/5 rounded-xl text-foreground">
                             <Lightbulb className="w-6 h-6" />
                         </div>
                         Action Plan
@@ -359,11 +342,8 @@ export default function ReportPage() {
 
                 <div className="grid md:grid-cols-2 gap-6">
                     {rewrites.length > 0 ? rewrites.map((fix: any, index: number) => (
-                        <motion.div
+                        <div
                             key={index}
-                            initial={{ opacity: 0, y: 20 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{ delay: 0.2 + (index * 0.1) }}
                             className="bg-card rounded-3xl p-6 sm:p-8 shadow-[0_4px_20px_rgb(0,0,0,0.03)] hover:shadow-[0_12px_30px_rgb(0,0,0,0.06)] hover:-translate-y-1 transition-all duration-300 border border-border flex flex-col h-full"
                         >
                             <div className="flex items-start justify-between mb-6">
@@ -383,9 +363,9 @@ export default function ReportPage() {
                             <div className="space-y-4 flex-1">
                                 {/* Before */}
                                 <div className="group relative">
-                                    <div className="absolute left-0 top-3 bottom-3 w-1 bg-red-200 rounded-full group-hover:bg-red-400 transition-colors"></div>
+                                    <div className="absolute left-0 top-3 bottom-3 w-1 bg-foreground/5 rounded-full group-hover:bg-foreground/5 transition-colors"></div>
                                     <div className="pl-4">
-                                        <p className="text-xs font-bold text-red-500 uppercase tracking-wider mb-1">Current</p>
+                                        <p className="text-xs font-bold text-foreground uppercase tracking-wider mb-1">Current</p>
                                         <p className="text-muted-foreground text-sm leading-relaxed opacity-80 decoration-slate-300">
                                             {fix.current}
                                         </p>
@@ -394,9 +374,9 @@ export default function ReportPage() {
 
                                 {/* After */}
                                 <div className="group relative">
-                                    <div className="absolute left-0 top-3 bottom-0 w-1 bg-emerald-400 rounded-full shadow-[0_0_10px_rgba(52,211,153,0.5)]"></div>
-                                    <div className="pl-4 py-2 bg-emerald-50/30 dark:bg-emerald-900/10 rounded-r-xl">
-                                        <p className="text-xs font-bold text-emerald-600 uppercase tracking-wider mb-1 flex items-center gap-2">
+                                    <div className="absolute left-0 top-3 bottom-0 w-1 bg-foreground/5 rounded-full shadow-[0_0_10px_rgba(52,211,153,0.5)]"></div>
+                                    <div className="pl-4 py-2 bg-foreground/5 dark:bg-foreground/5 rounded-r-xl">
+                                        <p className="text-xs font-bold text-foreground uppercase tracking-wider mb-1 flex items-center gap-2">
                                             Suggested <Sparkles className="w-3 h-3" />
                                         </p>
                                         <p className="text-foreground font-medium text-base leading-relaxed">
@@ -405,11 +385,11 @@ export default function ReportPage() {
                                     </div>
                                 </div>
                             </div>
-                        </motion.div>
+                        </div>
                     )) : (
                         <div className="col-span-full py-12 text-center bg-card rounded-[2rem] shadow-sm border border-border">
-                            <div className="w-20 h-20 bg-emerald-50 dark:bg-emerald-900/20 rounded-full flex items-center justify-center mx-auto mb-4">
-                                <Award className="w-10 h-10 text-emerald-500" />
+                            <div className="w-20 h-20 bg-foreground/5 dark:bg-foreground/5 rounded-full flex items-center justify-center mx-auto mb-4">
+                                <Award className="w-10 h-10 text-foreground" />
                             </div>
                             <h3 className="text-xl font-bold text-foreground">Perfection Achieved!</h3>
                             <p className="text-muted-foreground mt-2">No major issues found. You are crushing it.</p>

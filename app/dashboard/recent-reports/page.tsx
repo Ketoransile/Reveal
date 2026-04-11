@@ -43,21 +43,21 @@ export default function RecentReportsPage() {
         switch (status) {
             case 'processing':
                 return (
-                    <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-900 text-blue-700 dark:text-blue-400 text-xs font-medium">
+                    <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-foreground/5 dark:bg-foreground/5 border border-border dark:border-border text-foreground dark:text-foreground text-xs font-medium">
                         <Clock className="w-3.5 h-3.5 animate-spin" />
                         Processing
                     </div>
                 );
             case 'completed':
                 return (
-                    <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-50 dark:bg-emerald-900/20 border border-emerald-200 dark:border-emerald-900 text-emerald-700 dark:text-emerald-400 text-xs font-semibold">
+                    <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-foreground/5 dark:bg-foreground/5 border border-border dark:border-border text-foreground dark:text-foreground text-xs font-semibold">
                         <CheckCircle2 className="w-3.5 h-3.5" />
                         Complete
                     </div>
                 );
             case 'failed':
                 return (
-                    <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-900 text-red-700 dark:text-red-400 text-xs font-medium">
+                    <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-foreground/5 dark:bg-foreground/5 border border-border dark:border-border text-foreground dark:text-foreground text-xs font-medium">
                         <XCircle className="w-3.5 h-3.5" />
                         Failed
                     </div>
@@ -104,14 +104,14 @@ export default function RecentReportsPage() {
                             <Card className="h-full hover:shadow-md transition-all duration-300 border-border bg-card group-hover:-translate-y-1">
                                 <CardContent className="p-5 flex flex-col h-full">
                                     <div className="flex justify-between items-start mb-4">
-                                        <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center text-primary">
+                                        <div className="w-10 h-10 rounded-lg bg-foreground/5 flex items-center justify-center text-foreground">
                                             <BarChart3 className="w-5 h-5" />
                                         </div>
                                         <StatusBadge status={analysis.status} />
                                     </div>
 
                                     <div className="flex-1 space-y-1">
-                                        <h3 className="font-semibold text-foreground truncate group-hover:text-primary transition-colors">
+                                        <h3 className="font-semibold text-foreground truncate group-hover:text-foreground transition-colors">
                                             {new URL(analysis.your_url).hostname}
                                         </h3>
                                         <div className="text-sm text-muted-foreground flex items-center gap-2">
@@ -125,7 +125,7 @@ export default function RecentReportsPage() {
                                             {new Date(analysis.created_at).toLocaleDateString()}
                                         </span>
                                         {analysis.status === 'completed' && (
-                                            <div className="flex items-center gap-1 font-medium text-primary">
+                                            <div className="flex items-center gap-1 font-medium text-foreground">
                                                 View Report <ArrowRight className="w-4 h-4" />
                                             </div>
                                         )}

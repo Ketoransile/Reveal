@@ -75,7 +75,7 @@ export function NavUser({
                             >
                                 <Avatar className="h-9 w-9 rounded-lg border-2 border-white shadow-sm">
                                     <AvatarImage src={user.avatar} alt={user.name} />
-                                    <AvatarFallback className="rounded-lg bg-gradient-to-br from-emerald-500 to-emerald-600 text-white font-bold text-sm">
+                                    <AvatarFallback className="rounded-lg bg-gradient-to-br from-foreground/10 to-transparent text-white font-bold text-sm">
                                         {user.name.split(' ').map(n => n[0]).join('').toUpperCase()}
                                     </AvatarFallback>
                                 </Avatar>
@@ -98,7 +98,7 @@ export function NavUser({
                                 <div className="flex items-center gap-3 px-2 py-2 bg-muted rounded-lg">
                                     <Avatar className="h-9 w-9 rounded-lg border-2 border-white shadow-sm">
                                         <AvatarImage src={user.avatar} alt={user.name} />
-                                        <AvatarFallback className="rounded-lg bg-gradient-to-br from-emerald-500 to-emerald-600 text-white font-bold text-sm">
+                                        <AvatarFallback className="rounded-lg bg-gradient-to-br from-foreground/10 to-transparent text-white font-bold text-sm">
                                             {user.name.split(' ').map(n => n[0]).join('').toUpperCase()}
                                         </AvatarFallback>
                                     </Avatar>
@@ -134,7 +134,7 @@ export function NavUser({
                             <DropdownMenuSeparator className="bg-slate-200 my-2" />
                             <DropdownMenuItem
                                 onClick={() => setShowLogoutDialog(true)}
-                                className="text-red-600 hover:bg-red-50 hover:text-red-700 cursor-pointer rounded-md h-9"
+                                className="text-foreground hover:bg-foreground/5 hover:text-foreground cursor-pointer rounded-md h-9"
                             >
                                 <LogOut className="mr-3 h-4 w-4" />
                                 <span className="text-sm font-medium">Log out</span>
@@ -156,7 +156,7 @@ export function NavUser({
                         <AlertDialogCancel>Cancel</AlertDialogCancel>
                         <AlertDialogAction
                             onClick={handleLogout}
-                            className="bg-red-600 hover:bg-red-700 text-white"
+                            className="bg-foreground/5 hover:bg-foreground/5 text-white"
                         >
                             Log out
                         </AlertDialogAction>

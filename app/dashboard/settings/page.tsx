@@ -251,16 +251,16 @@ function SettingsContent() {
 
                     <Card className="border-border bg-card">
                         <CardHeader>
-                            <CardTitle className="text-red-600">Danger Zone</CardTitle>
+                            <CardTitle className="text-foreground">Danger Zone</CardTitle>
                             <CardDescription>
                                 Irreversible and destructive actions.
                             </CardDescription>
                         </CardHeader>
                         <CardContent>
-                            <div className="flex items-center justify-between p-4 border border-red-500/20 rounded-lg bg-red-500/5 dark:bg-red-500/10">
+                            <div className="flex items-center justify-between p-4 border border-border rounded-lg bg-foreground/5 dark:bg-foreground/5">
                                 <div>
-                                    <div className="font-medium text-red-600 dark:text-red-400">Delete Account</div>
-                                    <div className="text-sm text-red-600/70 dark:text-red-400/70">
+                                    <div className="font-medium text-foreground dark:text-foreground">Delete Account</div>
+                                    <div className="text-sm text-foreground dark:text-foreground">
                                         Permanently delete your account and all data.
                                     </div>
                                 </div>
@@ -283,7 +283,7 @@ function SettingsContent() {
                         <CardContent className="space-y-4">
                             <div className="grid grid-cols-2 gap-4 max-w-md">
                                 <div
-                                    className={`cursor-pointer rounded-xl border-2 p-1 transition-all ${theme === 'light' ? 'border-primary' : 'border-transparent hover:bg-muted/50'}`}
+                                    className={`cursor-pointer rounded-xl border-2 p-1 transition-all ${theme === 'light' ? 'border-border' : 'border-transparent hover:bg-muted/50'}`}
                                     onClick={() => setTheme('light')}
                                 >
                                     <div className="space-y-2 rounded-lg bg-[#ecedef] p-2">
@@ -303,7 +303,7 @@ function SettingsContent() {
                                     <div className="block w-full p-2 text-center font-medium">Light</div>
                                 </div>
                                 <div
-                                    className={`cursor-pointer rounded-xl border-2 p-1 transition-all ${theme === 'dark' ? 'border-primary' : 'border-transparent hover:bg-muted/50'}`}
+                                    className={`cursor-pointer rounded-xl border-2 p-1 transition-all ${theme === 'dark' ? 'border-border' : 'border-transparent hover:bg-muted/50'}`}
                                     onClick={() => setTheme('dark')}
                                 >
                                     <div className="space-y-2 rounded-lg bg-slate-950 p-2">
@@ -474,8 +474,8 @@ function SettingsContent() {
 
                                     <div className="relative w-full h-2 bg-muted rounded-full overflow-hidden">
                                         <div
-                                            className={`absolute left-0 top-0 bottom-0 transition-all duration-500 ease-out rounded-full ${(3 - user.credits) === 3 ? 'bg-red-500' :
-                                                (3 - user.credits) >= 2 ? 'bg-amber-500' :
+                                            className={`absolute left-0 top-0 bottom-0 transition-all duration-500 ease-out rounded-full ${(3 - user.credits) === 3 ? 'bg-foreground/5' :
+                                                (3 - user.credits) >= 2 ? 'bg-foreground/5' :
                                                     'bg-foreground/60'
                                                 }`}
                                             style={{ width: `${((3 - user.credits) / 3) * 100}%` }}
@@ -483,7 +483,7 @@ function SettingsContent() {
                                     </div>
 
                                     {user.credits === 0 ? (
-                                        <div className="rounded-lg bg-red-500/5 dark:bg-red-500/10 p-3 text-xs text-red-600 dark:text-red-400 border border-red-500/20 flex items-start gap-2">
+                                        <div className="rounded-lg bg-foreground/5 dark:bg-foreground/5 p-3 text-xs text-foreground dark:text-foreground border border-border flex items-start gap-2">
                                             <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" />
                                             <p>You have used all your credits. Upgrade to Pro for unlimited access.</p>
                                         </div>

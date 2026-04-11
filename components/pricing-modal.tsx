@@ -65,7 +65,7 @@ export function PricingModal({ open, onOpenChange }: PricingModalProps) {
                                 ].map((item, i) => (
                                     <li key={i} className={`flex items-center gap-3 text-sm ${item.included ? 'text-slate-600 dark:text-slate-300' : 'text-slate-400 dark:text-slate-600'}`}>
                                         {item.included ? (
-                                            <Check className="w-4 h-4 text-emerald-500" />
+                                            <Check className="w-4 h-4 text-foreground" />
                                         ) : (
                                             <X className="w-4 h-4" />
                                         )}
@@ -82,21 +82,21 @@ export function PricingModal({ open, onOpenChange }: PricingModalProps) {
                     {/* Pro Plan (Right - Highlighted) */}
                     <div className="p-6 md:p-8 bg-slate-900 dark:bg-slate-900 text-white flex flex-col justify-between relative overflow-hidden group">
                         {/* Background Effects */}
-                        <div className="absolute top-0 right-0 p-32 bg-emerald-500/10 blur-[60px] rounded-full pointer-events-none" />
-                        <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/5 via-transparent to-transparent opacity-50" />
+                        <div className="absolute top-0 right-0 p-32 bg-foreground/5 blur-[60px] rounded-full pointer-events-none" />
+                        <div className="absolute inset-0 bg-gradient-to-br from-foreground/10 via-transparent to-transparent opacity-50" />
 
                         <div className="relative z-10">
                             <div className="flex justify-between items-start mb-6">
                                 <div className="flex items-center gap-3">
-                                    <div className="p-2 rounded-lg bg-gradient-to-br from-emerald-500/20 to-teal-500/20 text-emerald-400 border border-emerald-500/30">
+                                    <div className="p-2 rounded-lg bg-gradient-to-br from-foreground/10 to-transparent text-foreground border border-border">
                                         <Crown className="w-5 h-5" />
                                     </div>
                                     <div>
                                         <h3 className="text-lg font-bold text-white">Pro Master</h3>
-                                        <p className="text-emerald-100/60 text-xs font-medium">Dominate your market.</p>
+                                        <p className="text-foreground text-xs font-medium">Dominate your market.</p>
                                     </div>
                                 </div>
-                                <div className="px-2.5 py-1 rounded-full bg-gradient-to-r from-emerald-500 to-teal-500 text-white text-[10px] font-bold tracking-wider uppercase shadow-lg shadow-emerald-500/20">
+                                <div className="px-2.5 py-1 rounded-full bg-gradient-to-r from-foreground/10 to-transparent text-white text-[10px] font-bold tracking-wider uppercase shadow-lg shadow-emerald-500/20">
                                     Popular
                                 </div>
                             </div>
@@ -106,7 +106,7 @@ export function PricingModal({ open, onOpenChange }: PricingModalProps) {
                                 <span className="text-sm text-slate-400 font-medium">/month</span>
                             </div>
 
-                            <div className="h-px w-full bg-gradient-to-r from-emerald-500/30 to-transparent mb-6"></div>
+                            <div className="h-px w-full bg-gradient-to-r from-foreground/10 to-transparent mb-6"></div>
 
                             <ul className="space-y-3">
                                 {[
@@ -117,7 +117,7 @@ export function PricingModal({ open, onOpenChange }: PricingModalProps) {
                                     "Strategy War Room Access"
                                 ].map((item, i) => (
                                     <li key={i} className="flex items-center gap-3 text-sm text-slate-200">
-                                        <div className="p-0.5 rounded-full bg-emerald-500/20 text-emerald-400">
+                                        <div className="p-0.5 rounded-full bg-foreground/5 text-foreground">
                                             <Check className="w-3.5 h-3.5" />
                                         </div>
                                         {item}
@@ -129,7 +129,7 @@ export function PricingModal({ open, onOpenChange }: PricingModalProps) {
                         <Button
                             onClick={handleUpgrade}
                             disabled={loading}
-                            className="mt-8 w-full bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 text-white font-bold h-11 shadow-lg shadow-emerald-900/20 relative z-10 transition-all hover:scale-[1.02]"
+                            className="mt-8 w-full bg-gradient-to-r from-foreground/10 to-transparent hover:from-foreground/10 hover:to-transparent text-white font-bold h-11 shadow-lg shadow-emerald-900/20 relative z-10 transition-all hover:scale-[1.02]"
                         >
                             {loading ? "Processing..." : "Upgrade to Pro"}
                         </Button>

@@ -92,7 +92,7 @@ function SuccessContent() {
             <Card className="w-full max-w-lg border-border bg-card">
                 <CardHeader className="text-center pb-2">
                     <div className="mx-auto mb-4 bg-muted p-3 rounded-full w-fit animate-in zoom-in duration-500">
-                        <CheckCircle2 className="w-10 h-10 text-emerald-500" />
+                        <CheckCircle2 className="w-10 h-10 text-foreground" />
                     </div>
                     <CardTitle className="text-2xl font-bold text-foreground">Payment Successful!</CardTitle>
                     <CardDescription className="text-muted-foreground font-medium">
@@ -107,15 +107,15 @@ function SuccessContent() {
                         </h3>
                         <ul className="space-y-3">
                             <li className="flex items-start gap-3 text-sm text-muted-foreground">
-                                <CheckCircle2 className="w-4 h-4 text-emerald-500 mt-0.5 shrink-0" />
+                                <CheckCircle2 className="w-4 h-4 text-foreground mt-0.5 shrink-0" />
                                 <span><strong className="text-foreground">Unlimited Analyses:</strong> Remove all limits and analyze as many competitors as you need.</span>
                             </li>
                             <li className="flex items-start gap-3 text-sm text-muted-foreground">
-                                <CheckCircle2 className="w-4 h-4 text-emerald-500 mt-0.5 shrink-0" />
+                                <CheckCircle2 className="w-4 h-4 text-foreground mt-0.5 shrink-0" />
                                 <span><strong className="text-foreground">Deep Dive Insights:</strong> Get advanced metrics and conversion optimization tips.</span>
                             </li>
                             <li className="flex items-start gap-3 text-sm text-muted-foreground">
-                                <CheckCircle2 className="w-4 h-4 text-emerald-500 mt-0.5 shrink-0" />
+                                <CheckCircle2 className="w-4 h-4 text-foreground mt-0.5 shrink-0" />
                                 <span><strong className="text-foreground">Priority Support:</strong> Your requests jump to the front of the line.</span>
                             </li>
                         </ul>

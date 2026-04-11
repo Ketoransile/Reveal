@@ -8,7 +8,6 @@ import Link from "next/link";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Loader2, Sparkles, AlertCircle } from "lucide-react";
-import { motion } from "framer-motion";
 
 export default function LoginPage() {
     const [email, setEmail] = useState("");
@@ -66,75 +65,38 @@ export default function LoginPage() {
         <div className="min-h-screen flex items-center justify-center bg-background relative overflow-hidden p-4">
             {/* Minimal Background Gradients */}
             <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden">
-                <motion.div
-                    className="absolute top-[-10%] right-[-5%] w-[500px] h-[500px] bg-primary/5 rounded-full blur-[120px] pointer-events-none mix-blend-screen"
-                    animate={{ scale: [1, 1.2, 1], opacity: [0.3, 0.6, 0.3] }}
-                    transition={{ duration: 15, repeat: Infinity, ease: "easeInOut" }}
-                />
-                <motion.div
-                    className="absolute bottom-[-10%] left-[-10%] w-[600px] h-[600px] bg-primary/5 rounded-full blur-[150px] pointer-events-none mix-blend-screen"
-                    animate={{ scale: [1, 1.1, 1], opacity: [0.2, 0.5, 0.2] }}
-                    transition={{ duration: 18, repeat: Infinity, ease: "easeInOut", delay: 2 }}
-                />
+                <div className="absolute top-[-10%] right-[-5%] w-[500px] h-[500px] bg-primary/5 rounded-full blur-[120px] pointer-events-none mix-blend-screen opacity-40" />
+                <div className="absolute bottom-[-10%] left-[-10%] w-[600px] h-[600px] bg-primary/5 rounded-full blur-[150px] pointer-events-none mix-blend-screen opacity-30" />
             </div>
 
             {/* Card */}
-            <motion.div
-                initial={{ opacity: 0, y: 30, scale: 0.95 }}
-                animate={{ opacity: 1, y: 0, scale: 1 }}
-                transition={{ duration: 0.7, ease: [0.25, 0.46, 0.45, 0.94] }}
-                className="w-full max-w-md relative z-10"
-            >
+            <div className="w-full max-w-md relative z-10">
                 <Card className="border-border/40 bg-card/40 backdrop-blur-2xl shadow-[0_8px_30px_rgb(0,0,0,0.1)] rounded-3xl overflow-hidden hover:border-primary/20 transition-colors duration-500">
                     <CardHeader className="space-y-1 pb-6 text-center pt-8">
                         <Link href="/" className="flex justify-center mb-6 group">
-                            <motion.div
-                                className="w-14 h-14 bg-background border border-border/50 rounded-2xl flex items-center justify-center shadow-sm group-hover:border-primary/50 transition-all duration-300 cursor-pointer"
-                                whileHover={{ scale: 1.05, rotate: -5 }}
-                            >
+                            <div className="w-14 h-14 bg-background border border-border/50 rounded-2xl flex items-center justify-center shadow-sm group-hover:border-primary/50 transition-all duration-300 cursor-pointer">
                                 <span className="text-foreground font-bold text-2xl group-hover:text-primary transition-colors">R</span>
-                            </motion.div>
+                            </div>
                         </Link>
 
-                        <motion.div
-                            initial={{ opacity: 0, y: 10 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{ delay: 0.2, duration: 0.5 }}
-                        >
-                            <CardTitle className="text-3xl font-bold tracking-tight text-foreground">
-                                Welcome back
-                            </CardTitle>
-                        </motion.div>
+                        <CardTitle className="text-3xl font-bold tracking-tight text-foreground">
+                            Welcome back
+                        </CardTitle>
 
-                        <motion.div
-                            initial={{ opacity: 0, y: 10 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{ delay: 0.3, duration: 0.5 }}
-                        >
-                            <CardDescription className="text-center text-muted-foreground font-medium text-base">
-                                Sign in to access your intelligence dashboard
-                            </CardDescription>
-                        </motion.div>
+                        <CardDescription className="text-center text-muted-foreground font-medium text-base">
+                            Sign in to access your intelligence dashboard
+                        </CardDescription>
                     </CardHeader>
 
                     <CardContent className="grid gap-6 px-8">
                         {error && (
-                            <motion.div
-                                initial={{ opacity: 0, y: -10, scale: 0.95 }}
-                                animate={{ opacity: 1, y: 0, scale: 1 }}
-                                className="p-4 rounded-xl bg-red-500/10 border border-red-500/20 text-red-500 text-sm flex items-start gap-3"
-                            >
+                            <div className="p-4 rounded-xl bg-red-500/10 border border-red-500/20 text-red-500 text-sm flex items-start gap-3">
                                 <AlertCircle className="w-5 h-5 shrink-0" />
                                 <span>{error}</span>
-                            </motion.div>
+                            </div>
                         )}
 
-                        <motion.div
-                            initial={{ opacity: 0, y: 10 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{ delay: 0.4, duration: 0.5 }}
-                            className="grid gap-4"
-                        >
+                        <div className="grid gap-4">
                             <Button
                                 variant="outline"
                                 type="button"
@@ -156,26 +118,15 @@ export default function LoginPage() {
                                     </span>
                                 )}
                             </Button>
-                        </motion.div>
+                        </div>
 
-                        <motion.div
-                            initial={{ opacity: 0 }}
-                            animate={{ opacity: 1 }}
-                            transition={{ delay: 0.5 }}
-                            className="flex items-center gap-4 my-2"
-                        >
+                        <div className="flex items-center gap-4 my-2">
                             <div className="h-px flex-1 bg-border/50" />
                             <span className="text-xs uppercase text-muted-foreground font-bold tracking-widest">Or continue with email</span>
                             <div className="h-px flex-1 bg-border/50" />
-                        </motion.div>
+                        </div>
 
-                        <motion.form
-                            onSubmit={handleLogin}
-                            className="grid gap-5"
-                            initial={{ opacity: 0, y: 10 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{ delay: 0.55, duration: 0.5 }}
-                        >
+                        <form onSubmit={handleLogin} className="grid gap-5">
                             <div className="grid gap-2">
                                 <label htmlFor="email" className="text-sm font-bold text-foreground">Email</label>
                                 <Input
@@ -217,24 +168,19 @@ export default function LoginPage() {
                                     </span>
                                 )}
                             </Button>
-                        </motion.form>
+                        </form>
                     </CardContent>
 
                     <CardFooter className="flex justify-center pb-8 pt-4">
-                        <motion.p
-                            initial={{ opacity: 0 }}
-                            animate={{ opacity: 1 }}
-                            transition={{ delay: 0.7 }}
-                            className="text-sm text-muted-foreground font-medium"
-                        >
+                        <p className="text-sm text-muted-foreground font-medium">
                             Don&apos;t have an account?{" "}
                             <Link href="/signup" className="text-primary hover:text-primary/80 transition-colors font-bold">
                                 Sign up
                             </Link>
-                        </motion.p>
+                        </p>
                     </CardFooter>
                 </Card>
-            </motion.div>
+            </div>
         </div>
     );
 }

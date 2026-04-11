@@ -1,45 +1,8 @@
 "use client";
 
-import { motion } from "framer-motion";
 import { Search, Globe, Zap, Layout, BarChart3, ShieldCheck } from "lucide-react";
-import { useState, useEffect } from "react";
 
 export const AnalysisPreview = () => {
-    const [scanActive, setScanActive] = useState(false);
-
-    useEffect(() => {
-        setScanActive(true);
-    }, []);
-
-    const cardVariants = {
-        hidden: { opacity: 0, scale: 0.85 },
-        visible: (custom: number) => ({
-            opacity: 1,
-            scale: 1,
-            transition: { delay: custom * 0.6 + 0.5, duration: 0.6, ease: [0.25, 0.46, 0.45, 0.94] }
-        })
-    };
-
-    const leftCardVariants = {
-        hidden: { opacity: 0, x: -40, scale: 0.9 },
-        visible: (custom: number) => ({
-            opacity: 1,
-            x: 0,
-            scale: 1,
-            transition: { delay: custom * 0.6 + 0.5, duration: 0.6, ease: [0.25, 0.46, 0.45, 0.94] }
-        })
-    };
-
-    const rightCardVariants = {
-        hidden: { opacity: 0, x: 40, scale: 0.9 },
-        visible: (custom: number) => ({
-            opacity: 1,
-            x: 0,
-            scale: 1,
-            transition: { delay: custom * 0.6 + 0.5, duration: 0.6, ease: [0.25, 0.46, 0.45, 0.94] }
-        })
-    };
-
     const insightCards = [
         {
             icon: <BarChart3 className="w-4 h-4 md:w-5 md:h-5 text-foreground" />,
@@ -82,10 +45,8 @@ export const AnalysisPreview = () => {
             <div className="absolute inset-0 bg-gradient-to-br from-foreground/[0.02] via-transparent to-foreground/[0.01]" />
 
             {/* Animated Scan Line */}
-            <motion.div
-                animate={{ top: ["0%", "100%", "0%"] }}
-                transition={{ duration: 6, repeat: Infinity, ease: "linear" }}
-                className="absolute left-0 right-0 h-[2px] z-20 pointer-events-none"
+            <div
+                className="hidden md:block absolute left-0 right-0 h-[2px] z-20 pointer-events-none animate-scan"
                 style={{
                     background: "linear-gradient(90deg, transparent, rgba(255,255,255,0.4), rgba(255,255,255,0.4), transparent)",
                     boxShadow: "0 0 20px rgba(255,255,255,0.1), 0 0 60px rgba(255,255,255,0.1)"
@@ -94,12 +55,8 @@ export const AnalysisPreview = () => {
 
             {/* Orbiting Ring (Desktop) */}
             <div className="hidden md:block absolute inset-0 pointer-events-none z-0">
-                <motion.div
-                    className="absolute top-1/2 left-1/2 w-[350px] h-[350px] -translate-x-1/2 -translate-y-1/2 rounded-full border border-dashed border-border/30 animate-spin-slow"
-                />
-                <motion.div
-                    className="absolute top-1/2 left-1/2 w-[500px] h-[500px] -translate-x-1/2 -translate-y-1/2 rounded-full border border-dashed border-border/20 animate-spin-reverse"
-                />
+                <div className="absolute top-1/2 left-1/2 w-[350px] h-[350px] -translate-x-1/2 -translate-y-1/2 rounded-full border border-dashed border-border/30 animate-spin-slow" />
+                <div className="absolute top-1/2 left-1/2 w-[500px] h-[500px] -translate-x-1/2 -translate-y-1/2 rounded-full border border-dashed border-border/20 animate-spin-reverse" />
             </div>
 
             {/* Central Browser Wireframe */}
@@ -116,61 +73,35 @@ export const AnalysisPreview = () => {
                 <div className="flex-1 p-6 flex flex-col space-y-6 relative">
                     {/* Hero Block */}
                     <div className="space-y-3">
-                        <motion.div
-                            className="h-8 w-3/4 bg-muted/80 rounded-lg"
-                            animate={{ opacity: [0.4, 0.7, 0.4] }}
-                            transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
-                        />
-                        <motion.div
-                            className="h-4 w-1/2 bg-muted/40 rounded-lg"
-                            animate={{ opacity: [0.3, 0.6, 0.3] }}
-                            transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut", delay: 0.3 }}
-                        />
+                        <div className="h-8 w-3/4 bg-muted/80 rounded-lg animate-pulse" />
+                        <div className="h-4 w-1/2 bg-muted/40 rounded-lg animate-pulse" />
                     </div>
 
                     {/* Hero Image area */}
                     <div className="h-32 w-full bg-gradient-to-br from-muted to-muted/40 rounded-xl border border-border/50 flex items-center justify-center relative overflow-hidden">
                         <Globe className="text-foreground w-12 h-12 opacity-10" />
 
-                        {/* Pulsing dots */}
-                        <motion.div
-                            custom={1}
-                            variants={cardVariants}
-                            initial="hidden"
-                            whileInView="visible"
-                            viewport={{ once: true }}
-                            className="absolute top-3 right-3"
-                        >
+                        {/* Pulsing dots (Disabled on mobile to save CPU) */}
+                        <div className="absolute top-3 right-3 hidden md:block">
                             <div className="relative">
                                 <div className="w-3 h-3 bg-foreground rounded-full animate-ping absolute inset-0 opacity-40" />
                                 <div className="w-3 h-3 bg-foreground rounded-full relative z-10" />
                             </div>
-                        </motion.div>
+                        </div>
 
-                        <motion.div
-                            custom={2}
-                            variants={cardVariants}
-                            initial="hidden"
-                            whileInView="visible"
-                            viewport={{ once: true }}
-                            className="absolute bottom-3 left-3"
-                        >
+                        <div className="absolute bottom-3 left-3 hidden md:block">
                             <div className="relative">
                                 <div className="w-3 h-3 bg-foreground rounded-full animate-ping absolute inset-0 opacity-40" />
                                 <div className="w-3 h-3 bg-foreground rounded-full relative z-10" />
                             </div>
-                        </motion.div>
+                        </div>
                     </div>
 
                     {/* Feature Grid */}
                     <div className="grid grid-cols-2 gap-4">
                         {[0, 1].map(idx => (
                             <div key={idx} className="h-24 rounded-lg bg-muted/30 border border-border/30 p-3 space-y-2 relative">
-                                <motion.div
-                                    className="w-8 h-8 rounded bg-muted"
-                                    animate={{ opacity: [0.3, 0.6, 0.3] }}
-                                    transition={{ duration: 3, repeat: Infinity, delay: idx * 0.5 }}
-                                />
+                                <div className="w-8 h-8 rounded bg-muted animate-pulse" />
                                 <div className="w-full h-2 bg-border/30 rounded" />
                                 <div className="w-2/3 h-2 bg-border/20 rounded" />
                             </div>
@@ -182,12 +113,8 @@ export const AnalysisPreview = () => {
             {/* ─── Mobile Insight Cards (Stacked below) ─── */}
             <div className="md:hidden w-full mt-6 space-y-3 z-30">
                 {insightCards.map((card, i) => (
-                    <motion.div
+                    <div
                         key={i}
-                        initial={{ opacity: 0, x: i % 2 === 0 ? -20 : 20 }}
-                        whileInView={{ opacity: 1, x: 0 }}
-                        transition={{ delay: i * 0.15, duration: 0.5 }}
-                        viewport={{ once: true }}
                         className={`p-3 rounded-xl border ${card.borderColor} flex items-center gap-3 ${card.shadowColor} bg-background`}
                     >
                         <div className={`p-2 ${card.bgColor} rounded-lg`}>{card.icon}</div>
@@ -195,23 +122,14 @@ export const AnalysisPreview = () => {
                             <div className="text-[10px] text-muted-foreground font-bold uppercase tracking-widest">{card.label}</div>
                             <div className="text-sm font-bold text-foreground">{card.value}</div>
                         </div>
-                    </motion.div>
+                    </div>
                 ))}
             </div>
 
             {/* ─── Desktop Floating Insight Cards ─── */}
             <div className="hidden md:block">
                 {/* Top Right */}
-                <motion.div
-                    custom={1}
-                    variants={rightCardVariants}
-                    initial="hidden"
-                    whileInView="visible"
-                    viewport={{ once: true }}
-                    className="absolute top-[18%] right-[8%] z-30"
-                    whileHover={{ scale: 1.05, y: -3 }}
-                    transition={{ type: "spring", stiffness: 300 }}
-                >
+                <div className="absolute top-[18%] right-[8%] z-30 hover:scale-105 hover:-translate-y-1 transition-transform duration-300">
                     <div className={`p-4 rounded-xl bg-background border ${insightCards[0].borderColor} flex items-center gap-3 ${insightCards[0].shadowColor}`}>
                         <div className={`p-2 ${insightCards[0].bgColor} rounded-lg`}>{insightCards[0].icon}</div>
                         <div>
@@ -220,18 +138,10 @@ export const AnalysisPreview = () => {
                         </div>
                         <div className="absolute top-1/2 -left-8 w-8 h-px bg-gradient-to-l from-border to-transparent" />
                     </div>
-                </motion.div>
+                </div>
 
                 {/* Middle Right */}
-                <motion.div
-                    custom={2}
-                    variants={rightCardVariants}
-                    initial="hidden"
-                    whileInView="visible"
-                    viewport={{ once: true }}
-                    className="absolute top-[45%] right-[5%] z-30"
-                    whileHover={{ scale: 1.05, y: -3 }}
-                >
+                <div className="absolute top-[45%] right-[5%] z-30 hover:scale-105 hover:-translate-y-1 transition-transform duration-300">
                     <div className={`p-4 rounded-xl bg-background border ${insightCards[1].borderColor} flex items-center gap-3 ${insightCards[1].shadowColor}`}>
                         <div className={`p-2 ${insightCards[1].bgColor} rounded-lg`}>{insightCards[1].icon}</div>
                         <div>
@@ -240,18 +150,10 @@ export const AnalysisPreview = () => {
                         </div>
                         <div className="absolute top-1/2 -left-12 w-12 h-px bg-gradient-to-l from-border to-transparent" />
                     </div>
-                </motion.div>
+                </div>
 
                 {/* Bottom Left */}
-                <motion.div
-                    custom={3}
-                    variants={leftCardVariants}
-                    initial="hidden"
-                    whileInView="visible"
-                    viewport={{ once: true }}
-                    className="absolute bottom-[22%] left-[6%] z-30"
-                    whileHover={{ scale: 1.05, y: -3 }}
-                >
+                <div className="absolute bottom-[22%] left-[6%] z-30 hover:scale-105 hover:-translate-y-1 transition-transform duration-300">
                     <div className={`p-4 rounded-xl bg-background border ${insightCards[2].borderColor} flex items-center gap-3 ${insightCards[2].shadowColor}`}>
                         <div className={`p-2 ${insightCards[2].bgColor} rounded-lg`}>{insightCards[2].icon}</div>
                         <div>
@@ -260,18 +162,10 @@ export const AnalysisPreview = () => {
                         </div>
                         <div className="absolute top-1/2 -right-8 w-8 h-px bg-gradient-to-r from-border to-transparent" />
                     </div>
-                </motion.div>
+                </div>
 
                 {/* Top Left */}
-                <motion.div
-                    custom={1.5}
-                    variants={leftCardVariants}
-                    initial="hidden"
-                    whileInView="visible"
-                    viewport={{ once: true }}
-                    className="absolute top-[28%] left-[7%] z-30"
-                    whileHover={{ scale: 1.05, y: -3 }}
-                >
+                <div className="absolute top-[28%] left-[7%] z-30 hover:scale-105 hover:-translate-y-1 transition-transform duration-300">
                     <div className={`p-4 rounded-xl bg-background border ${insightCards[3].borderColor} flex items-center gap-3 ${insightCards[3].shadowColor}`}>
                         <div className={`p-2 ${insightCards[3].bgColor} rounded-lg`}>{insightCards[3].icon}</div>
                         <div>
@@ -280,18 +174,12 @@ export const AnalysisPreview = () => {
                         </div>
                         <div className="absolute top-1/2 -right-12 w-12 h-px bg-gradient-to-r from-border to-transparent" />
                     </div>
-                </motion.div>
+                </div>
             </div>
 
             {/* Central HUD - Desktop */}
             <div className="absolute bottom-6 left-0 right-0 justify-center z-40 hidden md:flex">
-                <motion.div
-                    initial={{ y: 50, opacity: 0 }}
-                    whileInView={{ y: 0, opacity: 1 }}
-                    transition={{ delay: 2, duration: 0.8, ease: [0.25, 0.46, 0.45, 0.94] }}
-                    viewport={{ once: true }}
-                    className="flex items-center gap-4 px-6 py-3 rounded-full bg-background border border-border shadow-md backdrop-blur-xl"
-                >
+                <div className="flex items-center gap-4 px-6 py-3 rounded-full bg-background border border-border shadow-md backdrop-blur-xl">
                     <div className="flex items-center gap-2 border-r border-border pr-4">
                         <div className="relative">
                             <div className="w-3 h-3 bg-foreground rounded-full animate-pulse" />
@@ -303,7 +191,7 @@ export const AnalysisPreview = () => {
                         <span className="text-muted-foreground font-medium text-xs mr-2">Competitive Gap:</span>
                         <span className="text-foreground font-black text-sm tracking-tight">Found 12 Weaknesses</span>
                     </div>
-                </motion.div>
+                </div>
             </div>
 
             {/* Central HUD - Mobile */}

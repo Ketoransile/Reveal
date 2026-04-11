@@ -65,7 +65,7 @@ const ChatContent = ({ messages, loading, input, setInput, handleSend, handleCle
         <div className={`flex flex-col flex-1 min-h-0 w-full relative overflow-hidden ${mode === 'embedded' ? 'bg-transparent' : 'bg-background'}`}>
 
             {/* Disclaimer Banner */}
-            <div className="bg-emerald-50 dark:bg-emerald-900/20 border-b border-emerald-100 dark:border-emerald-800/30 px-4 py-2 text-xs text-center text-emerald-800 dark:text-emerald-300 font-medium shrink-0">
+            <div className="bg-foreground/5 dark:bg-foreground/5 border-b border-border dark:border-border px-4 py-2 text-xs text-center text-foreground dark:text-foreground font-medium shrink-0">
                 AI can provide strategic insights, but always verify critical data.
             </div>
 
@@ -89,9 +89,9 @@ const ChatContent = ({ messages, loading, input, setInput, handleSend, handleCle
                             className={`flex gap-4 sm:gap-6 ${m.role === 'user' ? 'flex-row-reverse' : 'flex-row'} group animate-in fade-in slide-in-from-bottom-2 duration-300`}
                         >
                             {/* Avatar with Circular Styling */}
-                            <Avatar className={`h-8 w-8 sm:h-10 sm:w-10 mt-1 shrink-0 shadow-sm rounded-full overflow-hidden ${m.role === 'assistant' ? 'ring-2 ring-emerald-50 dark:ring-emerald-900/20' : 'ring-2 ring-slate-50 dark:ring-slate-800'}`}>
+                            <Avatar className={`h-8 w-8 sm:h-10 sm:w-10 mt-1 shrink-0 shadow-sm rounded-full overflow-hidden ${m.role === 'assistant' ? 'ring-2 ring-border dark:ring-border' : 'ring-2 ring-slate-50 dark:ring-slate-800'}`}>
                                 {m.role === 'assistant' ? (
-                                    <div className="h-full w-full bg-gradient-to-br from-emerald-500 to-emerald-600 flex items-center justify-center text-white rounded-full">
+                                    <div className="h-full w-full bg-gradient-to-br from-foreground/10 to-transparent flex items-center justify-center text-white rounded-full">
                                         <Sparkles className="h-4 w-4 sm:h-5 sm:w-5" />
                                     </div>
                                 ) : (
@@ -109,7 +109,7 @@ const ChatContent = ({ messages, loading, input, setInput, handleSend, handleCle
                                 </div>
                                 <div
                                     className={`relative px-5 py-3.5 sm:px-6 sm:py-4 text-sm sm:text-base leading-7 shadow-sm ${m.role === 'user'
-                                        ? 'bg-primary text-primary-foreground rounded-2xl rounded-tr-sm shadow-md'
+                                        ? 'bg-foreground/5 text-foreground-foreground rounded-2xl rounded-tr-sm shadow-md'
                                         : 'bg-card border border-border text-card-foreground rounded-2xl rounded-tl-sm shadow-sm'
                                         }`}
                                 >
@@ -134,16 +134,16 @@ const ChatContent = ({ messages, loading, input, setInput, handleSend, handleCle
 
                     {loading && (
                         <div className="flex gap-4 sm:gap-6 animate-in fade-in slide-in-from-bottom-2 duration-300">
-                            <Avatar className="h-8 w-8 sm:h-10 sm:w-10 mt-1 shrink-0 ring-2 ring-emerald-50 dark:ring-emerald-900/20 rounded-full overflow-hidden">
-                                <div className="h-full w-full bg-gradient-to-br from-emerald-500 to-emerald-600 flex items-center justify-center text-white rounded-full">
+                            <Avatar className="h-8 w-8 sm:h-10 sm:w-10 mt-1 shrink-0 ring-2 ring-border dark:ring-border rounded-full overflow-hidden">
+                                <div className="h-full w-full bg-gradient-to-br from-foreground/10 to-transparent flex items-center justify-center text-white rounded-full">
                                     <Sparkles className="h-4 w-4 sm:h-5 sm:w-5 animate-pulse" />
                                 </div>
                             </Avatar>
                             <div className="px-6 py-4 bg-card border border-border rounded-2xl rounded-tl-sm shadow-sm flex items-center gap-2">
                                 <div className="flex gap-1.5">
-                                    <span className="w-2 h-2 bg-emerald-500 rounded-full animate-bounce [animation-delay:-0.3s]" />
-                                    <span className="w-2 h-2 bg-emerald-500 rounded-full animate-bounce [animation-delay:-0.15s]" />
-                                    <span className="w-2 h-2 bg-emerald-500 rounded-full animate-bounce" />
+                                    <span className="w-2 h-2 bg-foreground/5 rounded-full animate-bounce [animation-delay:-0.3s]" />
+                                    <span className="w-2 h-2 bg-foreground/5 rounded-full animate-bounce [animation-delay:-0.15s]" />
+                                    <span className="w-2 h-2 bg-foreground/5 rounded-full animate-bounce" />
                                 </div>
                                 <span className="text-sm font-medium text-muted-foreground ml-2">Thinking...</span>
                             </div>
@@ -156,21 +156,19 @@ const ChatContent = ({ messages, loading, input, setInput, handleSend, handleCle
             {/* Input Area - Fixed Footer */}
             <div className="border-t border-border bg-background/95 backdrop-blur-md p-4 sm:p-6 z-10 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.02)]">
                 <div className="max-w-4xl mx-auto space-y-4">
-                    {messages.length < 3 && (
-                        <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-none snap-x">
-                            {suggestions.map((s, i) => (
-                                <button
-                                    key={i}
-                                    onClick={() => setInput(s)}
-                                    className="snap-start whitespace-nowrap rounded-full border border-border bg-card hover:bg-emerald-50 dark:hover:bg-emerald-900/20 hover:border-emerald-200 dark:hover:border-emerald-800 px-3 py-1.5 text-xs font-medium text-muted-foreground hover:text-emerald-600 dark:hover:text-emerald-400 transition-all active:scale-95 shadow-sm"
-                                >
-                                    {s}
-                                </button>
-                            ))}
-                        </div>
-                    )}
+                    <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-none snap-x">
+                        {suggestions.map((s, i) => (
+                            <button
+                                key={i}
+                                onClick={() => setInput(s)}
+                                className="snap-start whitespace-nowrap rounded-full border border-border bg-card hover:bg-foreground/5 dark:hover:bg-foreground/5 hover:border-border dark:hover:border-border px-3 py-1.5 text-xs font-medium text-muted-foreground hover:text-foreground dark:hover:text-foreground transition-all active:scale-95 shadow-sm"
+                            >
+                                {s}
+                            </button>
+                        ))}
+                    </div>
 
-                    <div className="relative flex items-end gap-3 rounded-2xl border border-border bg-card shadow-sm focus-within:ring-2 focus-within:ring-emerald-500/20 focus-within:border-emerald-500 transition-all p-2">
+                    <div className="relative flex items-end gap-3 rounded-2xl border border-border bg-card shadow-sm focus-within:ring-2 focus-within:ring-border focus-within:border-border transition-all p-2">
                         {messages.length > 2 && (
                             <TooltipProvider>
                                 <Tooltip>
@@ -179,7 +177,7 @@ const ChatContent = ({ messages, loading, input, setInput, handleSend, handleCle
                                             variant="ghost"
                                             size="icon"
                                             onClick={handleClear}
-                                            className="h-9 w-9 text-muted-foreground hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-950/20 transition-colors self-end mb-0.5"
+                                            className="h-9 w-9 text-muted-foreground hover:text-foreground hover:bg-foreground/5 dark:hover:bg-foreground/5 transition-colors self-end mb-0.5"
                                         >
                                             <Eraser className="h-4 w-4" />
                                         </Button>
@@ -207,7 +205,7 @@ const ChatContent = ({ messages, loading, input, setInput, handleSend, handleCle
                             className={`h-10 w-10 sm:h-11 sm:w-11 rounded-xl shadow-sm transition-all duration-200 mb-0.5
                                 ${!input.trim()
                                     ? 'bg-muted text-muted-foreground'
-                                    : 'bg-emerald-600 hover:bg-emerald-700 text-white shadow-emerald-500/20 shadow-lg'
+                                    : 'bg-foreground/5 hover:bg-foreground/5 text-white shadow-emerald-500/20 shadow-lg'
                                 }`}
                             size="icon"
                         >
@@ -318,28 +316,28 @@ export function AnalysisChat({ analysisId, trigger, mode = "sheet", className }:
         <Dialog>
             <DialogTrigger asChild>
                 {trigger || (
-                    <Button className="fixed bottom-8 right-8 h-16 w-16 rounded-full shadow-2xl bg-emerald-600 hover:bg-emerald-700 text-white p-0 z-50 transition-all duration-300 hover:scale-105 hover:rotate-3 ring-4 ring-white/20 dark:ring-black/20">
+                    <Button className="fixed bottom-8 right-8 h-16 w-16 rounded-full shadow-2xl bg-foreground hover:bg-foreground/90 text-background p-0 z-50 transition-all duration-300 hover:scale-105 hover:rotate-3 ring-4 ring-border">
                         <MessageSquare className="h-7 w-7" />
                         <span className="absolute -top-1 -right-1 flex h-4 w-4">
-                            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                            <span className="relative inline-flex rounded-full h-4 w-4 bg-emerald-500"></span>
+                            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-foreground opacity-75"></span>
+                            <span className="relative inline-flex rounded-full h-4 w-4 bg-foreground"></span>
                         </span>
                     </Button>
                 )}
             </DialogTrigger>
-            <DialogContent className="max-w-[95vw] md:max-w-4xl h-[90vh] md:h-[85vh] p-0 gap-0 overflow-hidden bg-background/95 backdrop-blur-xl border-border shadow-2xl rounded-2xl sm:rounded-3xl flex flex-col focus:outline-none">
+            <DialogContent className="max-w-[95vw] md:max-w-4xl h-[90vh] md:h-[85vh] p-0 gap-0 overflow-hidden bg-background/95 backdrop-blur-2xl border border-border dark:border-white/10 dark:ring-1 dark:ring-white/5 shadow-2xl rounded-2xl sm:rounded-3xl flex flex-col focus:outline-none">
                 {/* Custom Header */}
                 <DialogHeader className="p-4 sm:px-6 border-b border-border flex flex-row items-center justify-between space-y-0 bg-muted/20 shrink-0 z-20">
                     <DialogTitle className="flex items-center gap-3">
-                        <div className="h-10 w-10 rounded-xl bg-gradient-to-br from-emerald-500 to-emerald-600 flex items-center justify-center shadow-lg shadow-emerald-500/20">
+                        <div className="h-10 w-10 rounded-xl bg-gradient-to-br from-foreground/10 to-transparent flex items-center justify-center shadow-lg shadow-emerald-500/20">
                             <Sparkles className="w-5 h-5 text-white" />
                         </div>
                         <div className="flex flex-col">
                             <span className="text-lg font-bold text-foreground tracking-tight">
                                 AI Strategy Partner
                             </span>
-                            <span className="text-xs font-medium text-emerald-600 dark:text-emerald-400 flex items-center gap-1.5">
-                                <span className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse" />
+                            <span className="text-xs font-medium text-foreground dark:text-foreground flex items-center gap-1.5">
+                                <span className="w-1.5 h-1.5 bg-foreground/5 rounded-full animate-pulse" />
                                 Online & Ready
                             </span>
                         </div>

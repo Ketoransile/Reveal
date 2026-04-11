@@ -92,6 +92,9 @@
 }
 
 @theme inline {
+  --font-sans: var(--font-inter);
+  --font-display: var(--font-outfit);
+
   --color-background: hsl(var(--background));
   --color-foreground: hsl(var(--foreground));
 
@@ -510,13 +513,13 @@ body {
 
 /* DARK THEME - Landing & Pricing Pages */
 html[data-scroll-theme="dark"] ::-webkit-scrollbar-track {
-  background: hsl(222.2, 47.4%, 11.2%);
+  background: hsl(0, 0%, 0%);
 }
 
 html[data-scroll-theme="dark"] ::-webkit-scrollbar-thumb {
   background: rgba(255, 255, 255, 0.25);
   border-radius: 10px;
-  border: 2px solid hsl(222.2, 47.4%, 11.2%);
+  border: 2px solid hsl(0, 0%, 0%);
 }
 
 html[data-scroll-theme="dark"] ::-webkit-scrollbar-thumb:hover {
@@ -525,7 +528,7 @@ html[data-scroll-theme="dark"] ::-webkit-scrollbar-thumb:hover {
 
 html[data-scroll-theme="dark"] {
   scrollbar-width: thin;
-  scrollbar-color: rgba(255, 255, 255, 0.25) hsl(222.2, 47.4%, 11.2%);
+  scrollbar-color: rgba(255, 255, 255, 0.25) hsl(0, 0%, 0%);
 }
 
 /* LIGHT THEME - Dashboard & Other Pages */

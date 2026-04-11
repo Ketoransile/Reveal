@@ -6,7 +6,6 @@ import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { ArrowRight, Loader2, Zap, Globe, Search, CheckCircle2, Wifi, ScanSearch, Brain, FileText, Sparkles } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { motion, AnimatePresence } from "framer-motion";
 
 import { PricingModal } from "@/components/pricing-modal";
 import { toast } from "sonner";
@@ -117,14 +116,14 @@ export default function AnalysisPage() {
     const activeStep = ANALYSIS_STEPS[currentStep] || ANALYSIS_STEPS[0];
 
     return (
-        <div className="w-full max-w-5xl space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
+        <div className="w-full max-w-5xl space-y-8">
             <PricingModal open={showPricing} onOpenChange={setShowPricing} />
 
-            <div className="pb-6 border-b border-border">
-                <h1 className="text-2xl md:text-3xl font-bold tracking-tight text-foreground mb-1">
+            <div className="pb-8 border-b border-border">
+                <h1 className="text-3xl md:text-4xl font-semibold font-display tracking-tight text-foreground mb-2">
                     Start New Analysis
                 </h1>
-                <p className="text-muted-foreground text-sm">
+                <p className="text-muted-foreground text-sm font-medium">
                     See exactly why they are winning in just 30 seconds.
                 </p>
             </div>
@@ -188,128 +187,94 @@ export default function AnalysisPage() {
                         </div>
 
                         {/* Progress Section */}
-                        <AnimatePresence>
-                            {loading && (
-                                <motion.div
-                                    initial={{ opacity: 0, height: 0 }}
-                                    animate={{ opacity: 1, height: "auto" }}
-                                    exit={{ opacity: 0, height: 0 }}
-                                    transition={{ duration: 0.4, ease: "easeInOut" }}
-                                    className="overflow-hidden"
-                                >
-                                    <div className="rounded-lg border border-border bg-muted/30 p-5 space-y-4">
-                                        {/* Progress bar */}
-                                        <div className="space-y-2">
-                                            <div className="flex items-center justify-between text-xs">
-                                                <span className="text-muted-foreground font-medium">Analysis Progress</span>
-                                                <span className="text-foreground font-semibold tabular-nums">
-                                                    {Math.round(progressPercent)}%
-                                                </span>
-                                            </div>
-                                            <div className="h-2 bg-muted rounded-full overflow-hidden">
-                                                <motion.div
-                                                    className="h-full bg-foreground/70 rounded-full"
-                                                    initial={{ width: "0%" }}
-                                                    animate={{ width: `${progressPercent}%` }}
-                                                    transition={{ duration: 0.3, ease: "easeOut" }}
-                                                />
-                                            </div>
+                        {loading && (
+                            <div className="overflow-hidden">
+                                <div className="rounded-lg border border-border bg-muted/30 p-5 space-y-4">
+                                    {/* Progress bar */}
+                                    <div className="space-y-2">
+                                        <div className="flex items-center justify-between text-xs">
+                                            <span className="text-muted-foreground font-medium">Analysis Progress</span>
+                                            <span className="text-foreground font-semibold tabular-nums">
+                                                {Math.round(progressPercent)}%
+                                            </span>
                                         </div>
+                                        <div className="h-2 bg-muted rounded-full overflow-hidden">
+                                            <div
+                                                className="h-full bg-foreground/70 rounded-full transition-all duration-300 ease-out"
+                                                style={{ width: `${progressPercent}%` }}
+                                            />
+                                        </div>
+                                    </div>
 
-                                        {/* Steps */}
-                                        <div className="space-y-2.5">
-                                            {ANALYSIS_STEPS.map((step, index) => {
-                                                const StepIcon = step.icon;
-                                                const isActive = index === currentStep;
-                                                const isCompleted = index < currentStep;
-                                                const isPending = index > currentStep;
+                                    {/* Steps */}
+                                    <div className="space-y-2.5">
+                                        {ANALYSIS_STEPS.map((step, index) => {
+                                            const StepIcon = step.icon;
+                                            const isActive = index === currentStep;
+                                            const isCompleted = index < currentStep;
+                                            const isPending = index > currentStep;
 
-                                                return (
-                                                    <motion.div
-                                                        key={step.id}
-                                                        initial={{ opacity: 0, x: -10 }}
-                                                        animate={{ opacity: 1, x: 0 }}
-                                                        transition={{ delay: index * 0.08, duration: 0.3 }}
-                                                        className={`flex items-center gap-3 py-1.5 px-3 rounded-lg transition-all duration-300 ${isActive
-                                                                ? "bg-accent"
-                                                                : ""
+                                            return (
+                                                <div
+                                                    key={step.id}
+                                                    className={`flex items-center gap-3 py-1.5 px-3 rounded-lg ${isActive
+                                                            ? "bg-accent"
+                                                            : ""
+                                                        }`}
+                                                >
+                                                    {/* Step indicator */}
+                                                    <div className="relative shrink-0">
+                                                        {isCompleted ? (
+                                                            <CheckCircle2 className="w-5 h-5 text-foreground" />
+                                                        ) : isActive ? (
+                                                            <div className="relative">
+                                                                <StepIcon className="w-5 h-5 text-foreground" />
+                                                            </div>
+                                                        ) : (
+                                                            <StepIcon className="w-5 h-5 text-muted-foreground/40" />
+                                                        )}
+                                                    </div>
+
+                                                    {/* Step label */}
+                                                    <span
+                                                        className={`text-sm font-medium ${isCompleted
+                                                                ? "text-foreground dark:text-foreground"
+                                                                : isActive
+                                                                    ? "text-foreground"
+                                                                    : "text-muted-foreground/50"
                                                             }`}
                                                     >
-                                                        {/* Step indicator */}
-                                                        <div className="relative shrink-0">
-                                                            {isCompleted ? (
-                                                                <motion.div
-                                                                    initial={{ scale: 0 }}
-                                                                    animate={{ scale: 1 }}
-                                                                    transition={{ type: "spring", stiffness: 400, damping: 15 }}
-                                                                >
-                                                                    <CheckCircle2 className="w-5 h-5 text-emerald-500" />
-                                                                </motion.div>
-                                                            ) : isActive ? (
-                                                                <div className="relative">
-                                                                    <StepIcon className="w-5 h-5 text-foreground" />
-                                                                    <motion.div
-                                                                        className="absolute -inset-1 rounded-full border-2 border-foreground/30"
-                                                                        animate={{ scale: [1, 1.3, 1], opacity: [0.5, 0, 0.5] }}
-                                                                        transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
-                                                                    />
-                                                                </div>
-                                                            ) : (
-                                                                <StepIcon className="w-5 h-5 text-muted-foreground/40" />
-                                                            )}
+                                                        {step.label}
+                                                    </span>
+
+                                                    {/* Active dots */}
+                                                    {isActive && (
+                                                        <div className="ml-auto flex gap-1">
+                                                            {[0, 1, 2].map(dot => (
+                                                                <div
+                                                                    key={dot}
+                                                                    className="w-1.5 h-1.5 rounded-full bg-foreground/50 animate-pulse"
+                                                                />
+                                                            ))}
                                                         </div>
+                                                    )}
 
-                                                        {/* Step label */}
-                                                        <span
-                                                            className={`text-sm font-medium transition-colors duration-300 ${isCompleted
-                                                                    ? "text-emerald-600 dark:text-emerald-400"
-                                                                    : isActive
-                                                                        ? "text-foreground"
-                                                                        : "text-muted-foreground/50"
-                                                                }`}
-                                                        >
-                                                            {step.label}
-                                                        </span>
-
-                                                        {/* Active dots animation */}
-                                                        {isActive && (
-                                                            <div className="ml-auto flex gap-1">
-                                                                {[0, 1, 2].map(dot => (
-                                                                    <motion.div
-                                                                        key={dot}
-                                                                        className="w-1.5 h-1.5 rounded-full bg-foreground/50"
-                                                                        animate={{ opacity: [0.3, 1, 0.3] }}
-                                                                        transition={{
-                                                                            duration: 1,
-                                                                            repeat: Infinity,
-                                                                            delay: dot * 0.2,
-                                                                        }}
-                                                                    />
-                                                                ))}
-                                                            </div>
-                                                        )}
-
-                                                        {isCompleted && (
-                                                            <span className="ml-auto text-xs text-emerald-500/70 font-medium">Done</span>
-                                                        )}
-                                                    </motion.div>
-                                                );
-                                            })}
-                                        </div>
-
-                                        {/* Tip */}
-                                        <motion.p
-                                            className="text-xs text-muted-foreground text-center pt-1 flex items-center justify-center gap-1.5"
-                                            animate={{ opacity: [0.5, 1, 0.5] }}
-                                            transition={{ duration: 3, repeat: Infinity }}
-                                        >
-                                            <Sparkles className="w-3 h-3" />
-                                            This usually takes 25–40 seconds
-                                        </motion.p>
+                                                    {isCompleted && (
+                                                        <span className="ml-auto text-xs text-foreground font-medium">Done</span>
+                                                    )}
+                                                </div>
+                                            );
+                                        })}
                                     </div>
-                                </motion.div>
-                            )}
-                        </AnimatePresence>
+
+                                    {/* Tip */}
+                                    <p className="text-xs text-muted-foreground text-center pt-1 flex items-center justify-center gap-1.5">
+                                        <Sparkles className="w-3 h-3" />
+                                        This usually takes 25–40 seconds
+                                    </p>
+                                </div>
+                            </div>
+                        )}
 
                         <Button
                             type="submit"

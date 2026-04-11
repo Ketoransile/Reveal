@@ -1,21 +1,20 @@
 
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Inter, Outfit } from "next/font/google";
 import "./globals.css";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { ThemeProvider } from "@/components/theme-provider";
-import { SmoothScrolling } from "@/components/smooth-scrolling";
 import { ScrollbarTheme } from "@/components/scrollbar-theme";
 import { Analytics } from "@vercel/analytics/next"
 import { Toaster } from "sonner";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const interSans = Inter({
+  variable: "--font-inter",
   subsets: ["latin"],
 });
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
+const outfitDisplay = Outfit({
+  variable: "--font-outfit",
   subsets: ["latin"],
 });
 
@@ -58,7 +57,7 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} font-sans antialiased min-h-full`}
+        className={`${interSans.variable} ${outfitDisplay.variable} font-sans antialiased min-h-full`}
       >
         <ScrollbarTheme />
         <ThemeProvider
@@ -67,7 +66,6 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          <SmoothScrolling />
           <TooltipProvider delayDuration={0}>
             {children}
           </TooltipProvider>
