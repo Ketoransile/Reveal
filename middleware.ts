@@ -36,7 +36,17 @@ export async function middleware(request: NextRequest) {
     let isAuthenticated = false
 
     try {
-        const { data: { user }, error } = await supabase.auth.getUser()
+        // Enforce a 3-second timeout on getUser() to prevent MIDDLEWARE_INVOCATION_TIMEOUT
+        const authPromise = supabase.auth.getUser()
+        const timeoutPromise = new Promise((_, reject) => {
+            setTimeout(() => reject(new Error('Supabase getUser() timed out')), 3000)
+        })
+
+        const { data: { user }, error } = await Promise.race([
+            authPromise,
+            timeoutPromise
+        ]) as any
+
         if (user && !error) {
             isAuthenticated = true
         } else {
