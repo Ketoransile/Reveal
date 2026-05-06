@@ -1,80 +1,29 @@
-import { createServerClient } from '@supabase/ssr'
 import { NextResponse, type NextRequest } from 'next/server'
 
-export async function middleware(request: NextRequest) {
-    let supabaseResponse = NextResponse.next({
-        request,
-    })
-
-    const supabase = createServerClient(
-        process.env.NEXT_PUBLIC_SUPABASE_URL!,
-        process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-        {
-            cookies: {
-                getAll() {
-                    return request.cookies.getAll()
-                },
-                setAll(cookiesToSet) {
-                    cookiesToSet.forEach(({ name, value, options }) => request.cookies.set(name, value))
-                    supabaseResponse = NextResponse.next({
-                        request,
-                    })
-                    cookiesToSet.forEach(({ name, value, options }) =>
-                        supabaseResponse.cookies.set(name, value, options)
-                    )
-                },
-            },
-        }
+/**
+ * Lightweight middleware — NO network calls.
+ *
+ * Why: Vercel Edge middleware has a strict execution-time budget (often <5 s on
+ * the Hobby plan).  Any HTTP round-trip to Supabase (getUser / getSession) can
+ * easily exceed that, producing a 504 MIDDLEWARE_INVOCATION_TIMEOUT.
+ *
+ * Instead we only inspect the existing cookies:
+ *   • Supabase stores an `sb-<ref>-auth-token` cookie when a user is logged in.
+ *   • If the cookie is present we assume "authenticated" for routing purposes.
+ *   • The *real* token validation happens later, inside Server Components or
+ *     API Route Handlers, where the execution budget is much larger.
+ */
+export function middleware(request: NextRequest) {
+    // Fast, zero-network auth check — just look at cookies
+    const isAuthenticated = request.cookies.getAll().some(
+        (cookie) => cookie.name.startsWith('sb-') && cookie.name.includes('auth')
     )
 
-    // Determine auth state resiliently:
-    // 1. Try getUser() first — this makes a network call to verify the token
-    //    and also refreshes the session cookie if needed.
-    // 2. If the network call fails (e.g. offline), fall back to getSession()
-    //    which reads from the cookie without requiring a network round-trip.
-    //    This prevents wrongly redirecting the user to /login on temporary disconnects.
-    let isAuthenticated = false
+    const { pathname } = request.nextUrl
 
-    try {
-        // Enforce a 3-second timeout on getUser() to prevent MIDDLEWARE_INVOCATION_TIMEOUT
-        const authPromise = supabase.auth.getUser()
-        const timeoutPromise = new Promise((_, reject) => {
-            setTimeout(() => reject(new Error('Supabase getUser() timed out')), 3000)
-        })
-
-        const { data: { user }, error } = await Promise.race([
-            authPromise,
-            timeoutPromise
-        ]) as any
-
-        if (user && !error) {
-            isAuthenticated = true
-        } else {
-            // getUser returned no user (e.g. expired or invalid token)
-            // Fall back to session check — the session cookie might still be valid
-            const { data: { session } } = await supabase.auth.getSession()
-            isAuthenticated = !!session
-        }
-    } catch {
-        // Network error — can't reach Supabase.
-        // Fall back to cookie-based session check (no network needed).
-        try {
-            const { data: { session } } = await supabase.auth.getSession()
-            isAuthenticated = !!session
-        } catch {
-            // Even getSession failed — assume user is still authenticated
-            // if we have any supabase auth cookies present.
-            // This prevents kicking users out on brief connectivity issues.
-            const hasAuthCookie = request.cookies.getAll().some(
-                cookie => cookie.name.startsWith('sb-') && cookie.name.includes('auth')
-            )
-            isAuthenticated = hasAuthCookie
-        }
-    }
-
-    const isAuthPage = request.nextUrl.pathname.startsWith('/login') ||
-        request.nextUrl.pathname.startsWith('/signup')
-    const isDashboardPage = request.nextUrl.pathname.startsWith('/dashboard')
+    const isAuthPage =
+        pathname.startsWith('/login') || pathname.startsWith('/signup')
+    const isDashboardPage = pathname.startsWith('/dashboard')
 
     // Redirect authenticated users away from auth pages
     if (isAuthenticated && isAuthPage) {
@@ -84,11 +33,11 @@ export async function middleware(request: NextRequest) {
     // Redirect unauthenticated users to login from dashboard
     if (!isAuthenticated && isDashboardPage) {
         const redirectUrl = new URL('/login', request.url)
-        redirectUrl.searchParams.set('redirect', request.nextUrl.pathname)
+        redirectUrl.searchParams.set('redirect', pathname)
         return NextResponse.redirect(redirectUrl)
     }
 
-    return supabaseResponse
+    return NextResponse.next()
 }
 
 export const config = {
@@ -99,8 +48,9 @@ export const config = {
          * - _next/image (image optimization files)
          * - favicon.ico (favicon file)
          * - public files (public folder)
-         * - api routes (unless you want to protect them too)
+         * - api routes
          */
-        '/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)',
+        '/((?!_next/static|_next/image|favicon.ico|api/|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)',
     ],
 }
+
