@@ -62,73 +62,110 @@ export default function LoginPage() {
     const isDisabled = loading || oauthLoading;
 
     return (
-        <div className="min-h-screen flex items-center justify-center bg-background relative overflow-hidden p-4">
-            {/* Minimal Background Gradients */}
-            <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden">
-                <div className="absolute top-[-10%] right-[-5%] w-[500px] h-[500px] bg-primary/5 rounded-full blur-[120px] pointer-events-none mix-blend-screen opacity-40" />
-                <div className="absolute bottom-[-10%] left-[-10%] w-[600px] h-[600px] bg-primary/5 rounded-full blur-[150px] pointer-events-none mix-blend-screen opacity-30" />
+        <div className="min-h-screen flex flex-col md:flex-row bg-background overflow-hidden relative selection:bg-foreground/20">
+            {/* Left Panel - Editorial Brand Column (Desktop only) */}
+            <div className="hidden md:flex md:w-1/2 bg-black relative flex-col justify-between p-16 border-r border-border">
+                {/* Background Grid */}
+                <div
+                    className="absolute inset-0 pointer-events-none opacity-20"
+                    style={{
+                        backgroundSize: '40px 40px',
+                        backgroundImage: 'linear-gradient(to right, rgba(255,255,255,0.08) 1px, transparent 1px), linear-gradient(to bottom, rgba(255,255,255,0.08) 1px, transparent 1px)'
+                    }}
+                />
+                
+                {/* Logo */}
+                <Link href="/" className="flex items-center gap-3 relative z-10 w-fit">
+                    <div className="w-8 h-8 bg-white flex items-center justify-center">
+                        <span className="text-black font-bold text-base">R</span>
+                    </div>
+                    <span className="text-lg font-bold tracking-tight text-white opacity-90">
+                        Reveal
+                    </span>
+                </Link>
+
+                {/* Editorial Tagline */}
+                <div className="relative z-10 max-w-md my-auto space-y-6">
+                    <h2 className="text-4xl lg:text-5xl font-light tracking-tight text-white font-display leading-[1.15]">
+                        Decode strategies. <br />
+                        <span className="italic font-normal">Outsell competitors.</span>
+                    </h2>
+                    <p className="text-zinc-400 text-sm leading-relaxed font-medium">
+                        Stop guessing what works. Reveal analyzes tech stacks, conversion scores, and SEO flow to give you an actionable roadmap in seconds.
+                    </p>
+                </div>
+
+                {/* Footer credit */}
+                <div className="relative z-10 text-xs text-zinc-500 font-medium">
+                    &copy; 2026 Reveal Inc. All rights reserved.
+                </div>
             </div>
 
-            {/* Card */}
-            <div className="w-full max-w-md relative z-10">
-                <Card className="border-border/40 bg-card/40 backdrop-blur-2xl shadow-[0_8px_30px_rgb(0,0,0,0.1)] rounded-3xl overflow-hidden hover:border-primary/20 transition-colors duration-500">
-                    <CardHeader className="space-y-1 pb-6 text-center pt-8">
-                        <Link href="/" className="flex justify-center mb-6 group">
-                            <div className="w-14 h-14 bg-background border border-border/50 rounded-2xl flex items-center justify-center shadow-sm group-hover:border-primary/50 transition-all duration-300 cursor-pointer">
-                                <span className="text-foreground font-bold text-2xl group-hover:text-primary transition-colors">R</span>
-                            </div>
-                        </Link>
+            {/* Right Panel - Form Column */}
+            <div className="flex-1 flex items-center justify-center p-8 md:p-16 relative">
+                {/* Logo for mobile */}
+                <div className="absolute top-8 left-8 md:hidden">
+                    <Link href="/" className="flex items-center gap-3">
+                        <div className="w-8 h-8 bg-foreground flex items-center justify-center">
+                            <span className="text-background font-bold text-base">R</span>
+                        </div>
+                        <span className="text-lg font-bold tracking-tight text-foreground">
+                            Reveal
+                        </span>
+                    </Link>
+                </div>
 
-                        <CardTitle className="text-3xl font-bold tracking-tight text-foreground">
+                <div className="w-full max-w-sm space-y-8">
+                    <div className="space-y-2">
+                        <h1 className="text-3xl font-light tracking-tight text-foreground font-display">
                             Welcome back
-                        </CardTitle>
-
-                        <CardDescription className="text-center text-muted-foreground font-medium text-base">
+                        </h1>
+                        <p className="text-sm text-muted-foreground font-medium">
                             Sign in to access your intelligence dashboard
-                        </CardDescription>
-                    </CardHeader>
+                        </p>
+                    </div>
 
-                    <CardContent className="grid gap-6 px-8">
-                        {error && (
-                            <div className="p-4 rounded-xl bg-red-500/10 border border-red-500/20 text-red-500 text-sm flex items-start gap-3">
-                                <AlertCircle className="w-5 h-5 shrink-0" />
-                                <span>{error}</span>
-                            </div>
-                        )}
+                    {error && (
+                        <div className="p-4 bg-red-500/10 border border-red-500/20 text-red-500 text-sm flex items-start gap-3">
+                            <AlertCircle className="w-5 h-5 shrink-0" />
+                            <span>{error}</span>
+                        </div>
+                    )}
 
-                        <div className="grid gap-4">
-                            <Button
-                                variant="outline"
-                                type="button"
-                                onClick={() => handleOAuthLogin('google')}
-                                disabled={isDisabled}
-                                className="w-full bg-background/50 border-border/50 hover:bg-background hover:text-foreground shadow-sm transition-all text-muted-foreground h-12 rounded-xl group relative overflow-hidden"
-                            >
-                                {oauthLoading ? (
-                                    <span className="relative z-10 flex items-center gap-2 font-medium">
-                                        <Loader2 className="h-5 w-5 animate-spin text-primary" />
-                                        Redirecting to Google...
-                                    </span>
-                                ) : (
-                                    <span className="relative z-10 flex items-center gap-2 font-medium group-hover:text-foreground">
-                                        <svg className="h-5 w-5 group-hover:scale-110 transition-transform" aria-hidden="true" viewBox="0 0 24 24">
-                                            <path d="M12.48 10.92v3.28h7.84c-.24 1.84-.853 3.187-1.787 4.133-1.147 1.147-2.933 2.4-6.053 2.4-4.827 0-8.6-3.893-8.6-8.72s3.773-8.72 8.6-8.72c2.6 0 4.507 1.027 5.907 2.347l2.307-2.307C18.747 1.44 16.133 0 12.48 0 5.867 0 .533 5.333.533 12S5.867 24 12.48 24c3.44 0 6.04-1.133 7.973-3.267 2.027-1.92 2.6-4.84 2.6-7.253 0-.693-.067-1.347-.187-1.973z" fill="currentColor" />
-                                        </svg>
-                                        Continue with Google
-                                    </span>
-                                )}
-                            </Button>
+                    <div className="space-y-6">
+                        {/* OAuth login */}
+                        <Button
+                            variant="outline"
+                            type="button"
+                            onClick={() => handleOAuthLogin('google')}
+                            disabled={isDisabled}
+                            className="w-full bg-background border-border hover:bg-muted text-foreground transition-all h-11 relative overflow-hidden font-medium cursor-pointer"
+                        >
+                            {oauthLoading ? (
+                                <span className="flex items-center gap-2">
+                                    <Loader2 className="h-4 w-4 animate-spin" />
+                                    Redirecting...
+                                </span>
+                            ) : (
+                                <span className="flex items-center gap-2">
+                                    <svg className="h-4 w-4" aria-hidden="true" viewBox="0 0 24 24">
+                                        <path d="M12.48 10.92v3.28h7.84c-.24 1.84-.853 3.187-1.787 4.133-1.147 1.147-2.933 2.4-6.053 2.4-4.827 0-8.6-3.893-8.6-8.72s3.773-8.72 8.6-8.72c2.6 0 4.507 1.027 5.907 2.347l2.307-2.307C18.747 1.44 16.133 0 12.48 0 5.867 0 .533 5.333.533 12S5.867 24 12.48 24c3.44 0 6.04-1.133 7.973-3.267 2.027-1.92 2.6-4.84 2.6-7.253 0-.693-.067-1.347-.187-1.973z" fill="currentColor" />
+                                    </svg>
+                                    Continue with Google
+                                </span>
+                            )}
+                        </Button>
+
+                        <div className="flex items-center gap-4">
+                            <div className="h-px flex-1 bg-border/50" />
+                            <span className="text-[10px] uppercase text-muted-foreground font-bold tracking-widest">Or continue with email</span>
+                            <div className="h-px flex-1 bg-border/50" />
                         </div>
 
-                        <div className="flex items-center gap-4 my-2">
-                            <div className="h-px flex-1 bg-border/50" />
-                            <span className="text-xs uppercase text-muted-foreground font-bold tracking-widest">Or continue with email</span>
-                            <div className="h-px flex-1 bg-border/50" />
-                        </div>
-
-                        <form onSubmit={handleLogin} className="grid gap-5">
-                            <div className="grid gap-2">
-                                <label htmlFor="email" className="text-sm font-bold text-foreground">Email</label>
+                        {/* Email form */}
+                        <form onSubmit={handleLogin} className="space-y-4">
+                            <div className="space-y-1.5">
+                                <label htmlFor="email" className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Email Address</label>
                                 <Input
                                     id="email"
                                     type="email"
@@ -137,11 +174,12 @@ export default function LoginPage() {
                                     onChange={(e) => setEmail(e.target.value)}
                                     required
                                     disabled={isDisabled}
-                                    className="bg-background/50 border-border/50 focus-visible:ring-1 focus-visible:ring-primary h-12 rounded-xl"
+                                    className="bg-background border-border focus-visible:ring-1 focus-visible:ring-primary h-11"
                                 />
                             </div>
-                            <div className="grid gap-2">
-                                <label htmlFor="password" className="text-sm font-bold text-foreground">Password</label>
+                            
+                            <div className="space-y-1.5">
+                                <label htmlFor="password" className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Password</label>
                                 <Input
                                     id="password"
                                     type="password"
@@ -149,37 +187,36 @@ export default function LoginPage() {
                                     onChange={(e) => setPassword(e.target.value)}
                                     required
                                     disabled={isDisabled}
-                                    className="bg-background/50 border-border/50 focus-visible:ring-1 focus-visible:ring-primary h-12 rounded-xl"
+                                    className="bg-background border-border focus-visible:ring-1 focus-visible:ring-primary h-11"
                                 />
                             </div>
+
                             <Button
-                                className="w-full bg-foreground text-background hover:bg-foreground/90 font-bold h-12 rounded-xl shadow-lg hover:shadow-xl hover:-translate-y-0.5 transition-all duration-300"
+                                className="w-full bg-foreground text-background hover:bg-foreground/90 font-semibold h-11 transition-all cursor-pointer"
                                 type="submit"
                                 disabled={isDisabled}
-                            >
+                             >
                                 {loading ? (
                                     <span className="flex items-center gap-2">
-                                        <Loader2 className="h-5 w-5 animate-spin" />
+                                        <Loader2 className="h-4 w-4 animate-spin" />
                                         Signing in...
                                     </span>
                                 ) : (
-                                    <span className="flex items-center gap-2">
-                                        Sign In
-                                    </span>
+                                    <span>Sign In</span>
                                 )}
                             </Button>
                         </form>
-                    </CardContent>
+                    </div>
 
-                    <CardFooter className="flex justify-center pb-8 pt-4">
+                    <div className="text-center pt-4">
                         <p className="text-sm text-muted-foreground font-medium">
                             Don&apos;t have an account?{" "}
-                            <Link href="/signup" className="text-primary hover:text-primary/80 transition-colors font-bold">
+                            <Link href="/signup" className="text-foreground hover:underline font-semibold transition-colors">
                                 Sign up
                             </Link>
                         </p>
-                    </CardFooter>
-                </Card>
+                    </div>
+                </div>
             </div>
         </div>
     );
