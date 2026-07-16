@@ -32,11 +32,8 @@ export function PricingContent() {
                             </Badge>
                         </div>
 
-                        <h1 className="text-3xl md:text-5xl font-black tracking-tight text-foreground mb-2">
-                            Unlock Your{" "}
-                            <span className="text-foreground/70">
-                                Competitive Edge
-                            </span>
+                        <h1 className="text-3xl md:text-5xl font-light tracking-tight text-foreground mb-2 font-display">
+                            Unlock Your <span className="italic font-normal">Competitive Edge</span>
                         </h1>
 
                         <p className="max-w-[600px] text-muted-foreground text-base md:text-lg font-light leading-relaxed">

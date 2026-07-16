@@ -269,7 +269,7 @@ export function AnalysisChat({ analysisId, trigger, mode = "sheet", className }:
 
             const data = await response.json()
 
-            if (!response.ok) throw new Error(data.error || 'Failed to fetch response')
+            if (!response.ok) throw new Error(data.details || data.error || 'Failed to fetch response')
 
             const aiMessage: Message = {
                 id: (Date.now() + 1).toString(),
@@ -278,12 +278,12 @@ export function AnalysisChat({ analysisId, trigger, mode = "sheet", className }:
             }
 
             setMessages(prev => [...prev, aiMessage])
-        } catch (error) {
+        } catch (error: any) {
             console.error('Chat error:', error)
             setMessages(prev => [...prev, {
                 id: (Date.now() + 1).toString(),
                 role: 'assistant',
-                content: "I'm sorry, I encountered an error pulling the analysis data. Please try again."
+                content: `⚠️ **Error**: ${error.message || 'I encountered an error pulling the analysis data. Please try again.'}`
             }])
         } finally {
             setLoading(false)

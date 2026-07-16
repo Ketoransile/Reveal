@@ -32,7 +32,7 @@ export function SiteHeaderCustom({ onMenuClick, collapsed = false, onToggleColla
     }
 
     return (
-        <header className={`flex h-[60px] shrink-0 items-center justify-between gap-4 bg-background/80 backdrop-blur-xl supports-[backdrop-filter]:bg-background/60 fixed top-0 right-0 z-40 px-4 md:px-8 transition-[left] duration-300 ease-in-out border-b border-border/40 ${collapsed ? 'md:left-20' : 'md:left-64'} left-0`}>
+        <header className={`flex h-[60px] shrink-0 items-center justify-between gap-4 bg-background/80 backdrop-blur-xl supports-[backdrop-filter]:bg-background/60 fixed top-0 right-0 z-40 px-4 md:px-8 transition-[left] duration-300 ease-in-out border-b border-border ${collapsed ? 'md:left-20' : 'md:left-64'} left-0`}>
             <div className="flex items-center gap-3">
                 <Button variant="ghost" size="icon" className="md:hidden -ml-2 text-muted-foreground hover:text-foreground" onClick={onMenuClick}>
                     <Menu className="h-5 w-5" />

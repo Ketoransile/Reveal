@@ -13,16 +13,52 @@ import {
     List,
     TrendingUp,
     Calendar,
-    AlertCircle
+    AlertCircle,
+    RefreshCw
 } from "lucide-react";
 import Link from "next/link";
 import { Input } from "@/components/ui/input";
+import { toast } from "sonner";
 
 export default function AllAnalysesPage() {
     const [analyses, setAnalyses] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
     const [searchTerm, setSearchTerm] = useState("");
     const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
+    const [rerunningIds, setRerunningIds] = useState<string[]>([]);
+
+    const handleRerun = async (analysisId: string) => {
+        setRerunningIds(prev => [...prev, analysisId]);
+        toast.info("Rerunning analysis...");
+
+        try {
+            const response = await fetch('/api/analyze', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ analysisId })
+            });
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                throw new Error(data.error || 'Failed to rerun analysis');
+            }
+
+            toast.success("Analysis complete!", {
+                description: "Redirecting to your report..."
+            });
+
+            // Redirect to the completed report
+            window.location.href = `/dashboard/report/${analysisId}`;
+
+        } catch (err: any) {
+            toast.error("Rerun failed", {
+                description: err.message || "An error occurred."
+            });
+        } finally {
+            setRerunningIds(prev => prev.filter(id => id !== analysisId));
+        }
+    };
 
     useEffect(() => {
         async function fetchData() {
@@ -221,7 +257,7 @@ export default function AllAnalysesPage() {
                             <div key={analysis.id} className="h-full">
                                 <Link
                                     href={analysis.status === 'completed' ? `/dashboard/report/${analysis.id}` : '#'}
-                                    className={`block h-full cursor-pointer group ${analysis.status !== 'completed' ? 'pointer-events-none opacity-80' : ''}`}
+                                    className={`block h-full cursor-pointer group ${analysis.status !== 'completed' && analysis.status !== 'failed' ? 'pointer-events-none opacity-80' : ''} ${analysis.status === 'failed' ? 'pointer-events-auto' : ''}`}
                                 >
                                     <div className="bg-card/40 backdrop-blur-2xl rounded-3xl p-7 border border-border/40 hover:border-border shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-[0_8px_30px_rgb(16,185,129,0.08)] transition-all duration-500 h-full flex flex-col relative overflow-hidden hover:-translate-y-1">
                                         {/* Hover Gradients */}
@@ -268,12 +304,37 @@ export default function AllAnalysesPage() {
                                         {/* Footer Action */}
                                         <div className="pt-5 mt-auto border-t border-border/20 flex items-center justify-between relative z-10">
                                             <span className="text-[13px] font-bold tracking-tight text-muted-foreground group-hover:text-foreground transition-colors duration-300">
-                                                {analysis.status === 'completed' ? 'View Full Report' : 'Analyzing Data...'}
+                                                {analysis.status === 'completed' ? 'View Full Report' : analysis.status === 'failed' ? 'Analysis Failed' : 'Analyzing Data...'}
                                             </span>
                                             {analysis.status === 'completed' && (
                                                 <div className="w-10 h-10 rounded-xl bg-background/50 border border-border/50 shadow-sm flex items-center justify-center text-muted-foreground group-hover:bg-foreground/5 group-hover:text-foreground-foreground group-hover:border-border group-hover:shadow-[0_0_15px_rgba(16,185,129,0.3)] transition-all duration-300">
                                                     <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
                                                 </div>
+                                            )}
+                                            {analysis.status === 'failed' && (
+                                                <Button
+                                                    size="sm"
+                                                    variant="outline"
+                                                    disabled={rerunningIds.includes(analysis.id)}
+                                                    onClick={(e) => {
+                                                        e.preventDefault();
+                                                        e.stopPropagation();
+                                                        handleRerun(analysis.id);
+                                                    }}
+                                                    className="h-8 px-3 rounded-lg font-medium text-xs border-border flex items-center gap-1.5 hover:bg-foreground hover:text-background transition-all shrink-0 cursor-pointer pointer-events-auto"
+                                                >
+                                                    {rerunningIds.includes(analysis.id) ? (
+                                                        <>
+                                                            <Clock className="w-3 h-3 animate-spin" />
+                                                            Retrying...
+                                                        </>
+                                                    ) : (
+                                                        <>
+                                                            <RefreshCw className="w-3 h-3" />
+                                                            Rerun
+                                                        </>
+                                                    )}
+                                                </Button>
                                             )}
                                         </div>
                                     </div>
@@ -335,6 +396,31 @@ export default function AllAnalysesPage() {
                                                     <div className="inline-flex w-10 h-10 items-center justify-center rounded-xl bg-background/50 border border-border/50 shadow-sm group-hover:bg-foreground/5 group-hover:text-foreground-foreground group-hover:border-border group-hover:shadow-[0_0_15px_rgba(16,185,129,0.3)] transition-all duration-300 text-muted-foreground">
                                                         <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
                                                     </div>
+                                                )}
+                                                {analysis.status === 'failed' && (
+                                                    <Button
+                                                        size="sm"
+                                                        variant="outline"
+                                                        disabled={rerunningIds.includes(analysis.id)}
+                                                        onClick={(e) => {
+                                                            e.preventDefault();
+                                                            e.stopPropagation();
+                                                            handleRerun(analysis.id);
+                                                        }}
+                                                        className="h-8 px-3 rounded-lg font-medium text-xs border-border flex items-center gap-1.5 hover:bg-foreground hover:text-background transition-all shrink-0 cursor-pointer"
+                                                    >
+                                                        {rerunningIds.includes(analysis.id) ? (
+                                                            <>
+                                                                <Clock className="w-3 h-3 animate-spin" />
+                                                                Retrying...
+                                                            </>
+                                                        ) : (
+                                                            <>
+                                                                <RefreshCw className="w-3 h-3" />
+                                                                Rerun
+                                                            </>
+                                                        )}
+                                                    </Button>
                                                 )}
                                             </td>
                                         </tr>

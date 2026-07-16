@@ -30,7 +30,7 @@
   --input: 214.3 31.8% 91.4%;
   --ring: 222.2 47.4% 11.2%;
 
-  --radius: 0.5rem;
+  --radius: 0px;
 
   /* Sidebar - Light Theme */
   --sidebar-background: 0 0% 100%;
@@ -93,7 +93,7 @@
 
 @theme inline {
   --font-sans: var(--font-inter);
-  --font-display: var(--font-outfit);
+  --font-display: var(--font-display);
 
   --color-background: hsl(var(--background));
   --color-foreground: hsl(var(--foreground));
@@ -176,6 +176,11 @@ html,
 body {
   overflow-x: hidden;
   max-width: 100vw;
+}
+
+/* Global 90 Degree corners override */
+*, ::before, ::after {
+  border-radius: 0px !important;
 }
 
 /* Global Body Styles */

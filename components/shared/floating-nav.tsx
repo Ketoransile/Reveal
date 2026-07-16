@@ -36,6 +36,10 @@ export const FloatingNav = ({ user: initialUser }: { user: any }) => {
                 setUser(null);
             }
             setAuthLoading(false);
+        }).catch(() => {
+            // Supabase unreachable (e.g. wrong URL, no internet) — treat as logged out
+            setUser(null);
+            setAuthLoading(false);
         });
 
         // Listen for auth state changes
@@ -50,14 +54,14 @@ export const FloatingNav = ({ user: initialUser }: { user: any }) => {
 
     return (
         <>
-            <div className="fixed top-4 left-0 right-0 z-50 flex justify-center px-4 md:px-0 w-full pointer-events-none">
-                <nav className="w-full md:max-w-5xl rounded-2xl px-5 py-2.5 md:px-6 md:py-3 flex items-center justify-between text-foreground bg-background/60 dark:bg-background/60 backdrop-blur-2xl border border-border pointer-events-auto shadow-lg shadow-black/5 dark:shadow-white/5">
+            <div className="fixed top-0 left-0 right-0 z-50 w-full pointer-events-none">
+                <nav className="w-full h-16 px-6 md:px-10 flex items-center justify-between text-foreground bg-background/80 dark:bg-background/90 backdrop-blur-md border-b border-border pointer-events-auto">
                     {/* Logo */}
                     <Link href="/" className="flex items-center gap-3 group relative z-10" onClick={() => setMobileMenuOpen(false)}>
-                        <div className="w-9 h-9 bg-foreground rounded-lg flex items-center justify-center shadow-lg group-hover:shadow-xl transition-all group-hover:scale-105">
-                            <span className="text-background font-bold text-lg">R</span>
+                        <div className="w-8 h-8 bg-foreground flex items-center justify-center group-hover:scale-105 transition-transform duration-200">
+                            <span className="text-background font-bold text-base">R</span>
                         </div>
-                        <span className="text-xl font-bold tracking-tight text-foreground opacity-90 group-hover:opacity-100 transition-opacity">
+                        <span className="text-lg font-bold tracking-tight text-foreground opacity-90 group-hover:opacity-100 transition-opacity">
                             Reveal
                         </span>
                     </Link>
@@ -81,12 +85,12 @@ export const FloatingNav = ({ user: initialUser }: { user: any }) => {
                     {/* Auth Buttons */}
                     <div className="flex items-center gap-3 relative z-10 w-[140px] md:w-auto overflow-hidden justify-end">
                         {authLoading ? (
-                            <div className="hidden md:block w-[120px] h-10 rounded-xl bg-foreground/5 animate-pulse" />
+                            <div className="hidden md:block w-[120px] h-9 bg-foreground/5 animate-pulse" />
                         ) : user ? (
                             <Link href="/dashboard" className="hidden md:block">
                                 <Button
                                     size="sm"
-                                    className="rounded-xl h-10 px-5 bg-foreground hover:bg-foreground/90 text-background font-semibold shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 cursor-pointer"
+                                    className="h-9 px-4 bg-foreground hover:bg-foreground/90 text-background font-semibold transition-all duration-200 hover:-translate-y-0.5 cursor-pointer"
                                 >
                                     Dashboard
                                 </Button>
@@ -96,7 +100,7 @@ export const FloatingNav = ({ user: initialUser }: { user: any }) => {
                                 <Link href="/signup" className="hidden md:block ">
                                     <Button
                                         size="sm"
-                                        className="rounded-xl h-10 px-5 bg-foreground hover:bg-foreground/90 text-background font-semibold shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105"
+                                        className="h-9 px-4 bg-foreground hover:bg-foreground/90 text-background font-semibold transition-all duration-200 hover:-translate-y-0.5"
                                     >
                                         Get Started
                                     </Button>
@@ -109,11 +113,11 @@ export const FloatingNav = ({ user: initialUser }: { user: any }) => {
                             <Button
                                 variant="ghost"
                                 size="icon"
-                                className="rounded-xl w-10 h-10 text-muted-foreground hover:text-foreground hover:bg-muted"
+                                className="w-9 h-9 text-muted-foreground hover:text-foreground hover:bg-muted"
                                 onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
                             >
                                 <span className="sr-only">Menu</span>
-                                {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
+                                {mobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
                             </Button>
                         </div>
                     </div>

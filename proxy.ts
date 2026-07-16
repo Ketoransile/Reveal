@@ -13,10 +13,16 @@ import { NextResponse, type NextRequest } from 'next/server'
  *   • The *real* token validation happens later, inside Server Components or
  *     API Route Handlers, where the execution budget is much larger.
  */
-export function middleware(request: NextRequest) {
-    // Fast, zero-network auth check — just look at cookies
+export function proxy(request: NextRequest) {
+    // Fast, zero-network auth check — just look at cookies.
+    // IMPORTANT: We match only `sb-*-auth-token` (the real session cookie).
+    // We must NOT match `sb-*-auth-token-code-verifier` (PKCE code verifier),
+    // which is set during the OAuth flow BEFORE a session is established.
     const isAuthenticated = request.cookies.getAll().some(
-        (cookie) => cookie.name.startsWith('sb-') && cookie.name.includes('auth')
+        (cookie) => 
+            cookie.name.startsWith('sb-') && 
+            cookie.name.includes('-auth-token') && 
+            !cookie.name.includes('-code-verifier')
     )
 
     const { pathname } = request.nextUrl

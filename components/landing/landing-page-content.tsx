@@ -50,10 +50,16 @@ export function LandingPageContent() {
 
     useEffect(() => {
         const checkAuth = async () => {
-            const supabase = createClient();
-            const { data: { user } } = await supabase.auth.getUser();
-            setIsLoggedIn(!!user);
-            setIsCheckingAuth(false);
+            try {
+                const supabase = createClient();
+                const { data: { user } } = await supabase.auth.getUser();
+                setIsLoggedIn(!!user);
+            } catch {
+                // Supabase unreachable — treat as logged out
+                setIsLoggedIn(false);
+            } finally {
+                setIsCheckingAuth(false);
+            }
         };
         checkAuth();
     }, []);
@@ -98,11 +104,11 @@ export function LandingPageContent() {
                         </div>
 
                         {/* Hero Title */}
-                        <h1 className="text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-black tracking-tight mb-8 leading-[1.08] text-foreground">
+                        <h1 className="text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-light tracking-tight mb-8 leading-[1.08] text-foreground font-display">
                             <span className="block text-foreground drop-shadow-sm">
-                                Find the revenue leak
+                                Find the <span className="italic font-normal">revenue leak</span>
                             </span>
-                            <span className="block text-foreground mt-2 opacity-80">
+                            <span className="block text-foreground mt-2 opacity-85">
                                 in your landing page.
                             </span>
                         </h1>
@@ -222,12 +228,8 @@ export function LandingPageContent() {
                 </div>
 
                 <div className="relative">
-                    <h2 className="text-3xl md:text-5xl lg:text-6xl font-black tracking-tight mb-6 text-foreground">
-                        Ready to{" "}
-                        <span className="opacity-70">
-                            outsmart
-                        </span>
-                        {" "}your competition?
+                    <h2 className="text-3xl md:text-5xl lg:text-6xl font-light tracking-tight mb-6 text-foreground font-display">
+                        Ready to <span className="italic font-normal">outsmart</span> your competition?
                     </h2>
                     <p className="text-lg text-muted-foreground mb-10 max-w-2xl mx-auto font-medium">
                         Join thousands of growth teams using Reveal to decode their competitors strategy and win more customers.

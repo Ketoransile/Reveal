@@ -4,6 +4,7 @@ import ModelClient, { isUnexpected } from "@azure-rest/ai-inference";
 import { AzureKeyCredential } from "@azure/core-auth";
 import { SupabaseClient } from '@supabase/supabase-js';
 import puppeteer from 'puppeteer';
+import OpenAI from 'openai';
 
 export async function POST(request: Request) {
     console.log('[API] /api/analyze - Starting comparison analysis request');
@@ -31,13 +32,6 @@ export async function POST(request: Request) {
         return NextResponse.json({ error: 'Failed to fetch user data' }, { status: 500 });
     }
 
-    if (userData.credits < 1 && userData.subscription_plan !== 'pro' && userData.subscription_plan !== 'agency') {
-        console.log('[API] Insufficient credits for user:', user.id);
-        return NextResponse.json({ error: 'Insufficient credits' }, { status: 402 });
-    }
-
-    console.log('[API] User has', userData.credits, 'credits', 'Plan:', userData.subscription_plan);
-
     // 3. Parse Request
     let body;
     try {
@@ -46,13 +40,57 @@ export async function POST(request: Request) {
         return NextResponse.json({ error: 'Invalid JSON body' }, { status: 400 });
     }
 
-    const { yourUrl, competitorUrl } = body;
-    console.log('[API] Your URL:', yourUrl);
-    console.log('[API] Competitor URL:', competitorUrl);
+    const { yourUrl, competitorUrl, analysisId } = body;
 
-    if (!yourUrl || !competitorUrl) {
+    let existingAnalysis = null;
+    if (analysisId) {
+        const { data, error } = await supabase
+            .from('analyses')
+            .select('*')
+            .eq('id', analysisId)
+            .eq('user_id', user.id)
+            .single();
+
+        if (error || !data) {
+            return NextResponse.json({ error: 'Analysis not found' }, { status: 404 });
+        }
+
+        if (data.status !== 'failed') {
+            return NextResponse.json({ error: 'Only failed analyses can be rerun' }, { status: 400 });
+        }
+
+        existingAnalysis = data;
+    }
+
+    // Skip credit check for reruns
+    if (!existingAnalysis) {
+        if (userData.credits < 1 && userData.subscription_plan !== 'pro' && userData.subscription_plan !== 'agency') {
+            console.log('[API] Insufficient credits for user:', user.id);
+            return NextResponse.json({ error: 'Insufficient credits' }, { status: 402 });
+        }
+    }
+
+    const finalYourUrl = existingAnalysis ? existingAnalysis.your_url : yourUrl;
+    const finalCompetitorUrl = existingAnalysis ? existingAnalysis.competitor_url : competitorUrl;
+
+    console.log('[API] Your URL:', finalYourUrl);
+    console.log('[API] Competitor URL:', finalCompetitorUrl);
+
+    if (!finalYourUrl || !finalCompetitorUrl) {
         console.error('[API] Missing URLs in request');
         return NextResponse.json({ error: 'Both URLs are required' }, { status: 400 });
+    }
+
+    if (existingAnalysis) {
+        const { error: updateErr } = await supabase
+            .from('analyses')
+            .update({ status: 'processing', error_message: null })
+            .eq('id', analysisId);
+
+        if (updateErr) {
+            console.error('[API] Error updating analysis status to processing:', updateErr);
+            return NextResponse.json({ error: 'Failed to update analysis status' }, { status: 500 });
+        }
     }
 
     // 4. Scrape Content
@@ -113,8 +151,8 @@ export async function POST(request: Request) {
         };
 
         const [yourText, competitorText] = await Promise.all([
-            scrapePage(yourUrl, 'Your Site'),
-            scrapePage(competitorUrl, 'Competitor Site')
+            scrapePage(finalYourUrl, 'Your Site'),
+            scrapePage(finalCompetitorUrl, 'Competitor Site')
         ]);
 
         yourContent = yourText;
@@ -131,6 +169,13 @@ export async function POST(request: Request) {
         else if (errString.includes('403') || errString.includes('401')) errorMessage = 'Access denied. Site blocks bots.';
         else if (errString.includes('MODULE_NOT_FOUND')) errorMessage = 'Server Configuration Error: Missing scraping modules.';
 
+        if (existingAnalysis) {
+            await supabase
+                .from('analyses')
+                .update({ status: 'failed', error_message: errorMessage })
+                .eq('id', analysisId);
+        }
+
         return NextResponse.json({ error: errorMessage }, { status: 400 });
     } finally {
         if (browser) await browser.close();
@@ -140,28 +185,34 @@ export async function POST(request: Request) {
         console.warn('[API] Warning: Extracted content is very short.');
     }
 
-    // 5. Create Analysis Record
-    const { data: analysis, error: analysisError } = await supabase
-        .from('analyses')
-        .insert({
-            user_id: user.id,
-            target_url: yourUrl,
-            your_url: yourUrl,
-            competitor_url: competitorUrl,
-            status: 'processing'
-        })
-        .select()
-        .single();
+    // 5. Create or Get Analysis Record
+    let analysis;
+    if (existingAnalysis) {
+        analysis = existingAnalysis;
+        console.log('[API] Rerunning existing analysis with ID:', analysis.id);
+    } else {
+        const { data: newAnalysis, error: analysisError } = await supabase
+            .from('analyses')
+            .insert({
+                user_id: user.id,
+                target_url: finalYourUrl,
+                your_url: finalYourUrl,
+                competitor_url: finalCompetitorUrl,
+                status: 'processing'
+            })
+            .select()
+            .single();
 
-    if (analysisError || !analysis) {
-        console.error('[API] Error creating analysis:', analysisError);
-        return NextResponse.json({ error: 'Failed to create analysis' }, { status: 500 });
+        if (analysisError || !newAnalysis) {
+            console.error('[API] Error creating analysis:', analysisError);
+            return NextResponse.json({ error: 'Failed to create analysis' }, { status: 500 });
+        }
+        analysis = newAnalysis;
+        console.log('[API] Created analysis with ID:', analysis.id);
     }
 
-    console.log('[API] Created analysis with ID:', analysis.id);
-
-    // 6. Deduct Credit (only for free plan)
-    if (userData.subscription_plan !== 'pro' && userData.subscription_plan !== 'agency') {
+    // 6. Deduct Credit (only for free plan and only for new analyses)
+    if (!existingAnalysis && userData.subscription_plan !== 'pro' && userData.subscription_plan !== 'agency') {
         const { error: creditError } = await supabase
             .from('users')
             .update({ credits: userData.credits - 1 })
@@ -174,7 +225,7 @@ export async function POST(request: Request) {
     try {
         // Enforce a strict 50s timeout for the entire analysis process to prevent Vercel timeouts (60s limit)
         // If it takes longer, we fail it so the user isn't stuck in "Processing" forever.
-        const analysisPromise = performComparisonAnalysis(supabase, analysis.id, yourUrl, competitorUrl, yourContent, competitorContent);
+        const analysisPromise = performComparisonAnalysis(supabase, analysis.id, finalYourUrl, finalCompetitorUrl, yourContent, competitorContent);
 
         const timeoutPromise = new Promise((_, reject) =>
             setTimeout(() => reject(new Error("Analysis timed out (exceeded 50s limit)")), 50000)
@@ -225,16 +276,12 @@ async function performComparisonAnalysis(
         // Step 2: Analyze with GitHub Models / Azure Inference
         console.log('[ANALYSIS] Sending to GitHub Models for comparison analysis');
 
-        // Check if GITHUB_TOKEN is available, if not fallback to OPENAI_API_KEY
         const token = process.env["GITHUB_TOKEN"];
-
+        const openaiKey = process.env["OPENAI_API_KEY"];
         let analysisResult;
+        let success = false;
 
-        if (token) {
-            const endpoint = "https://models.github.ai/inference";
-            const client = ModelClient(endpoint, new AzureKeyCredential(token));
-
-            const prompt = `You are an expert Business Consultant and Analyst. 
+        const prompt = `You are an expert Business Consultant and Analyst. 
 Your job is to objectively compare two landing pages and determine which one is more effective at acquiring customers.
 
 Return a detailed JSON report:
@@ -257,39 +304,67 @@ Content preview: ${competitorContent.substring(0, 3000)}
 
 Explain clearly why one site is performing better than the other.`;
 
-            const response = await client.path("/chat/completions").post({
-                body: {
+        // 1. Try GitHub Models first
+        if (token) {
+            try {
+                const endpoint = "https://models.github.ai/inference";
+                const client = ModelClient(endpoint, new AzureKeyCredential(token));
+
+                const response = await client.path("/chat/completions").post({
+                    body: {
+                        messages: [
+                            { role: "system", content: "You are a helpful assistant that outputs JSON." },
+                            { role: "user", content: prompt }
+                        ],
+                        model: "gpt-4o",
+                        response_format: { type: "json_object" },
+                        temperature: 0.7
+                    }
+                });
+
+                if (isUnexpected(response)) {
+                    throw new Error(response.body?.error?.message || `GitHub Models returned unexpected status ${response.status}`);
+                }
+
+                console.log('[ANALYSIS] GitHub Models response received successfully');
+                let content = response.body.choices[0].message.content || '{}';
+                content = content.replace(/```json\n?|```/g, '').trim();
+                analysisResult = JSON.parse(content);
+                success = true;
+            } catch (err) {
+                console.error('[ANALYSIS] GitHub Models failed, will try OpenAI fallback if available:', err);
+            }
+        }
+
+        // 2. Try OpenAI fallback if GitHub Models failed or was not configured
+        if (!success && openaiKey) {
+            try {
+                console.log('[ANALYSIS] Using OpenAI fallback for comparison analysis...');
+                const openai = new OpenAI({ apiKey: openaiKey });
+
+                const completion = await openai.chat.completions.create({
+                    model: "gpt-4o",
                     messages: [
                         { role: "system", content: "You are a helpful assistant that outputs JSON." },
                         { role: "user", content: prompt }
                     ],
-                    model: "gpt-4o",
                     response_format: { type: "json_object" },
                     temperature: 0.7
-                }
-            });
+                });
 
-            if (isUnexpected(response)) {
-                throw response.body.error;
-            }
-
-            console.log('[ANALYSIS] GitHub Models response received');
-            let content = response.body.choices[0].message.content || '{}';
-
-            // Clean markdown code blocks if present
-            content = content.replace(/```json\n?|```/g, '').trim();
-
-            try {
+                console.log('[ANALYSIS] OpenAI response received successfully');
+                let content = completion.choices[0].message.content || '{}';
+                content = content.replace(/```json\n?|```/g, '').trim();
                 analysisResult = JSON.parse(content);
-            } catch (jsonError) {
-                console.error('[ANALYSIS] JSON Parse Error:', jsonError);
-                console.error('[ANALYSIS] Raw content:', content);
-                throw new Error('Failed to parse AI response');
+                success = true;
+            } catch (err) {
+                console.error('[ANALYSIS] OpenAI fallback also failed:', err);
             }
+        }
 
-        } else {
-            // FALLBACK TO OPENAI COMPLETION IF GITHUB TOKEN IS NOT PRESENT.
-            console.log('[ANALYSIS] GITHUB_TOKEN not found, falling back to basic result structure.');
+        // 3. Fallback to basic structure as absolute last resort
+        if (!success) {
+            console.log('[ANALYSIS] All AI providers failed or were missing, falling back to mock result structure.');
             analysisResult = {
                 conversion_score: 75,
                 winner: 'yours',
@@ -299,7 +374,7 @@ Explain clearly why one site is performing better than the other.`;
                 ux_insights: { notes: 'Your UX is cleaner' },
                 tech_stack: { notes: 'Both use React' },
                 actionable_fixes: ['Add more CTA buttons'],
-                deep_analysis: { summary: 'Comparison successful' }
+                deep_analysis: { summary: 'Comparison successful (Mock fallback)' }
             };
         }
 

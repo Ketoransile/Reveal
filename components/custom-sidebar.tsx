@@ -38,14 +38,12 @@ import {
     AlertDialogTitle,
 } from "@/components/ui/alert-dialog"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
+import { toast } from "sonner"
 
 // Data Configuration
 const NAV_MAIN = [
     { title: "Dashboard", url: "/dashboard", icon: LayoutDashboard },
     { title: "All Analyses", url: "/dashboard/all-analyses", icon: BarChart3 },
-]
-
-const NAV_SECONDARY = [
     { title: "Settings", url: "/dashboard/settings", icon: Settings },
 ]
 
@@ -65,25 +63,50 @@ export function CustomSidebar({ className, collapsed = false, setCollapsed, onCl
     const [mounted, setMounted] = React.useState(false)
     const [showLogoutDialog, setShowLogoutDialog] = React.useState(false)
     const [user, setUser] = React.useState<any>(null)
+    const [userLoading, setUserLoading] = React.useState(true)
 
     React.useEffect(() => {
         setMounted(true)
 
         const fetchUser = async () => {
-            const supabase = createClient()
-            const { data: { user } } = await supabase.auth.getUser()
-            if (user) {
-                // Force a refresh of user data from the session to get latest metadata
-                const { data: { session } } = await supabase.auth.getSession()
+            // Show a warning toast if loading takes longer than 5 seconds
+            const toastTimer = setTimeout(() => {
+                toast.warning('Taking longer than usual…', {
+                    description: 'Still loading your profile. Check your connection.',
+                    id: 'sidebar-user-timeout',
+                    duration: 6000,
+                })
+            }, 5000)
+
+            try {
+                const supabase = createClient()
+                const { data: { user }, error } = await supabase.auth.getUser()
+
+                if (error || !user) {
+                    setUser(null)
+                    return
+                }
 
                 // Get the most up-to-date user object
-                const currentUser = session?.user || user;
+                const { data: { session } } = await supabase.auth.getSession()
+                const currentUser = session?.user || user
 
                 setUser({
                     name: currentUser.user_metadata?.name || currentUser.email?.split('@')[0] || "User",
                     email: currentUser.email || "",
                     avatar: currentUser.user_metadata?.avatar_url || "",
                 })
+            } catch (err) {
+                console.error('[Sidebar] Failed to load user:', err)
+                toast.error('Could not load profile', {
+                    description: 'There was a problem fetching your account data.',
+                    id: 'sidebar-user-error',
+                    duration: 5000,
+                })
+                setUser(null)
+            } finally {
+                clearTimeout(toastTimer)
+                setUserLoading(false)
             }
         }
 
@@ -175,14 +198,7 @@ export function CustomSidebar({ className, collapsed = false, setCollapsed, onCl
                 </div>
             </TooltipProvider>
 
-            {/* Secondary Nav (Settings) - Pinned near bottom */}
-            <TooltipProvider>
-                <div className="mt-auto px-1 py-1 mb-2">
-                    {NAV_SECONDARY.map((item) => (
-                        <NavItem key={item.url} item={item} isActive={pathname === item.url} />
-                    ))}
-                </div>
-            </TooltipProvider>
+
 
             {/* User Footer */}
             <div className="pt-4 border-t border-border/40">
@@ -190,11 +206,23 @@ export function CustomSidebar({ className, collapsed = false, setCollapsed, onCl
                     <DropdownMenuTrigger asChild>
                         <Button variant="ghost" className={cn("w-full h-14 hover:bg-accent group transition-all", collapsed ? "justify-center px-0" : "justify-start px-2")}>
                             <div className="flex items-center gap-3 w-full">
-                                {user ? (
+                                {userLoading ? (
+                                    <>
+                                        <div className="h-8 w-8 rounded-lg bg-muted animate-pulse shrink-0" />
+                                        {!collapsed && (
+                                            <div className="flex-1 space-y-2">
+                                                <div className="h-4 w-24 bg-muted animate-pulse rounded" />
+                                                <div className="h-3 w-32 bg-muted animate-pulse rounded" />
+                                            </div>
+                                        )}
+                                    </>
+                                ) : user ? (
                                     <>
                                         <Avatar className="h-8 w-8 rounded-lg shrink-0">
                                             <AvatarImage src={user.avatar} alt={user.name} />
-                                            <AvatarFallback className="rounded-lg">CN</AvatarFallback>
+                                            <AvatarFallback className="rounded-lg">
+                                                {user.name?.charAt(0).toUpperCase() || 'U'}
+                                            </AvatarFallback>
                                         </Avatar>
                                         {!collapsed && (
                                             <>
@@ -208,12 +236,11 @@ export function CustomSidebar({ className, collapsed = false, setCollapsed, onCl
                                     </>
                                 ) : (
                                     <>
-                                        <div className="h-8 w-8 rounded-lg bg-muted animate-pulse shrink-0" />
+                                        <Avatar className="h-8 w-8 rounded-lg shrink-0">
+                                            <AvatarFallback className="rounded-lg">?</AvatarFallback>
+                                        </Avatar>
                                         {!collapsed && (
-                                            <div className="flex-1 space-y-2">
-                                                <div className="h-4 w-24 bg-muted animate-pulse rounded" />
-                                                <div className="h-3 w-32 bg-muted animate-pulse rounded" />
-                                            </div>
+                                            <span className="text-sm text-muted-foreground">Guest</span>
                                         )}
                                     </>
                                 )}

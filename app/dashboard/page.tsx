@@ -14,16 +14,52 @@ import {
     CreditCard,
     BarChart,
     ChevronRight,
-    Zap
+    Zap,
+    RefreshCw
 } from "lucide-react";
 import Link from "next/link";
 import { format } from "date-fns";
+import { toast } from "sonner";
 
 export default function DashboardPage() {
     const [userData, setUserData] = useState<any>(null);
     const [analyses, setAnalyses] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
+    const [rerunningIds, setRerunningIds] = useState<string[]>([]);
+
+    const handleRerun = async (analysisId: string) => {
+        setRerunningIds(prev => [...prev, analysisId]);
+        toast.info("Rerunning analysis...");
+
+        try {
+            const response = await fetch('/api/analyze', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ analysisId })
+            });
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                throw new Error(data.error || 'Failed to rerun analysis');
+            }
+
+            toast.success("Analysis complete!", {
+                description: "Redirecting to your report..."
+            });
+
+            // Redirect to the completed report
+            window.location.href = `/dashboard/report/${analysisId}`;
+
+        } catch (err: any) {
+            toast.error("Rerun failed", {
+                description: err.message || "An error occurred."
+            });
+        } finally {
+            setRerunningIds(prev => prev.filter(id => id !== analysisId));
+        }
+    };
 
     useEffect(() => {
         try {
@@ -40,6 +76,10 @@ export default function DashboardPage() {
                 if (response.status === 401 || response.status === 403) {
                     localStorage.removeItem('dashboard_user');
                     localStorage.removeItem('dashboard_analyses');
+                    // Clear stale Supabase cookies server-side so the proxy
+                    // doesn't mistake a PKCE code-verifier for a valid session
+                    // and bounce us back to /dashboard in an infinite loop.
+                    await fetch('/api/auth/clear', { method: 'POST' }).catch(() => {});
                     window.location.href = '/login';
                     return;
                 }
@@ -70,7 +110,13 @@ export default function DashboardPage() {
                 if (isNetworkError && userData) {
                     return;
                 }
-                setError(err instanceof Error ? err.message : 'An error occurred');
+                const msg = err instanceof Error ? err.message : 'An error occurred';
+                setError(msg);
+                toast.error('Failed to load dashboard', {
+                    description: msg,
+                    id: 'dashboard-fetch-error',
+                    duration: 6000,
+                });
             } finally {
                 setLoading(false);
             }
@@ -123,7 +169,7 @@ export default function DashboardPage() {
     const firstName = rawName.charAt(0).toUpperCase() + rawName.slice(1).toLowerCase();
 
     return (
-        <div className="min-h-screen bg-background border-t border-border">
+        <div className="min-h-screen bg-background">
             <div className="max-w-6xl mx-auto px-6 py-12 space-y-12">
                 {/* Clean Header Area */}
                 <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
@@ -289,8 +335,33 @@ export default function DashboardPage() {
                                                 </div>
                                             </div>
                                         </div>
-                                        <div className="flex items-center gap-4 shrink-0 mt-3 sm:mt-0">
+                                        <div className="flex items-center gap-3 shrink-0 mt-3 sm:mt-0">
                                             <StatusBadge status={analysis.status} />
+                                            {analysis.status === 'failed' && (
+                                                <Button
+                                                    size="sm"
+                                                    variant="outline"
+                                                    disabled={rerunningIds.includes(analysis.id)}
+                                                    onClick={(e) => {
+                                                        e.preventDefault();
+                                                        e.stopPropagation();
+                                                        handleRerun(analysis.id);
+                                                    }}
+                                                    className="h-8 px-3 rounded-lg font-medium text-xs border-border flex items-center gap-1.5 hover:bg-foreground hover:text-background transition-all shrink-0 cursor-pointer"
+                                                >
+                                                    {rerunningIds.includes(analysis.id) ? (
+                                                        <>
+                                                            <Clock className="w-3 h-3 animate-spin" />
+                                                            Retrying...
+                                                        </>
+                                                    ) : (
+                                                        <>
+                                                            <RefreshCw className="w-3 h-3" />
+                                                            Rerun
+                                                        </>
+                                                    )}
+                                                </Button>
+                                            )}
                                             {analysis.status === 'completed' && (
                                                 <ArrowRight className="w-4 h-4 text-muted-foreground group-hover:text-foreground group-hover:translate-x-1 transition-all" />
                                             )}

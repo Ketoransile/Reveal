@@ -8,6 +8,7 @@ export async function GET() {
         const { data: { user }, error: authError } = await supabase.auth.getUser();
 
         if (authError || !user) {
+            console.log('[API/user] 401 — Auth error:', authError?.message ?? 'No session');
             return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
         }
 

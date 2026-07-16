@@ -1,6 +1,6 @@
 
 import type { Metadata } from "next";
-import { Inter, Outfit } from "next/font/google";
+import { Inter, Playfair_Display } from "next/font/google";
 import "./globals.css";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { ThemeProvider } from "@/components/theme-provider";
@@ -13,9 +13,10 @@ const interSans = Inter({
   subsets: ["latin"],
 });
 
-const outfitDisplay = Outfit({
-  variable: "--font-outfit",
+const playfairDisplay = Playfair_Display({
+  variable: "--font-display",
   subsets: ["latin"],
+  style: ["normal", "italic"],
 });
 
 export const metadata: Metadata = {
@@ -31,7 +32,7 @@ export const metadata: Metadata = {
     siteName: "Reveal",
     locale: "en_US",
     type: "website",
-  },
+    },
   robots: {
     index: true,
     follow: true,
@@ -57,7 +58,7 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body
-        className={`${interSans.variable} ${outfitDisplay.variable} font-sans antialiased min-h-full`}
+        className={`${interSans.variable} ${playfairDisplay.variable} font-sans antialiased min-h-full`}
       >
         <ScrollbarTheme />
         <ThemeProvider
