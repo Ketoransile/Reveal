@@ -83,7 +83,7 @@ export function PricingContent() {
                                 ))}
                             </ul>
 
-                            <Link href="/signup" className="w-full mt-auto">
+                            <Link href="/login" className="w-full mt-auto">
                                 <button className="w-full py-3.5 rounded-xl bg-muted/80 hover:bg-muted text-foreground font-semibold transition-all border border-border/50 text-sm group cursor-pointer active:scale-95">
                                     <span className="flex items-center justify-center gap-2">
                                         Get Started Free

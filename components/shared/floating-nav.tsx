@@ -97,7 +97,7 @@ export const FloatingNav = ({ user: initialUser }: { user: any }) => {
                             </Link>
                         ) : (
                             <>
-                                <Link href="/signup" className="hidden md:block ">
+                                <Link href="/login" className="hidden md:block ">
                                     <Button
                                         size="sm"
                                         className="h-9 px-4 bg-foreground hover:bg-foreground/90 text-background font-semibold transition-all duration-200 hover:-translate-y-0.5"
@@ -164,12 +164,7 @@ export const FloatingNav = ({ user: initialUser }: { user: any }) => {
                             ) : (
                                 <>
                                     <Link href="/login" onClick={() => setMobileMenuOpen(false)}>
-                                        <Button variant="ghost" className="w-full h-12 text-lg text-muted-foreground hover:text-foreground hover:bg-muted border border-border/50 rounded-xl">
-                                            Login
-                                        </Button>
-                                    </Link>
-                                    <Link href="/signup" onClick={() => setMobileMenuOpen(false)}>
-                                        <Button className="w-full h-12 text-lg font-semibold bg-foreground hover:bg-foreground/90 text-background rounded-xl">
+                                        <Button className="w-full h-12 text-lg font-semibold bg-foreground hover:bg-foreground/90 text-background">
                                             Get Started
                                         </Button>
                                     </Link>
